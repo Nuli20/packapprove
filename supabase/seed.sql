@@ -1,0 +1,1 @@
+-- Auth accounts and real Storage objects are created by npm run seed, never by production migrations.

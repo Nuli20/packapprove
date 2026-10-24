@@ -1,0 +1,83 @@
+name: packapprove
+services:
+  db:
+    image: postgres:17.6-alpine
+    environment:
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: postgres
+    ports: ['127.0.0.1:54322:5432']
+    volumes:
+      - packapprove-db:/var/lib/postgresql/data
+      - ./infra/init.sql:/docker-entrypoint-initdb.d/001-init.sql:ro
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U postgres']
+      interval: 2s
+      timeout: 3s
+      retries: 30
+  auth:
+    image: supabase/gotrue:v2.186.0
+    depends_on:
+      db: {condition: service_healthy}
+    environment:
+      GOTRUE_API_HOST: 0.0.0.0
+      GOTRUE_API_PORT: 9999
+      API_EXTERNAL_URL: http://127.0.0.1:54321/auth/v1
+      GOTRUE_DB_DRIVER: postgres
+      GOTRUE_DB_DATABASE_URL: postgres://postgres:postgres@db:5432/postgres?search_path=auth
+      GOTRUE_SITE_URL: http://127.0.0.1:3000
+      GOTRUE_JWT_SECRET: ${LOCAL_JWT_SECRET}
+      GOTRUE_JWT_EXP: 3600
+      GOTRUE_JWT_DEFAULT_GROUP_NAME: authenticated
+      GOTRUE_JWT_ADMIN_ROLES: service_role
+      GOTRUE_DISABLE_SIGNUP: 'true'
+      GOTRUE_MAILER_AUTOCONFIRM: 'true'
+      GOTRUE_EXTERNAL_EMAIL_ENABLED: 'true'
+      GOTRUE_LOG_LEVEL: error
+  rest:
+    image: postgrest/postgrest:v14.3
+    depends_on:
+      db: {condition: service_healthy}
+    environment:
+      PGRST_DB_URI: postgres://authenticator:local-only-postgrest@db:5432/postgres
+      PGRST_DB_SCHEMAS: public,storage
+      PGRST_DB_ANON_ROLE: anon
+      PGRST_JWT_SECRET: ${LOCAL_JWT_SECRET}
+      PGRST_DB_EXTRA_SEARCH_PATH: public,extensions
+  storage:
+    image: supabase/storage-api:v1.35.3
+    depends_on:
+      db: {condition: service_healthy}
+      rest: {condition: service_started}
+    environment:
+      ANON_KEY: ${LOCAL_ANON_KEY}
+      SERVICE_KEY: ${LOCAL_SERVICE_KEY}
+      POSTGREST_URL: http://rest:3000
+      PGRST_JWT_SECRET: ${LOCAL_JWT_SECRET}
+      DATABASE_URL: postgres://postgres:postgres@db:5432/postgres?options=-csearch_path%3Dstorage%2Cpublic%2Cextensions
+      FILE_SIZE_LIMIT: 26214400
+      STORAGE_BACKEND: file
+      FILE_STORAGE_BACKEND_PATH: /var/lib/storage
+      TENANT_ID: local
+      REGION: local
+      GLOBAL_S3_BUCKET: artworks
+      ENABLE_IMAGE_TRANSFORMATION: 'false'
+      DATABASE_SUPERUSER: 'true'
+    volumes: ['packapprove-storage:/var/lib/storage']
+  gateway:
+    image: kong:2.8.1
+    depends_on: [auth,storage,rest]
+    environment:
+      KONG_DATABASE: 'off'
+      KONG_DECLARATIVE_CONFIG: /usr/local/kong/kong.yml
+      KONG_DNS_ORDER: LAST,A,CNAME
+      KONG_PROXY_ACCESS_LOG: /dev/null
+      KONG_ADMIN_ACCESS_LOG: /dev/null
+      KONG_ADMIN_ERROR_LOG: /dev/stderr
+      KONG_PROXY_ERROR_LOG: /dev/stderr
+      KONG_PROXY_LISTEN: 0.0.0.0:8000
+      KONG_ADMIN_LISTEN: 'off'
+    ports: ['127.0.0.1:54321:8000']
+    volumes: ['./infra/kong.yml:/usr/local/kong/kong.yml:ro']
+volumes:
+  packapprove-db:
+  packapprove-storage:
