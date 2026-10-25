@@ -1,3 +1,5 @@
+import { localTestEnvironment } from "./tests/local-environment";
+localTestEnvironment();
 import { defineConfig, devices } from "@playwright/test";
 export default defineConfig({
   testDir: "./tests/e2e",
@@ -9,7 +11,11 @@ export default defineConfig({
     headless: true,
     launchOptions: {
       executablePath: process.env.CHROMIUM_PATH || "/usr/bin/chromium",
-      args: ["--no-sandbox"],
+      args: [
+        "--no-sandbox",
+        "--use-angle=swiftshader",
+        "--enable-unsafe-swiftshader",
+      ],
     },
     trace: "retain-on-failure",
   },

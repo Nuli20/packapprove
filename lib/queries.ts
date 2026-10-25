@@ -7,6 +7,7 @@ export async function snapshot(u: User) {
     const projects =
       await tx`select p.*,o.name as organization_name from projects p join organizations o on o.id=p.organization_id order by p.created_at desc`;
     const artworks = await tx`select * from artworks order by created_at`;
+    const visualizations = await tx`select * from version_visualizations`;
     const versions =
       await tx`select * from artwork_versions order by number desc`;
     const files =
@@ -44,6 +45,7 @@ export async function snapshot(u: User) {
       projects,
       artworks,
       versions,
+      visualizations,
       files,
       threads,
       comments,

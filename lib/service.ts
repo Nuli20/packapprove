@@ -2,6 +2,8 @@ import { randomUUID, randomBytes } from "node:crypto";
 import { z } from "zod";
 import { asUser, type Tx } from "./db";
 import { assert, permit, sha256, detectMime } from "./security";
+import { canSpecSchema } from "./can-spec";
+import { verifiedUpload, validateImageSize } from "./uploads";
 import { storageClient } from "./platform";
 export type User = { id: string; role: string; full_name?: string };
 const uuid = z.string().uuid();
@@ -24,6 +26,8 @@ export const commandSchema = z.object({
     "package.revoke",
     "notification.read",
     "organization.create",
+    "company.initialize",
+    "invitation.resend",
     "profile.update",
     "invitation.create",
     "template.create",
@@ -94,7 +98,34 @@ export async function execute(
     let privateEvent = false;
     let auditDetail: Record<string, any> = {};
     let entity = c.entityId || randomUUID();
-    if (c.action === "project.create") {
+    if (c.action === "company.initialize") {
+      permit(u.role, ["admin"]);
+      await tx`select pg_advisory_xact_lock(hashtextextended('packapprove-company-initialize',0))`;
+      let [company] =
+        await tx`select id from organizations where kind='manufacturer'`;
+      if (!company)
+        [company] =
+          await tx`insert into organizations(name,kind) values('ТОО «QAZALPACK»','manufacturer') returning id`;
+      await tx`insert into organization_memberships(organization_id,user_id) values(${company.id},${u.id}) on conflict do nothing`;
+      if (!(await tx`select id from checklist_templates limit 1`).length) {
+        const [template] =
+          await tx`insert into checklist_templates(name) values('Проверка упаковки') returning id`;
+        await tx`insert into checklist_template_versions(template_id,number,items) values(${template.id},1,${tx.json(["Формат PDF", "Цветовая модель CMYK", "Вылеты", "Безопасные поля", "Разрешение изображений", "Встроенные шрифты", "Толщина линий", "Overprint", "Штрихкод", "Размеры", "Количество страниц", "Производственный файл"])})`;
+      }
+      entity = company.id;
+      result = { id: company.id };
+    } else if (c.action === "invitation.resend") {
+      permit(u.role, ["admin", "manager"]);
+      const [invitation] =
+        await tx`select * from invitations where id=${entity} for update`;
+      assert(invitation, "Приглашение не найдено", 404);
+      assert(!invitation.accepted_at, "Приглашение уже принято");
+      if (!["observer", "approver"].includes(invitation.role))
+        permit(u.role, ["admin"]);
+      const token = randomBytes(32).toString("hex");
+      await tx`update invitations set token_hash=${sha256(token)},expires_at=now()+interval '7 days' where id=${entity}`;
+      result = { id: entity, invitationUrl: "/invite?token=" + token };
+    } else if (c.action === "project.create") {
       permit(u.role, ["admin", "manager"]);
       const org = uuid.parse(p.organizationId);
       assert(
@@ -109,7 +140,7 @@ export async function execute(
         .parse(p);
       assert(
         (
-          await tx`select id from profiles where (id=${assignees.designerId} and role='designer') or (id=${assignees.prepressId} and role='prepress')`
+          await tx`select id from profiles where active and ((id=${assignees.designerId} and role='designer') or (id=${assignees.prepressId} and role='prepress'))`
         ).length === 2,
         "Проверьте исполнителей",
         400,
@@ -353,7 +384,8 @@ export async function execute(
             z.object({
               kind: z.enum(["source", "preview", "production"]),
               filename: z.string().min(1).max(180),
-              base64: z.string().min(1).max(35000000),
+              base64: z.string().min(1).max(3000000).optional(),
+              uploadId: z.string().uuid().optional(),
             }),
           )
           .min(1)
@@ -375,8 +407,17 @@ export async function execute(
         const vid = randomUUID();
         await tx`insert into artwork_versions(id,artwork_id,number,previous_version_id,author_id,changes) values(${vid},${aid},${n},${a.active_version_id},${u.id},${text(p.changes)})`;
         for (const f of files) {
-          const bytes = Buffer.from(f.base64, "base64");
-          const mime = detectMime(bytes);
+          assert(
+            !!f.base64 !== !!f.uploadId,
+            "Укажите только uploadId или Base64",
+            400,
+          );
+          const uploaded = f.uploadId
+            ? await verifiedUpload(tx, u, f.uploadId, aid, f.kind)
+            : null;
+          const bytes = uploaded?.bytes || Buffer.from(f.base64!, "base64");
+          const mime = uploaded?.mime || detectMime(bytes);
+          validateImageSize(bytes, mime);
           const fid = randomUUID();
           const path = `${a.organization_id}/${aid}/${vid}/${fid}`;
           const { error } = await storageClient().upload(path, bytes, {
@@ -385,6 +426,10 @@ export async function execute(
           });
           assert(!error, "Не удалось сохранить файл", 502);
           await tx`insert into version_files(id,version_id,kind,storage_path,filename,mime_type,size,sha256) values(${fid},${vid},${f.kind},${path},${f.filename},${mime},${bytes.length},${sha256(bytes)})`;
+        }
+        if (p.canSpec) {
+          const canSpec = canSpecSchema.parse(p.canSpec);
+          await tx`insert into version_visualizations(version_id,author_id,spec) values(${vid},${u.id},${tx.json(canSpec)})`;
         }
         await tx`update approval_rounds set status='superseded',closed_at=now() where artwork_id=${aid} and status='open'`;
         await tx`update artworks set active_version_id=${vid},status='in_progress' where id=${aid}`;
@@ -402,7 +447,8 @@ export async function execute(
       } else if (c.action === "review.complete") {
         permit(u.role, ["prepress"]);
         assert(
-          a.active_version_id === v!.id && v!.status === "internal_review",
+          a.active_version_id === v!.id &&
+            ["internal_review", "published", "approved"].includes(v!.status),
           "Версия не на внутренней проверке",
         );
         const template = uuid.parse(p.templateId);

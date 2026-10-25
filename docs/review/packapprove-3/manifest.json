@@ -1,0 +1,141 @@
+{
+  "capturedAt": "2026-10-25T15:06:53.545Z",
+  "origin": "http://127.0.0.1:3000",
+  "renderer": "Chromium / WebGL2 / ANGLE SwiftShader",
+  "mobile": "iPhone 13 emulation in Chromium",
+  "captures": [
+    {
+      "file": "01-login.png",
+      "url": "http://127.0.0.1:3000/login",
+      "studio": []
+    },
+    {
+      "file": "02-standard-450.png",
+      "url": "http://127.0.0.1:3000/can-lab",
+      "studio": [
+        {
+          "canFormat": "standard450",
+          "pdfPage": "1",
+          "textureHash": "5730c7adbdcf3422b12abe25dde028b3c51acb8d05c6d63c027d0f9c511c4ab9",
+          "fileId": "demo-450",
+          "versionId": "demo-450"
+        }
+      ]
+    },
+    {
+      "file": "03-metal-lid.png",
+      "url": "http://127.0.0.1:3000/can-lab",
+      "studio": [
+        {
+          "canFormat": "standard450",
+          "pdfPage": "1",
+          "textureHash": "5730c7adbdcf3422b12abe25dde028b3c51acb8d05c6d63c027d0f9c511c4ab9",
+          "fileId": "demo-450",
+          "versionId": "demo-450"
+        }
+      ]
+    },
+    {
+      "file": "04-sleek-330-pdf.png",
+      "url": "http://127.0.0.1:3000/can-lab",
+      "studio": [
+        {
+          "canFormat": "sleek330",
+          "pdfPage": "1",
+          "textureHash": "258ac4322967f33f61a54bb111fac972d74107aa2e27f1ea6c88d8140aba0e2a",
+          "fileId": "demo-330",
+          "versionId": "demo-330"
+        }
+      ]
+    },
+    {
+      "file": "05-pdf-page-2.png",
+      "url": "http://127.0.0.1:3000/can-lab",
+      "studio": [
+        {
+          "canFormat": "sleek330",
+          "pdfPage": "2",
+          "textureHash": "258ac4322967f33f61a54bb111fac972d74107aa2e27f1ea6c88d8140aba0e2a",
+          "fileId": "demo-330",
+          "versionId": "demo-330"
+        }
+      ]
+    },
+    {
+      "file": "06-slim-250.png",
+      "url": "http://127.0.0.1:3000/can-lab",
+      "studio": [
+        {
+          "canFormat": "slim250",
+          "pdfPage": "1",
+          "textureHash": "39940e05d3026fbd8a993975b88a029d5c2680561642809507b214192b49fe96",
+          "fileId": "demo-250",
+          "versionId": "demo-250"
+        }
+      ]
+    },
+    {
+      "file": "07-dashboard.png",
+      "url": "http://127.0.0.1:3000/",
+      "studio": []
+    },
+    {
+      "file": "08-private-version.png",
+      "url": "http://127.0.0.1:3000/?artwork=30cee973-2a79-4395-9f45-fb69e1fbd636",
+      "studio": [
+        {
+          "canFormat": "standard450",
+          "pdfPage": "1",
+          "textureHash": "5730c7adbdcf3422b12abe25dde028b3c51acb8d05c6d63c027d0f9c511c4ab9",
+          "fileId": "c804318e-eee8-48db-9eb7-7e92db7e2c70",
+          "versionId": "71183625-5e50-4358-910f-69516be1c507"
+        }
+      ]
+    },
+    {
+      "file": "09-client-approval.png",
+      "url": "http://127.0.0.1:3000/?artwork=30cee973-2a79-4395-9f45-fb69e1fbd636",
+      "studio": [
+        {
+          "canFormat": "standard450",
+          "pdfPage": "1",
+          "textureHash": "5730c7adbdcf3422b12abe25dde028b3c51acb8d05c6d63c027d0f9c511c4ab9",
+          "fileId": "c804318e-eee8-48db-9eb7-7e92db7e2c70",
+          "versionId": "71183625-5e50-4358-910f-69516be1c507"
+        }
+      ]
+    },
+    {
+      "file": "10-mobile-studio.png",
+      "url": "http://127.0.0.1:3000/can-lab",
+      "studio": [
+        {
+          "canFormat": "standard450",
+          "pdfPage": "1",
+          "textureHash": "5730c7adbdcf3422b12abe25dde028b3c51acb8d05c6d63c027d0f9c511c4ab9",
+          "fileId": "demo-450",
+          "versionId": "demo-450"
+        }
+      ]
+    },
+    {
+      "file": "11-mobile-private.png",
+      "url": "http://127.0.0.1:3000/?artwork=30cee973-2a79-4395-9f45-fb69e1fbd636",
+      "studio": [
+        {
+          "canFormat": "standard450",
+          "pdfPage": "1",
+          "textureHash": "5730c7adbdcf3422b12abe25dde028b3c51acb8d05c6d63c027d0f9c511c4ab9",
+          "fileId": "c804318e-eee8-48db-9eb7-7e92db7e2c70",
+          "versionId": "71183625-5e50-4358-910f-69516be1c507"
+        }
+      ]
+    },
+    {
+      "file": "12-fallback-2d.png",
+      "url": "http://127.0.0.1:3000/can-lab",
+      "studio": []
+    }
+  ],
+  "pageErrors": []
+}

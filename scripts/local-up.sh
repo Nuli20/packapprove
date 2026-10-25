@@ -11,4 +11,5 @@ for i in $(seq 1 60); do
 done
 npm run db:setup
 npm run seed
+npm run seed:cans
 printf 'Local PostgreSQL, Supabase Auth and private Storage ready. Run npm run dev.\n'

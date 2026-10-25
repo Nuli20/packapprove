@@ -20,7 +20,16 @@ export default function PdfViewer({
     (async () => {
       const pdfjs = await import("pdfjs-dist");
       pdfjs.GlobalWorkerOptions.workerSrc = "/pdf.worker.min.mjs";
-      const load = pdfjs.getDocument({ url, enableXfa: false });
+      const load = pdfjs.getDocument({
+        url,
+        enableXfa: false,
+        maxImageSize: 32000000,
+        canvasMaxAreaInBytes: 32 * 1024 * 1024,
+        cMapUrl: "/pdf-assets/cmaps/",
+        cMapPacked: true,
+        standardFontDataUrl: "/pdf-assets/standard_fonts/",
+        wasmUrl: "/pdf-assets/wasm/",
+      });
       const pdf = await load.promise;
       document = load;
       if (dead) {

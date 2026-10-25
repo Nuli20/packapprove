@@ -46,6 +46,15 @@ try {
           await db`select id from comment_threads where version_id in ${db(v)}`
         ).map((r) => r.id)
       : [];
+    const staging = a.length
+      ? await db`select storage_path from upload_tickets where artwork_id in ${db(a)}`
+      : [];
+    if (staging.length) {
+      const { error } = await supa.storage
+        .from("artworks")
+        .remove(staging.map((t) => t.storage_path));
+      if (error) throw error;
+    }
     if (f.length) {
       const { error } = await supa.storage
         .from("artworks")
@@ -90,6 +99,8 @@ try {
         "id",
         f.map((r) => r.id),
       );
+      await del("version_visualizations", "version_id", v);
+      await del("upload_tickets", "artwork_id", a);
       await del("artwork_versions", "id", v);
       await del("brief_versions", "artwork_id", a);
       await del("artworks", "id", a);

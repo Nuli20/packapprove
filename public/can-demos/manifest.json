@@ -1,0 +1,38 @@
+[
+  {
+    "preset": "standard450",
+    "name": "Газированный напиток",
+    "brand": "ZHYRA",
+    "volumeMl": 450,
+    "id": "demo-450",
+    "filename": "zhyra-450.png",
+    "url": "/can-demos/zhyra-450.png",
+    "mime_type": "image/png",
+    "size": 132047,
+    "sha256": "5730c7adbdcf3422b12abe25dde028b3c51acb8d05c6d63c027d0f9c511c4ab9"
+  },
+  {
+    "preset": "sleek330",
+    "name": "Холодный чай",
+    "brand": "SAIA",
+    "volumeMl": 330,
+    "id": "demo-330",
+    "filename": "saia-330.pdf",
+    "url": "/can-demos/saia-330.pdf",
+    "mime_type": "application/pdf",
+    "size": 200745,
+    "sha256": "258ac4322967f33f61a54bb111fac972d74107aa2e27f1ea6c88d8140aba0e2a"
+  },
+  {
+    "preset": "slim250",
+    "name": "Энергетический напиток",
+    "brand": "TUN",
+    "volumeMl": 250,
+    "id": "demo-250",
+    "filename": "tun-250.jpg",
+    "url": "/can-demos/tun-250.jpg",
+    "mime_type": "image/jpeg",
+    "size": 150524,
+    "sha256": "39940e05d3026fbd8a993975b88a029d5c2680561642809507b214192b49fe96"
+  }
+]

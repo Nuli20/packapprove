@@ -1,0 +1,65 @@
+{
+  "capturedAt": "2026-10-25T11:05:54.412Z",
+  "browser": "Chromium via Playwright",
+  "environment": "isolated localhost Supabase",
+  "captures": [
+    {
+      "file": "01-login-desktop.png",
+      "title": "Вход"
+    },
+    {
+      "file": "02-overview-desktop.png",
+      "title": "Операционный обзор"
+    },
+    {
+      "file": "03-projects-desktop.png",
+      "title": "Проекты"
+    },
+    {
+      "file": "04-prepress-desktop.png",
+      "title": "Внутренняя проверка"
+    },
+    {
+      "file": "05-approval-queue-desktop.png",
+      "title": "На согласовании"
+    },
+    {
+      "file": "06-corrections-desktop.png",
+      "title": "Требуют исправлений"
+    },
+    {
+      "file": "08-ready-desktop.png",
+      "title": "Готовы к производству"
+    },
+    {
+      "file": "07-team-desktop.png",
+      "title": "Настройки"
+    },
+    {
+      "file": "09-artwork-desktop.png",
+      "title": "PDF, этапы и обсуждение"
+    },
+    {
+      "file": "10-client-approval-desktop.png",
+      "title": "Клиентское согласование"
+    },
+    {
+      "file": "11-login-mobile.png",
+      "title": "Вход на телефоне"
+    },
+    {
+      "file": "12-overview-mobile.png",
+      "title": "Обзор на телефоне"
+    },
+    {
+      "file": "13-artwork-mobile.png",
+      "title": "Просмотр макета на телефоне"
+    },
+    {
+      "file": "14-password-recovery-mobile.png",
+      "title": "Восстановление пароля"
+    }
+  ],
+  "pageErrors": [],
+  "decisionsSubmitted": false
+}
