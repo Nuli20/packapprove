@@ -12,6 +12,7 @@ import {
 } from "lucide-react";
 import { translate, eventKeys, type Locale } from "@/lib/i18n";
 import type { Row, State } from "./workspace";
+import { directUpload } from "@/lib/direct-upload";
 import { PreparationPanel } from "./setup-wizard";
 const projectSchema = z.object({
   name: z.string().min(2).max(160),
@@ -56,10 +57,13 @@ export default function ActionModal({
     deadline: new Date(Date.now() + 604800000).toISOString().slice(0, 16),
     ...m.payload,
   });
-  const [uploads, U] = useState<Row>({});
+  const [uploads, U] = useState<Row>(
+    m.presetFile ? { preview: m.presetFile, production: m.presetFile } : {},
+  );
   const [checks, CH] = useState<Row>({});
   const [confirm, CF] = useState(false);
   const [localError, LE] = useState("");
+  const [uploading, UPLOADING] = useState(false);
   const form = useForm<z.infer<typeof projectSchema>>({
     resolver: zodResolver(projectSchema),
     defaultValues: {
@@ -127,24 +131,17 @@ export default function ActionModal({
   async function submit(e: React.FormEvent) {
     e.preventDefault();
     LE("");
+    UPLOADING(true);
     try {
       let payload = { ...p };
       if (action === "version.create") {
         payload = {
           changes: p.changes,
+          canSpec: p.canSpec,
           files: await Promise.all(
             Object.entries(uploads)
               .filter(([, v]) => v)
-              .map(async ([kind, file]) => ({
-                kind,
-                filename: file.name,
-                base64: await new Promise<string>((res, rej) => {
-                  const r = new FileReader();
-                  r.onerror = rej;
-                  r.onload = () => res((r.result as string).split(",")[1]);
-                  r.readAsDataURL(file);
-                }),
-              })),
+              .map(([kind, file]) => directUpload(m.entityId, kind, file)),
           ),
         };
       }
@@ -169,6 +166,8 @@ export default function ActionModal({
       await onSubmit(action, m.entityId, payload, m.rowVersion);
     } catch (e) {
       LE((e as Error).message);
+    } finally {
+      UPLOADING(false);
     }
   }
   const approverOptions = d.profiles.filter(
@@ -181,7 +180,9 @@ export default function ActionModal({
   return (
     <div
       className="modal-backdrop"
-      onMouseDown={(e) => e.target === e.currentTarget && !busy && onClose()}
+      onMouseDown={(e) =>
+        e.target === e.currentTarget && !busy && !uploading && onClose()
+      }
     >
       <section
         className="modal"
@@ -197,12 +198,19 @@ export default function ActionModal({
           <button
             className="icon-btn"
             onClick={onClose}
-            disabled={busy}
+            disabled={busy || uploading}
             aria-label={t("close")}
           >
             <X size={21} />
           </button>
         </div>
+        {uploading && (
+          <p role="status" className="upload-progress">
+            {locale === "ru"
+              ? "Проверяем и сохраняем файлы в закрытое хранилище…"
+              : "Файлдар тексеріліп, жабық қоймаға сақталуда…"}
+          </p>
+        )}
         {(error || localError) && (
           <div className="alert error" role="alert">
             {localError || error}
@@ -326,7 +334,7 @@ export default function ActionModal({
               <button type="button" className="btn" onClick={onClose}>
                 {t("cancel")}
               </button>
-              <button className="btn primary" disabled={busy}>
+              <button className="btn primary" disabled={busy || uploading}>
                 {busy ? (
                   <Loader2 className="spin" size={17} />
                 ) : (
@@ -365,7 +373,7 @@ export default function ActionModal({
                     <input
                       type="file"
                       accept="application/pdf,image/png,image/jpeg"
-                      required={kind !== "source"}
+                      required={kind !== "source" && !uploads[kind]}
                       onChange={(e) => {
                         const f = e.target.files?.[0];
                         if (f && f.size > 25 * 1024 * 1024) {
@@ -705,7 +713,7 @@ export default function ActionModal({
                 type="button"
                 className="btn"
                 onClick={onClose}
-                disabled={busy}
+                disabled={busy || uploading}
               >
                 {t("cancel")}
               </button>
@@ -713,7 +721,9 @@ export default function ActionModal({
                 className="btn primary"
                 hidden={action === "invitation.link"}
                 disabled={
-                  busy || (action === "round.open" && !p.approvers.length)
+                  busy ||
+                  uploading ||
+                  (action === "round.open" && !p.approvers.length)
                 }
               >
                 {busy ? <Loader2 className="spin" size={17} /> : t("save")}

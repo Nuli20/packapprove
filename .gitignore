@@ -8,3 +8,5 @@ test-results/
 supabase/.temp/
 supabase/.branches/
 *.tsbuildinfo
+
+/public/pdf-assets/

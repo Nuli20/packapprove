@@ -2,6 +2,8 @@ import { randomUUID, randomBytes } from "node:crypto";
 import { z } from "zod";
 import { asUser, type Tx } from "./db";
 import { assert, permit, sha256, detectMime } from "./security";
+import { canSpecSchema } from "./can-spec";
+import { verifiedUpload, validateImageSize } from "./uploads";
 import { storageClient } from "./platform";
 export type User = { id: string; role: string; full_name?: string };
 const uuid = z.string().uuid();
@@ -382,7 +384,8 @@ export async function execute(
             z.object({
               kind: z.enum(["source", "preview", "production"]),
               filename: z.string().min(1).max(180),
-              base64: z.string().min(1).max(35000000),
+              base64: z.string().min(1).max(3000000).optional(),
+              uploadId: z.string().uuid().optional(),
             }),
           )
           .min(1)
@@ -404,8 +407,17 @@ export async function execute(
         const vid = randomUUID();
         await tx`insert into artwork_versions(id,artwork_id,number,previous_version_id,author_id,changes) values(${vid},${aid},${n},${a.active_version_id},${u.id},${text(p.changes)})`;
         for (const f of files) {
-          const bytes = Buffer.from(f.base64, "base64");
-          const mime = detectMime(bytes);
+          assert(
+            !!f.base64 !== !!f.uploadId,
+            "Укажите только uploadId или Base64",
+            400,
+          );
+          const uploaded = f.uploadId
+            ? await verifiedUpload(tx, u, f.uploadId, aid, f.kind)
+            : null;
+          const bytes = uploaded?.bytes || Buffer.from(f.base64!, "base64");
+          const mime = uploaded?.mime || detectMime(bytes);
+          validateImageSize(bytes, mime);
           const fid = randomUUID();
           const path = `${a.organization_id}/${aid}/${vid}/${fid}`;
           const { error } = await storageClient().upload(path, bytes, {
@@ -414,6 +426,10 @@ export async function execute(
           });
           assert(!error, "Не удалось сохранить файл", 502);
           await tx`insert into version_files(id,version_id,kind,storage_path,filename,mime_type,size,sha256) values(${fid},${vid},${f.kind},${path},${f.filename},${mime},${bytes.length},${sha256(bytes)})`;
+        }
+        if (p.canSpec) {
+          const canSpec = canSpecSchema.parse(p.canSpec);
+          await tx`insert into version_visualizations(version_id,author_id,spec) values(${vid},${u.id},${tx.json(canSpec)})`;
         }
         await tx`update approval_rounds set status='superseded',closed_at=now() where artwork_id=${aid} and status='open'`;
         await tx`update artworks set active_version_id=${vid},status='in_progress' where id=${aid}`;

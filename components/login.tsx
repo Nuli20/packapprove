@@ -69,36 +69,75 @@ export default function Login({ demo }: { demo: boolean }) {
               ? "Макеты, обсуждения и решения — в одном рабочем пространстве. Точная версия на каждом этапе."
               : "Макеттер, талқылаулар мен шешімдер — бір жұмыс кеңістігінде. Әр кезеңде нақты нұсқа."}
           </p>
-          <div className="studio-specimen" aria-hidden="true">
-            <span className="specimen-label">PA / MATERIAL STUDY</span>
-            <div className="diecut-flat">
-              <span className="diecut-flap top" />
-              <span className="diecut-flap left" />
-              <span className="diecut-flap right" />
-              <span className="diecut-flap bottom" />
-              <div className="diecut-face">
-                <span>Q / P</span>
-                <b>
-                  FORM.
-                  <br />
-                  PRINT.
-                  <br />
-                  APPROVE.
-                </b>
-                <small>PACKAGING OPERATIONS</small>
-              </div>
-            </div>
-            <div className="print-controls">
-              <i />
-              <i />
-              <i />
-              <i />
-              <span>01 — 04 / PROCESS</span>
-            </div>
-            <span className="specimen-dimension">
-              ARTWORK → APPROVAL → PRODUCTION
+          <a className="can-entry" href="/can-lab">
+            <svg viewBox="0 0 260 320" aria-hidden="true">
+              <defs>
+                <linearGradient id="aluminium">
+                  <stop stop-color="#d8dfdc" />
+                  <stop offset=".28" stop-color="#ffffff" />
+                  <stop offset=".65" stop-color="#a9b7b4" />
+                  <stop offset="1" stop-color="#e0e4de" />
+                </linearGradient>
+              </defs>
+              <path
+                d="M77 50Q70 53 67 77L62 270Q62 287 130 289Q198 287 198 270L193 77Q190 53 183 50Z"
+                fill="url(#aluminium)"
+              />
+              <path d="M65 100H195V254Q130 272 63 254Z" fill="#326d7c" />
+              <ellipse
+                cx="130"
+                cy="50"
+                rx="53"
+                ry="13"
+                fill="#d7dfdb"
+                stroke="#9aa9a5"
+                stroke-width="3"
+              />
+              <ellipse cx="130" cy="50" rx="42" ry="8" fill="#b5c3be" />
+              <ellipse
+                cx="134"
+                cy="49"
+                rx="13"
+                ry="4"
+                fill="none"
+                stroke="#e8eeea"
+                stroke-width="4"
+              />
+              <text
+                x="130"
+                y="168"
+                fill="#edf1e2"
+                font-family="sans-serif"
+                font-size="25"
+                text-anchor="middle"
+                letter-spacing="4"
+              >
+                Q / P
+              </text>
+              <text
+                x="130"
+                y="195"
+                fill="#c8ded1"
+                font-family="sans-serif"
+                font-size="7"
+                text-anchor="middle"
+                letter-spacing="2"
+              >
+                ALUMINIUM STUDIES
+              </text>
+              <path
+                d="M62 223Q115 180 196 223"
+                fill="none"
+                stroke="#e8a270"
+                stroke-width="11"
+              />
+            </svg>
+            <span>
+              {locale === "ru" ? "Исследовать 3D-банку" : "3D құтыны зерттеу"}{" "}
+              <ArrowRight size={16} />
             </span>
-          </div>
+            <small>STANDARD 450 / SLEEK 330 / SLIM 250</small>
+          </a>
         </div>
         <small className="login-footer">
           © 2026 {t("company")} · PackApprove

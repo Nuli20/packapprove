@@ -3,6 +3,7 @@ import { cookies } from "next/headers";
 import { z } from "zod";
 import { currentUser, saveSession } from "@/lib/auth";
 import { authClient } from "@/lib/platform";
+import { prepareUpload } from "@/lib/uploads";
 import { snapshot, download } from "@/lib/queries";
 import { execute, commandSchema } from "@/lib/service";
 import { invitationInfo, acceptInvitation } from "@/lib/invitations";
@@ -13,6 +14,7 @@ import {
 } from "@/lib/recovery";
 import { AppError, assert } from "@/lib/security";
 export const runtime = "nodejs";
+export const maxDuration = 60;
 export const dynamic = "force-dynamic";
 const attempts = new Map<string, { n: number; at: number }>();
 async function bodyJson(req: NextRequest, limit = 8192): Promise<unknown> {
@@ -168,17 +170,19 @@ async function route(
       return NextResponse.json({ ok: true });
     }
     const u = await currentUser();
+    if (name === "uploads/prepare" && req.method === "POST")
+      return NextResponse.json(await prepareUpload(u, await bodyJson(req)));
     if (name === "state" && req.method === "GET")
       return NextResponse.json(await snapshot(u), {
         headers: { "Cache-Control": "no-store" },
       });
     if (name === "command" && req.method === "POST") {
       assert(
-        Number(req.headers.get("content-length") || 0) < 105000000,
+        Number(req.headers.get("content-length") || 0) < 3800000,
         "Запрос слишком большой",
         413,
       );
-      const body = commandSchema.parse(await bodyJson(req, 105000000));
+      const body = commandSchema.parse(await bodyJson(req, 3800000));
       return NextResponse.json(
         await execute(u, req.headers.get("idempotency-key") || "", body, {
           ua: req.headers.get("user-agent") || undefined,
@@ -192,7 +196,20 @@ async function route(
     ) {
       const id = z.string().uuid().parse(path[1]);
       const f = await download(u, id, path[0] === "packages");
-      return new Response(f.bytes as BodyInit, {
+      // Stream verified bytes: never buffer a >4.5 MB serverless HTTP response.
+      let offset = 0;
+      const stream = new ReadableStream<Uint8Array>({
+        pull(controller) {
+          if (offset >= f.bytes.length) {
+            controller.close();
+            return;
+          }
+          const next = Math.min(offset + 65536, f.bytes.length);
+          controller.enqueue(f.bytes.subarray(offset, next));
+          offset = next;
+        },
+      });
+      return new Response(stream, {
         headers: {
           "Content-Type": f.mime,
           "Content-Disposition": `${req.nextUrl.searchParams.get("view") === "1" ? "inline" : "attachment"}; filename*=UTF-8''${encodeURIComponent(f.filename)}`,

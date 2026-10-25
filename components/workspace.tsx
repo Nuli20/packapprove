@@ -45,6 +45,12 @@ import {
 } from "lucide-react";
 import { translate, eventKeys, type Locale } from "@/lib/i18n";
 import PdfViewer from "./pdf-viewer";
+import dynamic from "next/dynamic";
+import * as StudioTabs from "@radix-ui/react-tabs";
+const CanStudio = dynamic(() => import("./can-studio/studio"), {
+  ssr: false,
+  loading: () => <div className="empty">Can Studio…</div>,
+});
 import ActionModal from "./action-modal";
 import SetupWizard from "./setup-wizard";
 import PeopleManagement from "./people-management";
@@ -86,6 +92,7 @@ export default function Workspace() {
   const [page, PG] = useState(1);
   const [pages, PGS] = useState(1);
   const [compare, C] = useState(false);
+  const [previewMode, MODE] = useState("2d");
   const [compareId, CI] = useState("");
   const load = useCallback(async () => {
     const r = await fetch("/api/state", { cache: "no-store" });
@@ -175,6 +182,7 @@ export default function Workspace() {
     V("artwork");
     T("comments");
     C(false);
+    MODE("2d");
     PG(1);
     history.pushState(null, "", `/?artwork=${a.id}`);
   }
@@ -198,6 +206,8 @@ export default function Workspace() {
       </div>
     );
   const d = data;
+  const studioArtworks=d.artworks.filter(a=>d.visualizations?.some(v=>v.version_id===a.active_version_id));
+  const homeArtworks=studioArtworks.length?studioArtworks:d.artworks;
   const u = d.user;
   const staff = ["admin", "manager", "designer", "prepress"].includes(u.role);
   const manage = ["admin", "manager"].includes(u.role);
@@ -428,6 +438,7 @@ export default function Workspace() {
           </div>
           <span className="online-dot" />
         </div>
+        <a href="/can-lab" className="can-lab-nav"><Box size={17}/><span>Can Studio</span><small>3D / DEMO</small><ArrowUpRight size={14}/></a>
         <div className="nav-label">{t("workspace")}</div>
         <nav>
           {nav
@@ -772,15 +783,12 @@ export default function Workspace() {
               <div className="section-heading">
                 <h2>
                   {t("artworks")}{" "}
-                  <span className="count">{d.artworks.length}</span>
+                  <span className="count">{homeArtworks.length}</span>
                 </h2>
-                <span className="muted">
-                  <Layers size={15} />
-                  {t("versions")}
-                </span>
+                <button className="text-btn" onClick={()=>go('allArtworks')}><Layers size={15}/>{t('allArtworks')}<ArrowUpRight size={14}/></button>
               </div>
               {renderArtworks(
-                d.artworks
+                homeArtworks
                   .filter((a) =>
                     visibleProjects.some((p) => p.id === a.project_id),
                   )
@@ -1067,6 +1075,7 @@ export default function Workspace() {
                   className="text-btn compare-toggle"
                   disabled={versions.length < 2}
                   onClick={() => {
+                    MODE(compare ? "2d" : "compare");
                     C(!compare);
                     CI(versions.find((v) => v.id !== selected?.id)?.id || "");
                   }}
@@ -1075,217 +1084,281 @@ export default function Workspace() {
                   {t("compare")}
                 </button>
               </div>
-              <div className="studio">
-                <section className="viewer-section">
-                  <div className="viewer-toolbar">
-                    <span>
-                      <FileText size={16} />
-                      {preview?.filename || t("preview")}
-                    </span>
-                    <div>
-                      <button
-                        className="icon-btn"
-                        aria-label={t("zoom")}
-                        onClick={() => Z(Math.max(0.3, zoom - 0.15))}
-                      >
-                        <ZoomOut size={17} />
-                      </button>
-                      <b>{Math.round(zoom * 100)}%</b>
-                      <button
-                        className="icon-btn"
-                        aria-label={t("zoom")}
-                        onClick={() => Z(Math.min(3, zoom + 0.15))}
-                      >
-                        <ZoomIn size={17} />
-                      </button>
-                      <span className="divider" />
-                      <button
-                        className="icon-btn"
-                        aria-label={t("fullscreen")}
-                        onClick={() =>
-                          void document
-                            .querySelector(".preview-stage")
-                            ?.requestFullscreen()
-                        }
-                      >
-                        <Maximize2 size={17} />
-                      </button>
-                    </div>
-                  </div>
-                  {compare && (
-                    <div className="compare-selector">
-                      <span>
-                        {t("compare")}: V{selected?.number}
-                      </span>
-                      <select
-                        value={compareId}
-                        onChange={(e) => CI(e.target.value)}
-                      >
-                        {versions
-                          .filter((v) => v.id !== selected?.id)
-                          .map((v) => (
-                            <option key={v.id} value={v.id}>
-                              V{v.number} — {v.changes}
-                            </option>
-                          ))}
-                      </select>
-                    </div>
-                  )}
-                  <div
-                    className={`preview-stage ${compare ? "compare-stage" : ""}`}
+              <StudioTabs.Root
+                value={previewMode}
+                onValueChange={(value) => {
+                  MODE(value);
+                  C(value === "compare");
+                  if (value === "compare")
+                    CI(versions.find((v) => v.id !== selected?.id)?.id || "");
+                }}
+                className="studio-mode-tabs"
+              >
+                <StudioTabs.List
+                  aria-label={
+                    locale === "ru" ? "Режим просмотра" : "Қарау режимі"
+                  }
+                >
+                  <StudioTabs.Trigger value="2d">
+                    {locale === "ru" ? "2D-развёртка" : "2D жайма"}
+                  </StudioTabs.Trigger>
+                  <StudioTabs.Trigger value="3d">
+                    {locale === "ru" ? "3D-банка" : "3D құты"}
+                  </StudioTabs.Trigger>
+                  <StudioTabs.Trigger
+                    value="compare"
+                    disabled={versions.length < 2}
                   >
-                    <div className="preview-scroll">
-                      <div
-                        className="preview-document"
-                        onClick={(e) => {
-                          if (!selected || compare) return;
-                          const r = e.currentTarget.getBoundingClientRect();
-                          openModal("comment.create", {
-                            payload: {
-                              x: (e.clientX - r.left) / r.width,
-                              y: (e.clientY - r.top) / r.height,
-                              page,
-                              visibility: "client",
-                            },
-                            entityId: selected.id,
-                          });
-                        }}
-                      >
-                        {preview ? (
-                          preview.mime_type === "application/pdf" ? (
-                            <PdfViewer
-                              url={`/api/files/${preview.id}?view=1`}
-                              zoom={zoom}
-                              page={page}
-                              onPages={PGS}
-                            />
-                          ) : (
-                            <img
-                              src={`/api/files/${preview.id}?view=1`}
-                              alt={artwork.name}
-                              style={{ width: 600 * zoom, maxWidth: "none" }}
-                            />
-                          )
-                        ) : (
-                          <div className="empty">
-                            <UploadCloud size={44} />
-                            {t("noPreview")}
-                          </div>
-                        )}
-                        {threads
-                          .filter((th) => th.page === page)
-                          .map((th, i) => (
-                            <span
-                              key={th.id}
-                              className={`comment-pin ${th.status === "resolved" ? "resolved-pin" : ""}`}
-                              style={{
-                                left: `${th.x * 100}%`,
-                                top: `${th.y * 100}%`,
-                              }}
-                              title={
-                                d.comments.find((c) => c.thread_id === th.id)
-                                  ?.body
-                              }
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                document
-                                  .getElementById(`thread-${th.id}`)
-                                  ?.scrollIntoView({
-                                    behavior: "smooth",
-                                    block: "nearest",
-                                  });
-                              }}
-                            >
-                              {i + 1}
-                            </span>
-                          ))}
+                    {t("compare")}
+                  </StudioTabs.Trigger>
+                </StudioTabs.List>
+              </StudioTabs.Root>
+              <div
+                className={`studio ${previewMode === "3d" ? "studio-with-can" : ""}`}
+              >
+                {previewMode === "3d" && selected ? (
+                  <CanStudio
+                    key={selected.id}
+                    file={preview}
+                    version={selected}
+                    versions={versions}
+                    savedSpec={
+                      d.visualizations?.find(
+                        (v) => v.version_id === selected.id,
+                      )?.spec
+                    }
+                    role={u.role}
+                    locale={locale}
+                    onVersion={(id) => {
+                      VI(id);
+                      PG(1);
+                    }}
+                    onPageChange={PG}
+                    onFallback={() => MODE("2d")}
+                    onNewVersion={(file, spec) =>
+                      openModal("version.create", {
+                        entityId: artwork.id,
+                        rowVersion: artwork.row_version,
+                        presetFile: file,
+                        payload: { canSpec: spec },
+                      })
+                    }
+                  />
+                ) : (
+                  <section className="viewer-section">
+                    <div className="viewer-toolbar">
+                      <span>
+                        <FileText size={16} />
+                        {preview?.filename || t("preview")}
+                      </span>
+                      <div>
+                        <button
+                          className="icon-btn"
+                          aria-label={t("zoom")}
+                          onClick={() => Z(Math.max(0.3, zoom - 0.15))}
+                        >
+                          <ZoomOut size={17} />
+                        </button>
+                        <b>{Math.round(zoom * 100)}%</b>
+                        <button
+                          className="icon-btn"
+                          aria-label={t("zoom")}
+                          onClick={() => Z(Math.min(3, zoom + 0.15))}
+                        >
+                          <ZoomIn size={17} />
+                        </button>
+                        <span className="divider" />
+                        <button
+                          className="icon-btn"
+                          aria-label={t("fullscreen")}
+                          onClick={() =>
+                            void document
+                              .querySelector(".preview-stage")
+                              ?.requestFullscreen()
+                          }
+                        >
+                          <Maximize2 size={17} />
+                        </button>
                       </div>
                     </div>
                     {compare && (
+                      <div className="compare-selector">
+                        <span>
+                          {t("compare")}: V{selected?.number}
+                        </span>
+                        <select
+                          value={compareId}
+                          onChange={(e) => CI(e.target.value)}
+                        >
+                          {versions
+                            .filter((v) => v.id !== selected?.id)
+                            .map((v) => (
+                              <option key={v.id} value={v.id}>
+                                V{v.number} — {v.changes}
+                              </option>
+                            ))}
+                        </select>
+                      </div>
+                    )}
+                    <div
+                      className={`preview-stage ${compare ? "compare-stage" : ""}`}
+                    >
                       <div className="preview-scroll">
-                        {(() => {
-                          const f = d.files.find(
-                            (f) =>
-                              f.version_id === compareId &&
-                              f.kind === "preview",
-                          );
-                          return f ? (
-                            f.mime_type === "application/pdf" ? (
+                        <div
+                          className="preview-document"
+                          onClick={(e) => {
+                            if (!selected || compare) return;
+                            const r = e.currentTarget.getBoundingClientRect();
+                            openModal("comment.create", {
+                              payload: {
+                                x: (e.clientX - r.left) / r.width,
+                                y: (e.clientY - r.top) / r.height,
+                                page,
+                                visibility: "client",
+                              },
+                              entityId: selected.id,
+                            });
+                          }}
+                        >
+                          {preview ? (
+                            preview.mime_type === "application/pdf" ? (
                               <PdfViewer
-                                url={`/api/files/${f.id}?view=1`}
+                                url={`/api/files/${preview.id}?view=1`}
                                 zoom={zoom}
                                 page={page}
+                                onPages={PGS}
                               />
                             ) : (
                               <img
-                                src={`/api/files/${f.id}?view=1`}
-                                alt={t("compare")}
+                                src={`/api/files/${preview.id}?view=1`}
+                                alt={artwork.name}
                                 style={{ width: 600 * zoom, maxWidth: "none" }}
                               />
                             )
-                          ) : null;
-                        })()}
-                      </div>
-                    )}
-                  </div>
-                  <div className="viewer-footer">
-                    <span>
-                      <MessageSquare size={14} />
-                      {t("commentHint")}
-                    </span>
-                    <div>
-                      <button
-                        className="icon-btn"
-                        disabled={page <= 1}
-                        onClick={() => PG(page - 1)}
-                      >
-                        <ArrowLeft size={14} />
-                      </button>
-                      {t("page")} {page} / {pages}
-                      <button
-                        className="icon-btn"
-                        disabled={page >= pages}
-                        onClick={() => PG(page + 1)}
-                      >
-                        <ArrowRight size={14} />
-                      </button>
-                    </div>
-                  </div>
-                  <div className="files-panel">
-                    <div className="panel-heading">
-                      <h3>{t("files")}</h3>
-                      <LockKeyhole size={14} />
-                    </div>
-                    {files.map((f) => (
-                      <a
-                        className="file-row"
-                        key={f.id}
-                        href={`/api/files/${f.id}`}
-                      >
-                        <span className="pdf-icon">
-                          <FileText size={19} />
-                        </span>
-                        <div>
-                          <b>{f.filename}</b>
-                          <small>
-                            {t(
-                              f.kind === "production"
-                                ? "productionFile"
-                                : f.kind,
-                            )}{" "}
-                            · {(f.size / 1024).toFixed(1)} KB · SHA-256{" "}
-                            {f.sha256.slice(0, 12)}…
-                          </small>
+                          ) : (
+                            <div className="empty">
+                              <UploadCloud size={44} />
+                              {t("noPreview")}
+                            </div>
+                          )}
+                          {threads
+                            .filter((th) => th.page === page)
+                            .map((th, i) => (
+                              <span
+                                key={th.id}
+                                className={`comment-pin ${th.status === "resolved" ? "resolved-pin" : ""}`}
+                                style={{
+                                  left: `${th.x * 100}%`,
+                                  top: `${th.y * 100}%`,
+                                }}
+                                title={
+                                  d.comments.find((c) => c.thread_id === th.id)
+                                    ?.body
+                                }
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  document
+                                    .getElementById(`thread-${th.id}`)
+                                    ?.scrollIntoView({
+                                      behavior: "smooth",
+                                      block: "nearest",
+                                    });
+                                }}
+                              >
+                                {i + 1}
+                              </span>
+                            ))}
                         </div>
-                        <Download size={16} />
-                      </a>
-                    ))}
-                    <div className="change-log">
-                      <b>{t("changeLog")}</b>
-                      <p>{selected?.changes || "—"}</p>
+                      </div>
+                      {compare && (
+                        <div className="preview-scroll">
+                          {(() => {
+                            const f = d.files.find(
+                              (f) =>
+                                f.version_id === compareId &&
+                                f.kind === "preview",
+                            );
+                            return f ? (
+                              f.mime_type === "application/pdf" ? (
+                                <PdfViewer
+                                  url={`/api/files/${f.id}?view=1`}
+                                  zoom={zoom}
+                                  page={page}
+                                />
+                              ) : (
+                                <img
+                                  src={`/api/files/${f.id}?view=1`}
+                                  alt={t("compare")}
+                                  style={{
+                                    width: 600 * zoom,
+                                    maxWidth: "none",
+                                  }}
+                                />
+                              )
+                            ) : null;
+                          })()}
+                        </div>
+                      )}
                     </div>
-                  </div>
-                </section>
+                    <div className="viewer-footer">
+                      <span>
+                        <MessageSquare size={14} />
+                        {t("commentHint")}
+                      </span>
+                      <div>
+                        <button
+                          className="icon-btn"
+                          disabled={page <= 1}
+                          onClick={() => PG(page - 1)}
+                        >
+                          <ArrowLeft size={14} />
+                        </button>
+                        {t("page")} {page} / {pages}
+                        <button
+                          className="icon-btn"
+                          disabled={page >= pages}
+                          onClick={() => PG(page + 1)}
+                        >
+                          <ArrowRight size={14} />
+                        </button>
+                      </div>
+                    </div>
+                    <div className="files-panel">
+                      <div className="panel-heading">
+                        <h3>{t("files")}</h3>
+                        <LockKeyhole size={14} />
+                      </div>
+                      {files.map((f) => (
+                        <a
+                          className="file-row"
+                          key={f.id}
+                          href={`/api/files/${f.id}`}
+                        >
+                          <span className="pdf-icon">
+                            <FileText size={19} />
+                          </span>
+                          <div>
+                            <b>{f.filename}</b>
+                            <small>
+                              {t(
+                                f.kind === "production"
+                                  ? "productionFile"
+                                  : f.kind,
+                              )}{" "}
+                              · {(f.size / 1024).toFixed(1)} KB · SHA-256{" "}
+                              {f.sha256.slice(0, 12)}…
+                            </small>
+                          </div>
+                          <Download size={16} />
+                        </a>
+                      ))}
+                      <div className="change-log">
+                        <b>{t("changeLog")}</b>
+                        <p>{selected?.changes || "—"}</p>
+                      </div>
+                    </div>
+                  </section>
+                )}
                 <aside className="studio-panel">
                   <div className="tabs studio-tabs">
                     {["comments", "clientApproval", "technical", "brief"]

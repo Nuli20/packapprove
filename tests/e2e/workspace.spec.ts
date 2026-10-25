@@ -38,6 +38,10 @@ test("manager dashboard, project creation persists, RU/KZ, artwork PDF and annot
     page.locator(".project-table").getByText(projectName, { exact: true }),
   ).toBeVisible();
   await page
+    .locator(".project-table")
+    .getByText("Линейка чая Botanica", { exact: true })
+    .click();
+  await page
     .locator(".artwork-card")
     .filter({ hasText: "Зелёный чай" })
     .click();

@@ -4991,3 +4991,715 @@ summary {
     min-width: 100%;
   }
 }
+/* PackApprove 3 / Industrial Elegance. Locally bundled Manrope covers Cyrillic + Kazakh. */
+body {
+  font-family: "Manrope Variable", Manrope, system-ui, sans-serif;
+  background: #f4f3ef;
+  color: #202a2e;
+}
+h1 {
+  font-weight: 650;
+  letter-spacing: -1.25px;
+}
+button,
+input,
+select,
+textarea {
+  font-family: inherit;
+}
+.panel,
+.stat-card,
+.artwork-card,
+.client-card,
+.queue-card {
+  border-radius: 18px;
+  box-shadow: 0 2px 5px #25303603;
+}
+.btn,
+.tabs button,
+.studio-mode-tabs button,
+input,
+select,
+textarea {
+  border-radius: 10px;
+}
+.sidebar {
+  background: #243136;
+  border-radius: 0 22px 22px 0;
+}
+.sidebar nav button {
+  border-radius: 9px;
+}
+.workspace-label {
+  border-radius: 12px;
+}
+.topbar {
+  background: #fbfaf6;
+}
+.project-table th {
+  background: #f4f5f0;
+}
+.project-table td {
+  padding-top: 19px;
+  padding-bottom: 19px;
+}
+.project-avatar {
+  border-radius: 11px;
+}
+.artwork-cover {
+  border-radius: 12px 12px 0 0;
+}
+.artwork-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 10px 25px #2530360a;
+}
+.badge {
+  border-radius: 7px;
+}
+.modal {
+  border-radius: 22px;
+}
+.preview-stage {
+  background-color: #e9ece8;
+  background-image: radial-gradient(#ced6ce 0.65px, transparent 0.65px);
+  background-size: 15px 15px;
+}
+.viewer-section,
+.studio-panel {
+  border-radius: 16px;
+}
+.studio-tabs {
+  gap: 3px;
+}
+.studio-mode-tabs {
+  margin: 0 0 18px;
+}
+.studio-mode-tabs [role="tablist"] {
+  display: inline-flex;
+  gap: 5px;
+  background: #e8eae4;
+  padding: 5px;
+  border-radius: 13px;
+}
+.studio-mode-tabs button {
+  padding: 11px 17px;
+  font-size: 12px;
+  color: #798580;
+  transition:
+    background 0.18s,
+    color 0.18s;
+  outline-offset: 3px;
+}
+.studio-mode-tabs button[data-state="active"] {
+  background: #fff;
+  color: #253e43;
+  box-shadow: 0 2px 6px #1e38310b;
+}
+.studio-mode-tabs button:focus-visible {
+  outline: 2px solid #326d7c;
+}
+.can-studio {
+  border: 1px solid #d9dfd6;
+  border-radius: 20px;
+  background: #fafbf7;
+  overflow: hidden;
+  min-width: 0;
+}
+.can-heading {
+  padding: 24px 24px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+.can-heading h2 {
+  font-size: 25px;
+  letter-spacing: -1px;
+}
+.can-heading h2 span {
+  font-size: 13px;
+  color: #9aa49d;
+  letter-spacing: 0;
+  font-weight: 400;
+}
+.can-heading p {
+  font-size: 12px;
+  color: #8b9690;
+  margin-top: 7px;
+}
+.can-bound {
+  font-size: 8px;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  color: #8a9890;
+  max-width: 95px;
+  line-height: 1.7;
+  text-align: right;
+}
+.can-composition {
+  display: grid;
+  grid-template-columns: 196px minmax(0, 1fr);
+  border-top: 1px solid #e1e5dc;
+}
+.can-settings {
+  padding: 20px 15px;
+  border: 0;
+  background: #f7f8f2;
+}
+.can-settings > summary {
+  display: flex;
+  gap: 7px;
+  align-items: center;
+  font-size: 12px;
+  color: #3b5659;
+  margin-bottom: 20px;
+  font-weight: 600;
+}
+.can-settings label {
+  font-size: 10px;
+  margin: 13px 0;
+  color: #73817a;
+  line-height: 1.7;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+.can-settings select,
+.can-settings input {
+  min-width: 0;
+  padding: 8px;
+  font-size: 10px;
+  background: #fff;
+}
+.can-settings input[type="range"] {
+  padding: 0;
+  box-shadow: none;
+  accent-color: #326d7c;
+}
+.can-settings output {
+  font:
+    9px ui-monospace,
+    monospace;
+  color: #99a49b;
+}
+.can-settings .btn {
+  white-space: normal;
+  font-size: 10px;
+  width: 100%;
+  padding: 9px;
+  margin: 6px 0;
+}
+.can-note {
+  font-size: 9px;
+  color: #99a295;
+  line-height: 1.8;
+  margin: 12px 0;
+}
+.can-dimensions {
+  border-block: 1px solid #e0e5d9;
+  padding: 13px 0;
+  margin-top: 15px;
+}
+.can-dimensions > div + div {
+  margin-top: 14px;
+}
+.can-dimensions small {
+  font-size: 8px;
+  color: #9ca696;
+  display: block;
+  margin-bottom: 4px;
+}
+.can-dimensions strong {
+  font-size: 13px;
+  font-weight: 600;
+  color: #586d66;
+}
+.can-dimensions strong span {
+  font-size: 9px;
+  color: #9aa497;
+}
+.can-upload {
+  padding: 15px;
+  border: 1px dashed #c5d0bf;
+  border-radius: 11px;
+  align-items: center;
+  text-align: center;
+  background: #fdfefb;
+  cursor: pointer;
+}
+.can-upload small {
+  font-size: 8px;
+  font-weight: 400;
+}
+.can-upload input {
+  width: 100%;
+  font-size: 8px;
+  padding: 4px;
+  border: 0;
+  background: transparent;
+}
+.can-viewport {
+  min-width: 0;
+  background: #eeeee8;
+}
+.can-stage {
+  height: 575px;
+  position: relative;
+  outline-offset: -4px;
+  touch-action: none;
+}
+.can-stage:focus-visible {
+  outline: 2px solid #326d7c;
+}
+.can-stage:fullscreen {
+  height: 100vh;
+  background: #eeeee8;
+}
+.can-stage canvas {
+  display: block;
+  touch-action: none;
+}
+.can-loading,
+.can-unavailable {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  flex-direction: column;
+  padding: 30px;
+  text-align: center;
+  color: #7d9387;
+  font-size: 12px;
+  line-height: 1.8;
+}
+.can-loading-overlay {
+  position: absolute;
+  inset: 0;
+  background: #eeeee8b0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  color: #7d9387;
+  font-size: 11px;
+  pointer-events: none;
+}
+.can-watermark {
+  position: absolute;
+  bottom: 50px;
+  left: 15px;
+  right: 15px;
+  text-align: center;
+  color: #a4afa5;
+  font-size: 10px;
+  pointer-events: none;
+}
+.can-stage-label {
+  position: absolute;
+  bottom: 18px;
+  left: 20px;
+  right: 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  color: #8fa090;
+  font-size: 9px;
+  letter-spacing: 1.2px;
+  pointer-events: none;
+}
+.can-stage-label small {
+  font-size: 7px;
+  letter-spacing: 1px;
+}
+.can-camera {
+  padding: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 3px;
+  flex-wrap: wrap;
+  background: #f6f7f1;
+  border-top: 1px solid #e4e7dd;
+}
+.can-camera .btn {
+  font-size: 9px;
+  padding: 7px 9px;
+  min-height: 30px;
+  border-radius: 8px;
+}
+.can-camera .icon-btn {
+  color: #71877b;
+}
+.can-camera .checkbox-label {
+  font-size: 9px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 5px;
+  margin: 7px;
+}
+.can-camera input[type="checkbox"] {
+  width: 13px;
+  height: 13px;
+}
+.can-gesture {
+  text-align: center;
+  font-size: 8px;
+  color: #9aa597;
+  line-height: 1.8;
+  margin: 0;
+  padding: 8px 15px;
+  background: #f6f7f1;
+}
+.can-identity {
+  padding: 17px 20px;
+  background: #fafbf6;
+  border-top: 1px solid #e1e6d9;
+  overflow-wrap: anywhere;
+}
+.can-identity strong {
+  display: block;
+  font-size: 10px;
+  font-weight: 600;
+  color: #708075;
+  margin-bottom: 6px;
+}
+.can-identity > span {
+  font-size: 11px;
+  color: #5c7267;
+}
+.can-identity code {
+  display: block;
+  font-size: 8px;
+  color: #9fa99a;
+  line-height: 1.8;
+  margin-top: 8px;
+}
+.can-identity p {
+  font-size: 9px;
+  line-height: 1.9;
+  color: #8f9d8d;
+  margin-top: 11px;
+}
+.studio-with-can {
+  grid-template-columns: minmax(0, 1fr) 300px;
+  gap: 16px;
+}
+.studio-with-can .studio-panel {
+  min-height: 700px;
+}
+.can-custom {
+  display: grid;
+  gap: 3px;
+}
+.can-lab-page {
+  max-width: 1360px;
+  margin: auto;
+  padding: 36px;
+}
+.can-lab-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 25px;
+  gap: 20px;
+}
+.can-lab-header h1 {
+  font-size: 30px;
+}
+.can-lab-header p {
+  font-size: 12px;
+  color: #8c9c8d;
+  margin-top: 10px;
+}
+.can-demo-tabs {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-bottom: 20px;
+}
+.can-demo-tabs button {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  align-items: flex-start;
+  border: 1px solid #dce3d4;
+  border-radius: 13px;
+  padding: 14px 22px;
+  background: #f9faf5;
+  color: #6e8376;
+  font-size: 11px;
+  transition: 0.15s;
+}
+.can-demo-tabs button[aria-pressed="true"] {
+  border-color: #326d7c;
+  color: #326d7c;
+  background: #edf3ed;
+}
+.can-demo-tabs button small {
+  font-size: 9px;
+  color: #97a18d;
+}
+.can-demo-content {
+  display: grid;
+  grid-template-columns: 1fr 260px;
+  gap: 20px;
+}
+.can-demo-info {
+  padding: 24px;
+  align-self: start;
+}
+.can-demo-info h2 {
+  font-size: 20px;
+  line-height: 1.4;
+  margin-bottom: 15px;
+}
+.can-demo-info p {
+  font-size: 11px;
+  line-height: 1.9;
+  color: #8b9a8a;
+  margin: 15px 0;
+}
+.can-demo-info img {
+  width: 100%;
+  border-radius: 10px;
+  margin: 15px 0;
+}
+.upload-progress {
+  font-size: 11px;
+  color: #326d7c;
+}
+.can-settings label:has(input[type="range"]) {
+  position: relative;
+}
+.can-settings label output {
+  position: absolute;
+  right: 0;
+  top: 0;
+}
+.can-studio .alert.error {
+  margin: 15px;
+}
+.can-editor-tabs a {
+  color: #326d7c;
+}
+@media (min-width: 1600px) {
+  .studio-with-can {
+    grid-template-columns: minmax(0, 1fr) 340px;
+  }
+  .can-composition {
+    grid-template-columns: 215px minmax(0, 1fr);
+  }
+  .can-stage {
+    height: 660px;
+  }
+}
+@media (max-width: 1200px) {
+  .studio-with-can {
+    grid-template-columns: 1fr;
+  }
+  .studio-with-can .studio-panel {
+    min-height: 250px;
+    max-height: 520px;
+    overflow: auto;
+  }
+  .can-composition {
+    grid-template-columns: 220px 1fr;
+  }
+  .can-demo-content {
+    grid-template-columns: 1fr;
+  }
+  .can-demo-info {
+    display: none;
+  }
+}
+@media (max-width: 680px) {
+  .sidebar {
+    border-radius: 0 16px 16px 0;
+  }
+  .can-heading {
+    padding: 19px 16px;
+  }
+  .can-heading h2 {
+    font-size: 23px;
+  }
+  .can-heading .eyebrow {
+    font-size: 7px;
+  }
+  .can-composition {
+    display: flex;
+    flex-direction: column;
+  }
+  .can-settings {
+    order: 2;
+    padding: 16px;
+  }
+  .can-settings:not([open]) > summary {
+    margin: 0;
+  }
+  .can-settings label {
+    font-size: 12px;
+  }
+  .can-settings select,
+  .can-settings input {
+    font-size: 12px;
+    padding: 10px;
+  }
+  .can-settings output {
+    font-size: 11px;
+  }
+  .can-stage {
+    height: 460px;
+    min-height: 52vh;
+  }
+  .can-stage-label {
+    font-size: 8px;
+    left: 15px;
+    right: 15px;
+  }
+  .can-stage-label small {
+    font-size: 6px;
+  }
+  .can-camera .btn {
+    font-size: 9px;
+    padding: 8px;
+  }
+  .can-heading p {
+    font-size: 10px;
+  }
+  .can-identity code {
+    font-size: 8px;
+  }
+  .studio-mode-tabs [role="tablist"] {
+    display: flex;
+  }
+  .studio-mode-tabs button {
+    font-size: 10px;
+    padding: 11px 10px;
+    flex: 1;
+  }
+  .can-lab-page {
+    padding: 23px 12px;
+  }
+  .can-lab-header {
+    align-items: flex-start;
+  }
+  .can-lab-header h1 {
+    font-size: 23px;
+  }
+  .can-demo-tabs {
+    gap: 7px;
+  }
+  .can-demo-tabs button {
+    padding: 12px;
+    flex: 1;
+    font-size: 10px;
+  }
+  .can-demo-tabs small {
+    font-size: 7px;
+  }
+  .studio-with-can .studio-panel {
+    max-height: 420px;
+  }
+  .can-settings[open] {
+    display: block;
+  }
+  .can-settings summary::after {
+    content: "+";
+    margin-left: auto;
+  }
+  .can-settings[open] summary::after {
+    content: "−";
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .artwork-card,
+  .btn,
+  .can-demo-tabs button {
+    transition: none !important;
+    transform: none !important;
+  }
+}
+.can-entry {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+  margin: 20px 0 10px;
+  color: #d5e0d8;
+}
+.can-entry svg {
+  height: 250px;
+  max-width: 100%;
+  filter: drop-shadow(0 15px 20px #07171635);
+}
+.can-entry > span {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 12px;
+  border-bottom: 1px solid #87998b;
+  padding: 9px 0;
+}
+.can-entry > small {
+  font-size: 7px;
+  letter-spacing: 1.5px;
+  color: #91a69b;
+  margin-top: 12px;
+}
+.can-entry:hover > span {
+  color: #fff;
+  border-color: #e3e9df;
+}
+@media (max-width: 680px) {
+  .can-entry {
+    flex-direction: row;
+    justify-content: space-between;
+    margin: 10px 0;
+  }
+  .can-entry svg {
+    height: 95px;
+  }
+  .can-entry > small {
+    display: none;
+  }
+  .can-entry > span {
+    font-size: 10px;
+  }
+}
+@media (min-width: 681px) {
+  .can-settings {
+    max-height: 860px;
+    overflow: auto;
+    scrollbar-width: thin;
+  }
+}
+.can-lab-nav {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0 6px 22px;
+  padding: 12px 9px;
+  border: 1px solid #8eab9a35;
+  border-radius: 11px;
+  color: #c3d3c7;
+  font-size: 11px;
+}
+.can-lab-nav small {
+  font-size: 7px;
+  letter-spacing: 0.7px;
+  color: #78988b;
+  margin-left: auto;
+}
+.can-lab-nav:hover {
+  background: #8eab9a12;
+  color: #fff;
+}
+.can-lab-nav > svg:last-child {
+  color: #8fa89a;
+}
+.can-note{color:#6e7e70;font-size:10px}.can-identity p{color:#71816e;font-size:11px}.can-identity code{color:#778774;font-size:9px}.can-settings label{font-size:11px}

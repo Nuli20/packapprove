@@ -1,4 +1,17 @@
 # PackApprove · QAZALPACK
+> **PackApprove 3 — Interactive Can Studio.** Настоящий Three.js/WebGL2, три приблизительных алюминиевых формата, нанесение PNG/JPG/PDF, immutable параметры конкретной версии и приватная прямая загрузка файлов. [Возможности и ограничения](docs/CAN-STUDIO.md) · [Проверки и публикация](docs/PACKAPPROVE-3-RELEASE.md) · [Настоящие скриншоты и вращение](docs/review/packapprove-3).
+
+## Посмотреть 3D без Docker и базы
+
+На **своём компьютере**, включая Windows PowerShell, установите Node.js 24, откройте папку репозитория и выполните:
+
+```sh
+npm ci
+npm run dev
+```
+
+Откройте `http://localhost:3000/can-lab` в браузере с WebGL2. Это отдельная демонстрация трёх вымышленных напитков; Supabase, аккаунт и Docker для неё не нужны. PNG/JPG/PDF уже включены в репозиторий. Рабочий кабинет с реальными проектами использует существующий Supabase и серверные переменные из `.env.example`; он не заменён демонстрацией.
+
 > **PackApprove 2 — Packaging Operations Studio.** Текущая ветка содержит переработанный интерфейс, самостоятельные рабочие очереди, onboarding и управление приглашениями, исправление refresh-сессии и восстановление пароля. Актуальная инструкция публикации, миграция и границы проверки: [PACKAPPROVE-2-RELEASE.md](docs/PACKAPPROVE-2-RELEASE.md). Настройка доставки recovery-писем: [AUTH-RECOVERY.md](docs/AUTH-RECOVERY.md). Реальные Chromium-скриншоты desktop/mobile: [docs/review/packapprove-2](docs/review/packapprove-2). Описание исходного MVP ниже сохранено как контекст; новые возможности описаны в release notes.
 
 

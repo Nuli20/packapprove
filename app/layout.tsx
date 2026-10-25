@@ -1,4 +1,5 @@
 import "./globals.css";
+import "@fontsource-variable/manrope";
 export const metadata = {
   title: "PackApprove — QAZALPACK",
   description: "Платформа согласования дизайна упаковки ТОО QAZALPACK",
