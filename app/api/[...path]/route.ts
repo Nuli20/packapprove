@@ -3,6 +3,7 @@ import { cookies } from "next/headers";
 import { z } from "zod";
 import { currentUser, saveSession } from "@/lib/auth";
 import { authClient } from "@/lib/platform";
+import { demoSession } from "@/lib/demo-session";
 import { prepareUpload } from "@/lib/uploads";
 import { snapshot, download } from "@/lib/queries";
 import { execute, commandSchema } from "@/lib/service";
@@ -148,11 +149,41 @@ async function route(
       jar.delete("pa_recovery_verifier");
       return NextResponse.json({ ok: true });
     }
-    if (name === "invitations/info" && req.method === "GET") {
-      const token = z
-        .string()
-        .regex(/^[a-f0-9]{64}$/)
-        .parse(req.nextUrl.searchParams.get("token"));
+    if (name.startsWith("invitations/") || name === "demo/session") {
+      const ip = req.headers.get("x-forwarded-for")?.split(",")[0] || "local";
+      const key = name + ":" + ip,
+        now = Date.now();
+      for (const [k, v] of attempts)
+        if (now - v.at >= 60000) attempts.delete(k);
+      const entry = attempts.get(key);
+      assert(
+        !entry || entry.n < 30,
+        "Слишком много попыток. Повторите через минуту.",
+        429,
+      );
+      attempts.set(key, { n: (entry?.n || 0) + 1, at: entry?.at || now });
+    }
+    if (name === "demo/session" && req.method === "POST") {
+      const result = await demoSession(await bodyJson(req));
+      await saveSession(result.session);
+      return NextResponse.json(
+        { ok: true, next: result.next },
+        { headers: { "Cache-Control": "no-store" } },
+      );
+    }
+    if (name === "invitations/info" && ["GET", "POST"].includes(req.method)) {
+      const input = req.method === "POST" ? await bodyJson(req) : null;
+      const token =
+        req.method === "GET"
+          ? req.nextUrl.searchParams.get("token")
+          : input && typeof input === "object"
+            ? (input as { token?: unknown }).token
+            : undefined;
+      assert(
+        typeof token === "string",
+        "Ссылка приглашения неполная. Запросите новую у администратора.",
+        400,
+      );
       return NextResponse.json(await invitationInfo(token), {
         headers: { "Cache-Control": "no-store" },
       });

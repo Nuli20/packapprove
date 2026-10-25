@@ -124,7 +124,7 @@ export async function execute(
         permit(u.role, ["admin"]);
       const token = randomBytes(32).toString("hex");
       await tx`update invitations set token_hash=${sha256(token)},expires_at=now()+interval '7 days' where id=${entity}`;
-      result = { id: entity, invitationUrl: "/invite?token=" + token };
+      result = { id: entity, invitationUrl: "/invite#token=" + token };
     } else if (c.action === "project.create") {
       permit(u.role, ["admin", "manager"]);
       const org = uuid.parse(p.organizationId);
@@ -268,7 +268,7 @@ export async function execute(
       );
       const [r] =
         await tx`insert into invitations(id,organization_id,email,role,invited_by,token_hash) values(${entity},${oid},${z.email().parse(p.email)},${role},${u.id},${sha256(token)}) returning id`;
-      result = { id: r.id, invitationUrl: "/invite?token=" + token };
+      result = { id: r.id, invitationUrl: "/invite#token=" + token };
     } else if (c.action === "template.create") {
       permit(u.role, ["admin"]);
       const items = z

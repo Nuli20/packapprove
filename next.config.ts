@@ -3,6 +3,12 @@ const config: NextConfig = {
   allowedDevOrigins: ["127.0.0.1"],
   serverExternalPackages: ["postgres"],
   poweredByHeader: false,
+  logging: {
+    incomingRequests: {
+      ignore: [/^\/invite(?:[?#]|$)/, /^\/api\/invitations\/info/],
+    },
+    browserToTerminal: false,
+  },
   async headers() {
     const storageOrigin = process.env.SUPABASE_URL
       ? new URL(process.env.SUPABASE_URL).origin
@@ -18,6 +24,13 @@ const config: NextConfig = {
             key: "Content-Security-Policy",
             value: `default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' blob: data:; font-src 'self'; connect-src 'self' ${storageOrigin}; worker-src 'self' blob:; frame-src 'self' blob:; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'`,
           },
+        ],
+      },
+      {
+        source: "/invite",
+        headers: [
+          { key: "Referrer-Policy", value: "no-referrer" },
+          { key: "Cache-Control", value: "no-store" },
         ],
       },
     ];

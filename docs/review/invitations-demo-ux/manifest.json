@@ -1,0 +1,211 @@
+{
+  "capturedAt": "2026-10-25T18:54:38.349Z",
+  "timezone": "Asia/Qyzylorda",
+  "deployment": "local production build with restricted PostgreSQL login",
+  "renderer": "Chromium / WebGL2 / ANGLE SwiftShader",
+  "mobile": "iPhone 13 emulation, not physical Safari",
+  "captures": [
+    {
+      "file": "01-login.png",
+      "url": "http://127.0.0.1:3008/login",
+      "viewport": {
+        "width": 1600,
+        "documentWidth": 1600
+      },
+      "studio": []
+    },
+    {
+      "file": "02-demo-entry.png",
+      "url": "http://127.0.0.1:3008/demo",
+      "viewport": {
+        "width": 1600,
+        "documentWidth": 1600
+      },
+      "studio": []
+    },
+    {
+      "file": "03-admin.png",
+      "url": "http://127.0.0.1:3008/?view=home",
+      "viewport": {
+        "width": 1600,
+        "documentWidth": 1600
+      },
+      "studio": []
+    },
+    {
+      "file": "04-manager.png",
+      "url": "http://127.0.0.1:3008/?view=home",
+      "viewport": {
+        "width": 1600,
+        "documentWidth": 1600
+      },
+      "studio": []
+    },
+    {
+      "file": "05-designer.png",
+      "url": "http://127.0.0.1:3008/?view=tasks",
+      "viewport": {
+        "width": 1600,
+        "documentWidth": 1600
+      },
+      "studio": []
+    },
+    {
+      "file": "06-prepress.png",
+      "url": "http://127.0.0.1:3008/?view=internal",
+      "viewport": {
+        "width": 1600,
+        "documentWidth": 1600
+      },
+      "studio": []
+    },
+    {
+      "file": "07-client.png",
+      "url": "http://127.0.0.1:3008/?view=approval",
+      "viewport": {
+        "width": 1600,
+        "documentWidth": 1600
+      },
+      "studio": []
+    },
+    {
+      "file": "08-production.png",
+      "url": "http://127.0.0.1:3008/?view=packages",
+      "viewport": {
+        "width": 1600,
+        "documentWidth": 1600
+      },
+      "studio": []
+    },
+    {
+      "file": "09-project-order.png",
+      "url": "http://127.0.0.1:3008/?view=home",
+      "viewport": {
+        "width": 1600,
+        "documentWidth": 1600
+      },
+      "studio": []
+    },
+    {
+      "file": "10-inline-client.png",
+      "url": "http://127.0.0.1:3008/?view=home",
+      "viewport": {
+        "width": 1600,
+        "documentWidth": 1600
+      },
+      "studio": []
+    },
+    {
+      "file": "11-project-team.png",
+      "url": "http://127.0.0.1:3008/?view=home",
+      "viewport": {
+        "width": 1600,
+        "documentWidth": 1600
+      },
+      "studio": []
+    },
+    {
+      "file": "12-project-artworks.png",
+      "url": "http://127.0.0.1:3008/?view=home",
+      "viewport": {
+        "width": 1600,
+        "documentWidth": 1600
+      },
+      "studio": []
+    },
+    {
+      "file": "13-invitation.png",
+      "url": "http://127.0.0.1:3008/invite",
+      "viewport": {
+        "width": 1600,
+        "documentWidth": 1600
+      },
+      "studio": []
+    },
+    {
+      "file": "14-mobile-invitation.png",
+      "url": "http://127.0.0.1:3008/invite",
+      "viewport": {
+        "width": 390,
+        "documentWidth": 390
+      },
+      "studio": []
+    },
+    {
+      "file": "15-version-3d-comments.png",
+      "url": "http://127.0.0.1:3008/?artwork=08d18ce5-079a-4754-91a6-3c704c365e97",
+      "viewport": {
+        "width": 1600,
+        "documentWidth": 1600
+      },
+      "studio": [
+        {
+          "canFormat": "standard450",
+          "pdfPage": "1",
+          "textureHash": "5730c7adbdcf3422b12abe25dde028b3c51acb8d05c6d63c027d0f9c511c4ab9",
+          "fileId": "a5e7a979-9f3a-44a2-b61f-6bbc8f4ac14e",
+          "versionId": "b9ec6f74-c71f-428d-b5b1-30cf6f8c67bd"
+        }
+      ]
+    },
+    {
+      "file": "16-client-approval.png",
+      "url": "http://127.0.0.1:3008/?artwork=08d18ce5-079a-4754-91a6-3c704c365e97",
+      "viewport": {
+        "width": 1600,
+        "documentWidth": 1600
+      },
+      "studio": [
+        {
+          "canFormat": "standard450",
+          "pdfPage": "1",
+          "textureHash": "5730c7adbdcf3422b12abe25dde028b3c51acb8d05c6d63c027d0f9c511c4ab9",
+          "fileId": "a5e7a979-9f3a-44a2-b61f-6bbc8f4ac14e",
+          "versionId": "b9ec6f74-c71f-428d-b5b1-30cf6f8c67bd"
+        }
+      ]
+    },
+    {
+      "file": "17-mobile-version.png",
+      "url": "http://127.0.0.1:3008/?artwork=08d18ce5-079a-4754-91a6-3c704c365e97",
+      "viewport": {
+        "width": 390,
+        "documentWidth": 390
+      },
+      "studio": [
+        {
+          "canFormat": "standard450",
+          "pdfPage": "1",
+          "textureHash": "5730c7adbdcf3422b12abe25dde028b3c51acb8d05c6d63c027d0f9c511c4ab9",
+          "fileId": "a5e7a979-9f3a-44a2-b61f-6bbc8f4ac14e",
+          "versionId": "b9ec6f74-c71f-428d-b5b1-30cf6f8c67bd"
+        }
+      ]
+    },
+    {
+      "file": "18-mobile-project.png",
+      "url": "http://127.0.0.1:3008/?view=home",
+      "viewport": {
+        "width": 390,
+        "documentWidth": 390
+      },
+      "studio": []
+    },
+    {
+      "file": "19-kazakh-project.png",
+      "url": "http://127.0.0.1:3008/?view=home",
+      "viewport": {
+        "width": 390,
+        "documentWidth": 390
+      },
+      "studio": []
+    }
+  ],
+  "pageErrors": [],
+  "consoleErrors": [],
+  "invitationLinkRotated": true,
+  "rotation": {
+    "frames": 22,
+    "uniqueFrames": 22
+  }
+}

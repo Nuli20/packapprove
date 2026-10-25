@@ -1,4 +1,5 @@
 "use client";
+import { DemoWorkspaceBar } from "./demo-entry";
 import { useCallback, useEffect, useState } from "react";
 import {
   Box,
@@ -206,8 +207,10 @@ export default function Workspace() {
       </div>
     );
   const d = data;
-  const studioArtworks=d.artworks.filter(a=>d.visualizations?.some(v=>v.version_id===a.active_version_id));
-  const homeArtworks=studioArtworks.length?studioArtworks:d.artworks;
+  const studioArtworks = d.artworks.filter((a) =>
+    d.visualizations?.some((v) => v.version_id === a.active_version_id),
+  );
+  const homeArtworks = studioArtworks.length ? studioArtworks : d.artworks;
   const u = d.user;
   const staff = ["admin", "manager", "designer", "prepress"].includes(u.role);
   const manage = ["admin", "manager"].includes(u.role);
@@ -438,7 +441,6 @@ export default function Workspace() {
           </div>
           <span className="online-dot" />
         </div>
-        <a href="/can-lab" className="can-lab-nav"><Box size={17}/><span>Can Studio</span><small>3D / DEMO</small><ArrowUpRight size={14}/></a>
         <div className="nav-label">{t("workspace")}</div>
         <nav>
           {nav
@@ -504,11 +506,6 @@ export default function Workspace() {
           )}
         </nav>
         <div className="sidebar-bottom">
-          <div className="safe-card">
-            <ShieldCheck size={21} />
-            <b>{t("secureTitle")}</b>
-            <p>{t("secureText")}</p>
-          </div>
           <button
             className="user-card"
             onClick={async () => {
@@ -583,6 +580,7 @@ export default function Workspace() {
         <main
           className={`main-content ${view === "artwork" ? "artwork-main" : ""}`}
         >
+          {!!d.demo_context?.length && <DemoWorkspaceBar locale={locale} />}
           {error && (
             <div className="alert error" role="alert">
               <AlertCircle size={18} />
@@ -677,7 +675,7 @@ export default function Workspace() {
                           : i === 1
                             ? t("allPolicy")
                             : i === 2
-                              ? "SHA-256 ✓"
+                              ? t("artworks")
                               : t("deadline")}
                       </span>
                     </div>
@@ -774,10 +772,6 @@ export default function Workspace() {
                       <div className="empty">{t("empty")}</div>
                     )}
                   </div>
-                  <div className="activity-bottom">
-                    <ShieldCheck size={17} />
-                    {t("fileIdentity")}
-                  </div>
                 </aside>
               </div>
               <div className="section-heading">
@@ -785,7 +779,11 @@ export default function Workspace() {
                   {t("artworks")}{" "}
                   <span className="count">{homeArtworks.length}</span>
                 </h2>
-                <button className="text-btn" onClick={()=>go('allArtworks')}><Layers size={15}/>{t('allArtworks')}<ArrowUpRight size={14}/></button>
+                <button className="text-btn" onClick={() => go("allArtworks")}>
+                  <Layers size={15} />
+                  {t("allArtworks")}
+                  <ArrowUpRight size={14} />
+                </button>
               </div>
               {renderArtworks(
                 homeArtworks
@@ -2267,9 +2265,7 @@ export default function Workspace() {
           )}
           <footer className="app-footer">
             <span>© 2026 QAZALPACK</span>
-            <span>
-              <span className="online-dot" /> PackApprove · {t("secureTitle")}
-            </span>
+            <span>PackApprove</span>
           </footer>
         </main>
       </div>

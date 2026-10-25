@@ -3,6 +3,7 @@ nextEnv.loadEnvConfig(process.cwd());
 import { createClient } from "@supabase/supabase-js";
 import postgres from "postgres";
 import { randomUUID } from "node:crypto";
+import { isolatedDemoEnabled } from "../lib/demo-environment";
 import { demoPdf } from "./demo-pdf";
 import { sha256 } from "../lib/security";
 import { mkdir, writeFile } from "node:fs/promises";
@@ -21,9 +22,9 @@ export const checklist = [
   "Производственный файл",
 ];
 export async function seed() {
-  if (process.env.NEXT_PUBLIC_DEMO_MODE !== "true")
+  if (!isolatedDemoEnabled())
     throw Error(
-      "Demo seed requires NEXT_PUBLIC_DEMO_MODE=true; never seed production",
+      "Demo seed requires the separate local Supabase fixture; remote production endpoints are forbidden",
     );
   const sql = postgres(process.env.DATABASE_URL!, { max: 1 });
   const supa = createClient(

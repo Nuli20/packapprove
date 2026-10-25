@@ -12,4 +12,5 @@ done
 npm run db:setup
 npm run seed
 npm run seed:cans
+npm run seed:workflow
 printf 'Local PostgreSQL, Supabase Auth and private Storage ready. Run npm run dev.\n'
