@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
@@ -12,6 +12,7 @@ import {
 } from "lucide-react";
 import { translate, eventKeys, type Locale } from "@/lib/i18n";
 import type { Row, State } from "./workspace";
+import { PreparationPanel } from "./setup-wizard";
 const projectSchema = z.object({
   name: z.string().min(2).max(160),
   organizationId: z.string().uuid(),
@@ -26,7 +27,7 @@ const projectSchema = z.object({
 });
 export default function ActionModal({
   modal: m,
-  data: d,
+  data: initialData,
   locale,
   busy,
   error,
@@ -42,17 +43,18 @@ export default function ActionModal({
   onSubmit: (a: string, id?: string, p?: Row, rv?: number) => Promise<any>;
 }) {
   const t = (k: string) => translate(locale, k);
+  const [d, D] = useState(initialData);
+  useEffect(() => D(initialData), [initialData]);
   const [p, P] = useState<Row>({
-    ...m.payload,
     role: m.profile?.role || "observer",
     active: m.profile?.active ?? true,
     content: m.brief || {},
-    ...m.payload,
     status: "ready",
     templateId: m.action === "review.complete" ? d.templates[0]?.id : "",
     approvers: [],
     observers: [],
     deadline: new Date(Date.now() + 604800000).toISOString().slice(0, 16),
+    ...m.payload,
   });
   const [uploads, U] = useState<Row>({});
   const [checks, CH] = useState<Row>({});
@@ -221,13 +223,22 @@ export default function ActionModal({
             })}
             className="modal-form"
           >
+            <PreparationPanel
+              data={d}
+              locale={locale}
+              onChanged={D}
+              onClient={(id) =>
+                form.setValue("organizationId", id, { shouldValidate: true })
+              }
+            />
             <label>
               {t("name")}
               <input {...form.register("name")} required />
             </label>
             <label>
               {t("organization")}
-              <select {...form.register("organizationId")}>
+              <select {...form.register("organizationId")} required>
+                <option value="">{t("select")}</option>
                 {d.organizations
                   .filter((o) => o.kind === "client")
                   .map((o) => (
@@ -244,9 +255,13 @@ export default function ActionModal({
               ].map(([k, l]) => (
                 <label key={k}>
                   {t(l)}
-                  <select {...form.register(k as "designerId" | "prepressId")}>
+                  <select
+                    {...form.register(k as "designerId" | "prepressId")}
+                    required
+                  >
+                    <option value="">{t("select")}</option>
                     {d.profiles
-                      .filter((p) => p.role === l)
+                      .filter((p) => p.role === l && p.active)
                       .map((p) => (
                         <option value={p.id} key={p.id}>
                           {p.full_name}
@@ -290,7 +305,21 @@ export default function ActionModal({
             </label>
             {Object.keys(form.formState.errors).length > 0 && (
               <p className="error">
-                {t("required")}: {Object.keys(form.formState.errors).join(", ")}
+                {t("required")}:{" "}
+                {Object.keys(form.formState.errors)
+                  .map((k) =>
+                    t(
+                      (
+                        {
+                          organizationId: "organization",
+                          designerId: "designer",
+                          prepressId: "prepress",
+                          artworks: "artworkNames",
+                        } as Record<string, string>
+                      )[k] || k,
+                    ),
+                  )
+                  .join(", ")}
               </p>
             )}
             <div className="modal-footer">

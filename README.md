@@ -1,4 +1,6 @@
 # PackApprove · QAZALPACK
+> **PackApprove 2 — Packaging Operations Studio.** Текущая ветка содержит переработанный интерфейс, самостоятельные рабочие очереди, onboarding и управление приглашениями, исправление refresh-сессии и восстановление пароля. Актуальная инструкция публикации, миграция и границы проверки: [PACKAPPROVE-2-RELEASE.md](docs/PACKAPPROVE-2-RELEASE.md). Настройка доставки recovery-писем: [AUTH-RECOVERY.md](docs/AUTH-RECOVERY.md). Реальные Chromium-скриншоты desktop/mobile: [docs/review/packapprove-2](docs/review/packapprove-2). Описание исходного MVP ниже сохранено как контекст; новые возможности описаны в release notes.
+
 
 Рабочий MVP платформы согласования упаковки: Next.js 16.4.3, React 19.3.1, TypeScript, PostgreSQL 17, Supabase Auth / private Storage / RLS, Tailwind CSS 4, React Hook Form + Zod, PDF.js 6, Vitest и Playwright. Точные версии зафиксированы в package.json и package-lock.json.
 

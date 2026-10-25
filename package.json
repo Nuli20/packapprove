@@ -12,7 +12,8 @@
     "db:setup": "tsx scripts/setup.ts",
     "seed": "tsx scripts/seed.ts",
     "local:up": "bash scripts/local-up.sh",
-    "reminders": "tsx scripts/reminders.ts"
+    "reminders": "tsx scripts/reminders.ts",
+    "db:plan": "tsx scripts/setup.ts --plan"
   },
   "engines": {
     "node": ">=22"

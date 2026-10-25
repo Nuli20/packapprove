@@ -1,13 +1,6 @@
 "use client";
-import { useState } from "react";
-import {
-  ArrowRight,
-  Box,
-  ShieldCheck,
-  Layers,
-  Check,
-  Loader2,
-} from "lucide-react";
+import { useState, useEffect } from "react";
+import { ArrowRight, Box, ShieldCheck, Loader2 } from "lucide-react";
 import { translate, type Locale } from "@/lib/i18n";
 export default function Login({ demo }: { demo: boolean }) {
   const [locale, L] = useState<Locale>("ru");
@@ -16,6 +9,13 @@ export default function Login({ demo }: { demo: boolean }) {
   const [password, P] = useState(demo ? "PackApprove2026!" : "");
   const [busy, B] = useState(false);
   const [error, X] = useState("");
+  const [sessionExpired, setSessionExpired] = useState(false);
+  useEffect(() => {
+    setSessionExpired(
+      new URLSearchParams(window.location.search).get("reason") ===
+        "session-expired",
+    );
+  }, []);
   async function login(e: React.FormEvent) {
     e.preventDefault();
     B(true);
@@ -46,34 +46,58 @@ export default function Login({ demo }: { demo: boolean }) {
           </b>
         </div>
         <div className="login-copy">
-          <div className="eyebrow">QAZALPACK · DIGITAL WORKSPACE</div>
-          <h1>{t("loginSubtitle")}</h1>
-          <p>{t("subtitle")}</p>
-          <div className="package-illustration">
-            <div className="mock-box">
-              <div className="box-mark">Q</div>
-              <small>QAZALPACK</small>
-              <strong>
-                DESIGNED
+          <div className="eyebrow">PACKAGING OPERATIONS STUDIO</div>
+          <h1>
+            {locale === "ru" ? (
+              <>
+                От первого
                 <br />
-                TO BE
+                штриха —<br />
+                <em>до тиража.</em>
+              </>
+            ) : (
+              <>
+                Алғашқы
                 <br />
-                APPROVED.
-              </strong>
-              <span>PACKAGING COLLECTION / 2026</span>
-            </div>
-            <div className="float-label">
-              <ShieldCheck size={20} />
-              <span>
-                SHA-256{" "}
+                сызбадан —<br />
+                <em>таралымға дейін.</em>
+              </>
+            )}
+          </h1>
+          <p>
+            {locale === "ru"
+              ? "Макеты, обсуждения и решения — в одном рабочем пространстве. Точная версия на каждом этапе."
+              : "Макеттер, талқылаулар мен шешімдер — бір жұмыс кеңістігінде. Әр кезеңде нақты нұсқа."}
+          </p>
+          <div className="studio-specimen" aria-hidden="true">
+            <span className="specimen-label">PA / MATERIAL STUDY</span>
+            <div className="diecut-flat">
+              <span className="diecut-flap top" />
+              <span className="diecut-flap left" />
+              <span className="diecut-flap right" />
+              <span className="diecut-flap bottom" />
+              <div className="diecut-face">
+                <span>Q / P</span>
                 <b>
-                  <Check size={14} />
+                  FORM.
+                  <br />
+                  PRINT.
+                  <br />
+                  APPROVE.
                 </b>
-              </span>
+                <small>PACKAGING OPERATIONS</small>
+              </div>
             </div>
-            <div className="float-version">
-              <Layers size={18} /> V3 <span>{t("approved")}</span>
+            <div className="print-controls">
+              <i />
+              <i />
+              <i />
+              <i />
+              <span>01 — 04 / PROCESS</span>
             </div>
+            <span className="specimen-dimension">
+              ARTWORK → APPROVAL → PRODUCTION
+            </span>
           </div>
         </div>
         <small className="login-footer">
@@ -88,9 +112,16 @@ export default function Login({ demo }: { demo: boolean }) {
           RU / KZ
         </button>
         <form onSubmit={login} className="login-form">
-          <span className="eyebrow">PACKAPPROVE</span>
+          <span className="eyebrow">QAZALPACK / WORKSPACE</span>
           <h2>{t("login")}</h2>
           <p>{t("brand")}</p>
+          {sessionExpired && (
+            <div className="alert warning" role="status">
+              {locale === "ru"
+                ? "Время сессии истекло. Войдите снова, чтобы продолжить работу."
+                : "Сессия мерзімі аяқталды. Жұмысты жалғастыру үшін қайта кіріңіз."}
+            </div>
+          )}
           {error && (
             <div className="alert error" role="alert">
               {error}
@@ -117,6 +148,9 @@ export default function Login({ demo }: { demo: boolean }) {
               autoComplete="current-password"
             />
           </label>
+          <a className="forgot-password" href="/forgot-password">
+            {locale === "ru" ? "Забыли пароль?" : "Құпиясөзді ұмыттыңыз ба?"}
+          </a>
           <button className="btn primary wide" disabled={busy}>
             {busy ? (
               <Loader2 className="spin" size={18} />
@@ -128,8 +162,8 @@ export default function Login({ demo }: { demo: boolean }) {
             )}
           </button>
           {demo && (
-            <div className="demo-accounts">
-              <small>{t("demo")}</small>
+            <details className="demo-accounts">
+              <summary>{t("demo")}</summary>
               <div>
                 {[
                   "manager",
@@ -155,7 +189,7 @@ export default function Login({ demo }: { demo: boolean }) {
                 ))}
               </div>
               <code>PackApprove2026!</code>
-            </div>
+            </details>
           )}
         </form>
         <div className="login-safe">

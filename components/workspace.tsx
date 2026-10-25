@@ -46,6 +46,10 @@ import {
 import { translate, eventKeys, type Locale } from "@/lib/i18n";
 import PdfViewer from "./pdf-viewer";
 import ActionModal from "./action-modal";
+import SetupWizard from "./setup-wizard";
+import PeopleManagement from "./people-management";
+import { operationalItems } from "@/lib/workflow";
+import Operations, { FileCover, WorkflowSteps } from "./operations";
 export type Row = Record<string, any>;
 export type State = Record<string, Row[]> & { user: any };
 const nav = [
@@ -86,7 +90,7 @@ export default function Workspace() {
   const load = useCallback(async () => {
     const r = await fetch("/api/state", { cache: "no-store" });
     if (r.status === 401) {
-      location.href = "/login";
+      location.href = "/login?reason=session-expired";
       return;
     }
     const j = await r.json();
@@ -97,14 +101,23 @@ export default function Workspace() {
     load().catch((e) => E(e.message));
     const loc = localStorage.getItem("pa_locale");
     if (loc === "kz") L(loc);
-    const q = new URLSearchParams(location.search);
-    if (q.get("artwork")) {
-      AI(q.get("artwork")!);
-      V("artwork");
-    } else if (q.get("project")) {
-      PI(q.get("project")!);
-      V("project");
-    }
+    const restore = () => {
+      const q = new URLSearchParams(location.search);
+      AI(q.get("artwork") || "");
+      PI(q.get("project") || "");
+      VI(q.get("version") || "");
+      V(
+        q.has("artwork")
+          ? "artwork"
+          : q.has("project")
+            ? "project"
+            : q.get("view") || "home",
+      );
+      F("all");
+    };
+    restore();
+    window.addEventListener("popstate", restore);
+    return () => window.removeEventListener("popstate", restore);
   }, [load]);
   useEffect(() => {
     document.documentElement.lang = locale === "kz" ? "kk" : "ru";
@@ -128,6 +141,10 @@ export default function Workspace() {
         body: JSON.stringify({ action, entityId, payload, rowVersion }),
       });
       const j = await r.json();
+      if (r.status === 401) {
+        location.href = "/login?reason=session-expired";
+        throw Error("Сессия истекла. Войдите снова.");
+      }
       if (!r.ok) throw Error(j.error);
       await load();
       M(
@@ -166,7 +183,7 @@ export default function Workspace() {
     MB(false);
     AI("");
     PI("");
-    history.pushState(null, "", "/");
+    history.pushState(null, "", `/?view=${v}`);
   }
   if (!data)
     return (
@@ -270,11 +287,7 @@ export default function Workspace() {
               onClick={() => openArtwork(a)}
             >
               <div className={`artwork-cover color-${i % 4}`}>
-                <div className="mini-package">
-                  <span>QAZALPACK</span>
-                  <b>{a.name.split(" ").slice(0, 2).join(" ")}</b>
-                  <i>PREMIUM COLLECTION</i>
-                </div>
+                <FileCover data={d} artwork={a} />
                 <span className="version-chip">V{v?.number || "—"}</span>
               </div>
               <div className="artwork-card-info">
@@ -489,7 +502,7 @@ export default function Workspace() {
             className="user-card"
             onClick={async () => {
               await fetch("/api/auth/logout", { method: "POST" });
-              location.href = "/login";
+              location.href = "/login?reason=session-expired";
             }}
           >
             <span className="avatar av-1">
@@ -568,184 +581,263 @@ export default function Workspace() {
               </button>
             </div>
           )}
+          {view === "home" &&
+            u.role === "admin" &&
+            (!d.organizations.some((o) => o.kind === "manufacturer") ||
+              !d.organizations.some((o) => o.kind === "client") ||
+              !d.profiles.some((p) => p.role === "designer" && p.active) ||
+              !d.profiles.some((p) => p.role === "prepress" && p.active) ||
+              !d.projects.length) && (
+              <SetupWizard
+                data={d}
+                locale={locale}
+                onRefresh={load}
+                onCreateProject={() =>
+                  openModal("project.create", { entityId: undefined })
+                }
+              />
+            )}
+          {["home"].includes(view) && !production && (
+            <>
+              <div className="page-heading">
+                <div>
+                  <div className="eyebrow">QAZALPACK / {t("monitor")}</div>
+                  <h1>
+                    {t(
+                      view === "home"
+                        ? "overview"
+                        : view === "projects"
+                          ? client
+                            ? "projects"
+                            : "allProjects"
+                          : view,
+                    )}
+                  </h1>
+                  <p>{t("subtitle")}</p>
+                </div>
+                {manage && (
+                  <button
+                    className="btn primary"
+                    onClick={() =>
+                      openModal("project.create", { entityId: undefined })
+                    }
+                  >
+                    <Plus size={17} />
+                    {t("newProject")}
+                  </button>
+                )}
+              </div>
+              <div className="stats-grid">
+                {[
+                  [
+                    t("activeProjects"),
+                    d.projects.filter((p) => p.status === "active").length,
+                    FolderKanban,
+                    "blue",
+                  ],
+                  [t("awaiting"), pending.length, Clock3, "purple"],
+                  [
+                    t("approved"),
+                    d.versions.filter((v) => v.status === "approved").length,
+                    CheckCircle2,
+                    "green",
+                  ],
+                  [t("overdue"), late.length, CalendarDays, "orange"],
+                ].map(([label, n, Icon, color]: any, i) => (
+                  <button
+                    className="stat-card"
+                    key={label}
+                    onClick={() => {
+                      F(i === 1 ? "published" : i === 2 ? "approved" : "all");
+                      V("projects");
+                    }}
+                  >
+                    <div className="stat-top">
+                      <span>{label}</span>
+                      <span className={`stat-icon ${color}`}>
+                        <Icon size={19} />
+                      </span>
+                    </div>
+                    <div className="stat-value">
+                      {String(n).padStart(2, "0")}
+                      <span>
+                        {i === 0
+                          ? `${d.artworks.length} ${t("artworks").toLowerCase()}`
+                          : i === 1
+                            ? t("allPolicy")
+                            : i === 2
+                              ? "SHA-256 ✓"
+                              : t("deadline")}
+                      </span>
+                    </div>
+                  </button>
+                ))}
+              </div>
+              <section
+                className="panel info-panel"
+                style={{ marginBottom: 24 }}
+              >
+                <div className="panel-heading">
+                  <h2>{t("nextActions")}</h2>
+                  <span>{t("currentVersions")}</span>
+                </div>
+                {operationalItems(d)
+                  .filter((i) => i.mine || i.ready)
+                  .slice(0, 4)
+                  .map((i) => (
+                    <button
+                      className="history-row clickable"
+                      key={i.a.id}
+                      onClick={() => openArtwork(i.a)}
+                    >
+                      <span>
+                        <b>{i.a.name}</b> · V{i.version?.number || "—"}
+                      </span>
+                      <span>
+                        {t(i.stage)} · {date(i.deadline)}{" "}
+                        <ArrowUpRight size={14} />
+                      </span>
+                    </button>
+                  ))}
+                {!operationalItems(d).some((i) => i.mine || i.ready) && (
+                  <p className="muted">{t("queueEmpty")}</p>
+                )}
+              </section>
+              <div className="dashboard-columns">
+                <section className="panel projects-panel">
+                  <div className="panel-heading">
+                    <h2>
+                      {t("projects")}
+                      <span className="count">{visibleProjects.length}</span>
+                    </h2>
+                    <button className="text-btn" onClick={() => go("projects")}>
+                      {t("showAll")}
+                      <ArrowUpRight size={15} />
+                    </button>
+                  </div>
+                  <div className="table-toolbar">
+                    <div className="tabs compact">
+                      {["all", "active", "published", "production"].map((f) => (
+                        <button
+                          key={f}
+                          className={filter === f ? "active-tab" : ""}
+                          onClick={() => F(f)}
+                        >
+                          {t(f)}
+                        </button>
+                      ))}
+                    </div>
+                    <SlidersHorizontal size={17} className="muted" />
+                  </div>
+                  {projectTable()}
+                </section>
+                <aside className="panel activity-panel">
+                  <div className="panel-heading">
+                    <h2>{t("activity")}</h2>
+                  </div>
+                  <div className="activity-list">
+                    {d.notifications.slice(0, 6).map((n, i) => (
+                      <div className="activity-item" key={n.id}>
+                        <span
+                          className={`activity-icon ${i % 2 ? "purple" : "blue"}`}
+                        >
+                          {n.kind.startsWith("package") ? (
+                            <Factory size={16} />
+                          ) : n.kind.startsWith("decision") ? (
+                            <Check size={16} />
+                          ) : (
+                            <Layers size={16} />
+                          )}
+                        </span>
+                        <div>
+                          <b>{event(n.kind)}</b>
+                          <p>
+                            {d.projects.find((p) => p.id === n.project_id)
+                              ?.name || "PackApprove"}
+                          </p>
+                          <small>{date(n.created_at)}</small>
+                        </div>
+                      </div>
+                    ))}
+                    {!d.notifications.length && (
+                      <div className="empty">{t("empty")}</div>
+                    )}
+                  </div>
+                  <div className="activity-bottom">
+                    <ShieldCheck size={17} />
+                    {t("fileIdentity")}
+                  </div>
+                </aside>
+              </div>
+              <div className="section-heading">
+                <h2>
+                  {t("artworks")}{" "}
+                  <span className="count">{d.artworks.length}</span>
+                </h2>
+                <span className="muted">
+                  <Layers size={15} />
+                  {t("versions")}
+                </span>
+              </div>
+              {renderArtworks(
+                d.artworks
+                  .filter((a) =>
+                    visibleProjects.some((p) => p.id === a.project_id),
+                  )
+                  .slice(0, view === "home" ? 4 : 99),
+              )}
+            </>
+          )}
           {[
-            "home",
             "projects",
             "tasks",
             "internal",
             "approval",
             "changes",
             "ready",
-          ].includes(view) &&
-            !production && (
-              <>
-                <div className="page-heading">
-                  <div>
-                    <div className="eyebrow">QAZALPACK / {t("monitor")}</div>
-                    <h1>
-                      {t(
-                        view === "home"
-                          ? "overview"
-                          : view === "projects"
-                            ? client
-                              ? "projects"
-                              : "allProjects"
-                            : view,
-                      )}
-                    </h1>
-                    <p>{t("subtitle")}</p>
+          ].includes(view) && (
+            <>
+              <div className="page-heading">
+                <div>
+                  <div className="eyebrow">
+                    PACKAGING OPERATIONS / {t(view)}
                   </div>
-                  {manage && (
-                    <button
-                      className="btn primary"
-                      onClick={() =>
-                        openModal("project.create", { entityId: undefined })
-                      }
-                    >
-                      <Plus size={17} />
-                      {t("newProject")}
-                    </button>
-                  )}
+                  <h1>{t(view === "projects" ? "allProjects" : view)}</h1>
                 </div>
-                <div className="stats-grid">
-                  {[
-                    [
-                      t("activeProjects"),
-                      d.projects.filter((p) => p.status === "active").length,
-                      FolderKanban,
-                      "blue",
-                    ],
-                    [t("awaiting"), pending.length, Clock3, "purple"],
-                    [
-                      t("approved"),
-                      d.versions.filter((v) => v.status === "approved").length,
-                      CheckCircle2,
-                      "green",
-                    ],
-                    [t("overdue"), late.length, CalendarDays, "orange"],
-                  ].map(([label, n, Icon, color]: any, i) => (
-                    <button
-                      className="stat-card"
-                      key={label}
-                      onClick={() => {
-                        F(i === 1 ? "published" : i === 2 ? "approved" : "all");
-                        V("projects");
-                      }}
-                    >
-                      <div className="stat-top">
-                        <span>{label}</span>
-                        <span className={`stat-icon ${color}`}>
-                          <Icon size={19} />
-                        </span>
-                      </div>
-                      <div className="stat-value">
-                        {String(n).padStart(2, "0")}
-                        <span>
-                          {i === 0
-                            ? `${d.artworks.length} ${t("artworks").toLowerCase()}`
-                            : i === 1
-                              ? t("allPolicy")
-                              : i === 2
-                                ? "SHA-256 ✓"
-                                : t("deadline")}
-                        </span>
-                      </div>
-                    </button>
-                  ))}
-                </div>
-                <div className="dashboard-columns">
-                  <section className="panel projects-panel">
-                    <div className="panel-heading">
-                      <h2>
-                        {t("projects")}
-                        <span className="count">{visibleProjects.length}</span>
-                      </h2>
-                      <button
-                        className="text-btn"
-                        onClick={() => go("projects")}
-                      >
-                        {t("showAll")}
-                        <ArrowUpRight size={15} />
-                      </button>
-                    </div>
-                    <div className="table-toolbar">
-                      <div className="tabs compact">
-                        {["all", "active", "published", "production"].map(
-                          (f) => (
-                            <button
-                              key={f}
-                              className={filter === f ? "active-tab" : ""}
-                              onClick={() => F(f)}
-                            >
-                              {t(f)}
-                            </button>
-                          ),
-                        )}
-                      </div>
-                      <SlidersHorizontal size={17} className="muted" />
-                    </div>
-                    {projectTable()}
-                  </section>
-                  <aside className="panel activity-panel">
-                    <div className="panel-heading">
-                      <h2>{t("activity")}</h2>
-                      <span className="live-label">
-                        <i /> LIVE
-                      </span>
-                    </div>
-                    <div className="activity-list">
-                      {d.notifications.slice(0, 6).map((n, i) => (
-                        <div className="activity-item" key={n.id}>
-                          <span
-                            className={`activity-icon ${i % 2 ? "purple" : "blue"}`}
-                          >
-                            {n.kind.startsWith("package") ? (
-                              <Factory size={16} />
-                            ) : n.kind.startsWith("decision") ? (
-                              <Check size={16} />
-                            ) : (
-                              <Layers size={16} />
-                            )}
-                          </span>
-                          <div>
-                            <b>{event(n.kind)}</b>
-                            <p>
-                              {d.projects.find((p) => p.id === n.project_id)
-                                ?.name || "PackApprove"}
-                            </p>
-                            <small>{date(n.created_at)}</small>
-                          </div>
-                        </div>
-                      ))}
-                      {!d.notifications.length && (
-                        <div className="empty">{t("empty")}</div>
-                      )}
-                    </div>
-                    <div className="activity-bottom">
-                      <ShieldCheck size={17} />
-                      {t("fileIdentity")}
-                    </div>
-                  </aside>
-                </div>
-                <div className="section-heading">
-                  <h2>
-                    {t("artworks")}{" "}
-                    <span className="count">{d.artworks.length}</span>
-                  </h2>
-                  <span className="muted">
-                    <Layers size={15} />
-                    {t("versions")}
-                  </span>
-                </div>
-                {renderArtworks(
-                  d.artworks
-                    .filter((a) =>
-                      visibleProjects.some((p) => p.id === a.project_id),
-                    )
-                    .slice(0, view === "home" ? 4 : 99),
+                {view === "projects" && manage && (
+                  <button
+                    className="btn primary"
+                    onClick={() =>
+                      openModal("project.create", { entityId: undefined })
+                    }
+                  >
+                    <Plus size={16} />
+                    {t("newProject")}
+                  </button>
                 )}
-              </>
-            )}
+              </div>
+              <Operations
+                data={d}
+                view={view}
+                locale={locale}
+                onArtwork={openArtwork}
+                onProject={openProject}
+                search={search}
+                onSearch={S}
+              />
+            </>
+          )}
+
+          {view === "settings" && u.role === "admin" && (
+            <PeopleManagement
+              data={d}
+              locale={locale}
+              onRefresh={load}
+              onInvite={() =>
+                openModal("invitation.create", { entityId: undefined })
+              }
+            />
+          )}
           {view === "project" && project && (
             <>
               <button
@@ -841,6 +933,7 @@ export default function Workspace() {
           )}
           {view === "artwork" && artwork && (
             <>
+              <WorkflowSteps data={d} artwork={artwork} locale={locale} />
               <button
                 className="text-btn back-btn"
                 onClick={() => openProject(artwork.project_id)}
@@ -899,7 +992,9 @@ export default function Workspace() {
                       </button>
                     )}
                   {u.role === "prepress" &&
-                    selected?.status === "internal_review" &&
+                    ["internal_review", "published", "approved"].includes(
+                      selected?.status,
+                    ) &&
                     !review &&
                     active && (
                       <button

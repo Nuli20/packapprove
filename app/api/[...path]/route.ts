@@ -6,6 +6,11 @@ import { authClient } from "@/lib/platform";
 import { snapshot, download } from "@/lib/queries";
 import { execute, commandSchema } from "@/lib/service";
 import { invitationInfo, acceptInvitation } from "@/lib/invitations";
+import {
+  recoveryClient,
+  acceptRecovery,
+  changeRecoveredPassword,
+} from "@/lib/recovery";
 import { AppError, assert } from "@/lib/security";
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -48,7 +53,7 @@ async function route(
       assert(
         !origin ||
           (process.env.APP_ORIGIN
-            ? origin === process.env.APP_ORIGIN
+            ? new URL(origin).origin === new URL(process.env.APP_ORIGIN).origin
             : new URL(origin).host === req.headers.get("host")),
         "Недопустимый Origin",
         403,
@@ -56,7 +61,10 @@ async function route(
     }
     if (name === "health")
       return NextResponse.json({ status: "ok", service: "PackApprove" });
-    if (name === "auth/login" && req.method === "POST") {
+    if (
+      ["auth/login", "auth/recover", "auth/password"].includes(name) &&
+      req.method === "POST"
+    ) {
       const ip = req.headers.get("x-forwarded-for")?.split(",")[0] || "local";
       const now = Date.now();
       const a = attempts.get(ip);
@@ -64,6 +72,35 @@ async function route(
         assert(a.n < 30, "Повторите вход через минуту", 429);
         a.n++;
       } else attempts.set(ip, { n: 1, at: now });
+      if (name === "auth/recover") {
+        const { email } = z
+          .object({ email: z.email() })
+          .parse(await bodyJson(req));
+        const appOrigin = process.env.APP_ORIGIN
+          ? new URL(process.env.APP_ORIGIN).origin
+          : req.nextUrl.origin;
+        const client = await recoveryClient();
+        const { error } = await client.auth.resetPasswordForEmail(email, {
+          redirectTo: appOrigin + "/api/auth/callback",
+        });
+        assert(
+          !error,
+          "Сервис восстановления временно недоступен. Обратитесь к администратору.",
+          503,
+        );
+        return NextResponse.json({
+          ok: true,
+          message:
+            "Если аккаунт существует, Supabase отправит письмо с инструкциями. Проверьте почту и папку «Спам».",
+        });
+      }
+      if (name === "auth/password") {
+        const { password } = z
+          .object({ password: z.string().min(12).max(128) })
+          .parse(await bodyJson(req));
+        await changeRecoveredPassword(password);
+        return NextResponse.json({ ok: true });
+      }
       const input = z
         .object({ email: z.email(), password: z.string().min(8).max(128) })
         .parse(await bodyJson(req));
@@ -72,10 +109,41 @@ async function route(
       await saveSession(data.session);
       return NextResponse.json({ ok: true });
     }
-    if (name === "auth/logout") {
+    if (name === "auth/callback" && req.method === "GET") {
+      const origin = process.env.APP_ORIGIN
+        ? new URL(process.env.APP_ORIGIN).origin
+        : req.nextUrl.origin;
+      try {
+        await acceptRecovery(req.nextUrl.searchParams);
+        return NextResponse.redirect(new URL("/reset-password", origin));
+      } catch {
+        return NextResponse.redirect(
+          new URL("/forgot-password?expired=1", origin),
+        );
+      }
+    }
+    if (name === "auth/logout" && req.method === "POST") {
       const jar = await cookies();
+      const access = jar.get("pa_access")?.value,
+        refresh = jar.get("pa_refresh")?.value;
+      if (access && refresh) {
+        try {
+          const client = authClient();
+          const { error } = await client.auth.setSession({
+            access_token: access,
+            refresh_token: refresh,
+          });
+          if (!error) await client.auth.signOut({ scope: "local" });
+        } catch {
+          /* Local cookies must still be cleared if Auth is unavailable. */
+        }
+      }
+      for (const cookie of jar.getAll())
+        if (cookie.name.startsWith("pa_pkce_")) jar.delete(cookie.name);
       jar.delete("pa_access");
       jar.delete("pa_refresh");
+      jar.delete("pa_recovery");
+      jar.delete("pa_recovery_verifier");
       return NextResponse.json({ ok: true });
     }
     if (name === "invitations/info" && req.method === "GET") {

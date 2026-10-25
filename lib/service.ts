@@ -24,6 +24,8 @@ export const commandSchema = z.object({
     "package.revoke",
     "notification.read",
     "organization.create",
+    "company.initialize",
+    "invitation.resend",
     "profile.update",
     "invitation.create",
     "template.create",
@@ -94,7 +96,34 @@ export async function execute(
     let privateEvent = false;
     let auditDetail: Record<string, any> = {};
     let entity = c.entityId || randomUUID();
-    if (c.action === "project.create") {
+    if (c.action === "company.initialize") {
+      permit(u.role, ["admin"]);
+      await tx`select pg_advisory_xact_lock(hashtextextended('packapprove-company-initialize',0))`;
+      let [company] =
+        await tx`select id from organizations where kind='manufacturer'`;
+      if (!company)
+        [company] =
+          await tx`insert into organizations(name,kind) values('ТОО «QAZALPACK»','manufacturer') returning id`;
+      await tx`insert into organization_memberships(organization_id,user_id) values(${company.id},${u.id}) on conflict do nothing`;
+      if (!(await tx`select id from checklist_templates limit 1`).length) {
+        const [template] =
+          await tx`insert into checklist_templates(name) values('Проверка упаковки') returning id`;
+        await tx`insert into checklist_template_versions(template_id,number,items) values(${template.id},1,${tx.json(["Формат PDF", "Цветовая модель CMYK", "Вылеты", "Безопасные поля", "Разрешение изображений", "Встроенные шрифты", "Толщина линий", "Overprint", "Штрихкод", "Размеры", "Количество страниц", "Производственный файл"])})`;
+      }
+      entity = company.id;
+      result = { id: company.id };
+    } else if (c.action === "invitation.resend") {
+      permit(u.role, ["admin", "manager"]);
+      const [invitation] =
+        await tx`select * from invitations where id=${entity} for update`;
+      assert(invitation, "Приглашение не найдено", 404);
+      assert(!invitation.accepted_at, "Приглашение уже принято");
+      if (!["observer", "approver"].includes(invitation.role))
+        permit(u.role, ["admin"]);
+      const token = randomBytes(32).toString("hex");
+      await tx`update invitations set token_hash=${sha256(token)},expires_at=now()+interval '7 days' where id=${entity}`;
+      result = { id: entity, invitationUrl: "/invite?token=" + token };
+    } else if (c.action === "project.create") {
       permit(u.role, ["admin", "manager"]);
       const org = uuid.parse(p.organizationId);
       assert(
@@ -109,7 +138,7 @@ export async function execute(
         .parse(p);
       assert(
         (
-          await tx`select id from profiles where (id=${assignees.designerId} and role='designer') or (id=${assignees.prepressId} and role='prepress')`
+          await tx`select id from profiles where active and ((id=${assignees.designerId} and role='designer') or (id=${assignees.prepressId} and role='prepress'))`
         ).length === 2,
         "Проверьте исполнителей",
         400,
@@ -402,7 +431,8 @@ export async function execute(
       } else if (c.action === "review.complete") {
         permit(u.role, ["prepress"]);
         assert(
-          a.active_version_id === v!.id && v!.status === "internal_review",
+          a.active_version_id === v!.id &&
+            ["internal_review", "published", "approved"].includes(v!.status),
           "Версия не на внутренней проверке",
         );
         const template = uuid.parse(p.templateId);
