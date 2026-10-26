@@ -210,7 +210,13 @@ export default function CanStudio({
             {c.title}
             <span> / V{version.number}</span>
           </h2>
-          <p>{c.subtitle}</p>
+          <p>
+            {demo
+              ? c.subtitle
+              : locale === "ru"
+                ? "Дизайн сохранённой версии на алюминиевой банке."
+                : "Сақталған нұсқа дизайны алюминий құтыда."}
+          </p>
         </div>
         <span className="can-bound">
           <LockKeyhole size={13} />
@@ -227,25 +233,60 @@ export default function CanStudio({
             <SlidersHorizontal size={16} />
             {c.settings}
           </summary>
-          <label>
-            {c.format}
-            <select
-              aria-label={c.format}
-              value={spec.preset}
-              onChange={(e) =>
-                changePreset(e.target.value as CanSpec["preset"])
-              }
-            >
-              {Object.entries(CAN_PRESETS).map(([key, p]) => (
-                <option key={key} value={key}>
-                  {p.name} · {p.volumeMl} мл
-                </option>
+          <fieldset className="can-format-options">
+            <legend>{c.format}</legend>
+            <div>
+              {Object.entries(CAN_PRESETS).map(([key, p], index) => (
+                <button
+                  type="button"
+                  key={key}
+                  aria-label={`${p.name} ${p.volumeMl} мл`}
+                  aria-pressed={spec.preset === key}
+                  onClick={() => changePreset(key as CanSpec["preset"])}
+                >
+                  <svg viewBox="0 0 36 56" aria-hidden="true">
+                    <path
+                      d={
+                        index === 0
+                          ? "M7 7Q7 4 10 4H26Q29 4 29 7L31 12V49Q31 52 28 52H8Q5 52 5 49V12Z"
+                          : index === 1
+                            ? "M9 6Q9 3 12 3H24Q27 3 27 6L28 11V51Q28 53 25 53H11Q8 53 8 51V11Z"
+                            : "M11 5Q11 2 14 2H22Q25 2 25 5L26 10V52Q26 54 23 54H13Q10 54 10 52V10Z"
+                      }
+                      fill="currentColor"
+                      opacity=".12"
+                      stroke="currentColor"
+                      strokeWidth="1.3"
+                    />
+                    <path
+                      d={
+                        index === 0
+                          ? "M9 7H27M6 15H30M6 46H30"
+                          : index === 1
+                            ? "M11 6H25M9 14H27M9 47H27"
+                            : "M13 5H23M11 13H25M11 48H25"
+                      }
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="1.2"
+                    />
+                  </svg>
+                  <b>{p.name}</b>
+                  <small>{p.volumeMl} мл</small>
+                </button>
               ))}
-              {(editable || initial.preset === "experimental") && (
-                <option value="experimental">{c.experimental}</option>
-              )}
-            </select>
-          </label>
+            </div>
+            {(editable || initial.preset === "experimental") && (
+              <button
+                className="can-experimental"
+                type="button"
+                aria-pressed={spec.preset === "experimental"}
+                onClick={() => changePreset("experimental")}
+              >
+                {c.experimental}
+              </button>
+            )}
+          </fieldset>
           <div className="can-dimensions">
             <div>
               <small>{c.dimensions}</small>

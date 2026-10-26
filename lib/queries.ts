@@ -1,3 +1,4 @@
+import {isolatedDemoEnabled} from "./demo-environment";
 import { asUser } from "./db";
 import { assert, sha256, permit } from "./security";
 import { storageClient } from "./platform";
@@ -42,6 +43,7 @@ export async function snapshot(u: User) {
       await tx`select id,organization_id,email,role,invited_by,accepted_at,expires_at,created_at from invitations order by created_at desc`;
     return {
       user: u,
+      demo_context: isolatedDemoEnabled() ? [{enabled:true}] : [],
       projects,
       artworks,
       versions,

@@ -73,6 +73,23 @@ test("three actual WebGL profiles use PNG/PDF/JPEG textures and real camera cont
     }
   }
   await page.getByRole("button", { name: "Спереди", exact: true }).click();
+  if (
+    !(await page
+      .locator(".can-settings")
+      .evaluate((el) => (el as HTMLDetailsElement).open))
+  )
+    await page.locator(".can-settings summary").click();
+  for (const [name, preset] of [
+    ["Standard 450 мл", "standard450"],
+    ["Sleek 330 мл", "sleek330"],
+    ["Slim 250 мл", "slim250"],
+  ]) {
+    await page.getByRole("button", { name, exact: true }).click();
+    await expect(page.locator(".can-studio")).toHaveAttribute(
+      "data-can-format",
+      preset,
+    );
+  }
   const front = await screenshotHash(page);
   await page.getByRole("button", { name: "Сзади", exact: true }).click();
   await expect.poll(() => screenshotHash(page)).not.toBe(front);
@@ -214,7 +231,9 @@ test("designer applies local artwork, saves a bound version through private dire
     await page.reload();
     await page.getByRole("tab", { name: "3D-банка" }).click();
     await ready(page);
-    await page.getByLabel("Формат банки").selectOption("experimental");
+    await page
+      .getByRole("button", { name: "Экспериментальный размер", exact: true })
+      .click();
     await page.getByLabel("Высота, мм", { exact: true }).fill("180");
     await expect(page.locator(".can-studio")).toHaveAttribute(
       "data-can-format",
@@ -223,8 +242,12 @@ test("designer applies local artwork, saves a bound version through private dire
     await page
       .getByRole("button", { name: "Сбросить предпросмотр", exact: true })
       .click();
-    await expect(page.getByLabel("Формат банки")).toHaveValue("standard450");
-    await page.getByLabel("Формат банки").selectOption("slim250");
+    await expect(
+      page.getByRole("button", { name: "Standard 450 мл", exact: true }),
+    ).toHaveAttribute("aria-pressed", "true");
+    await page
+      .getByRole("button", { name: "Slim 250 мл", exact: true })
+      .click();
     await page
       .getByLabel("Загрузить дизайн")
       .setInputFiles("public/can-demos/tun-250.jpg");

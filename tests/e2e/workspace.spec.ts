@@ -18,7 +18,7 @@ test("manager dashboard, project creation persists, RU/KZ, artwork PDF and annot
   page.on("pageerror", (e) => errors.push(e.message));
   await login(page);
   await expect(
-    page.getByRole("heading", { name: "Всё под контролем" }),
+    page.getByRole("heading", { name: "Обзор заказов" }),
   ).toBeVisible();
   await page.screenshot({
     path: `test-results/dashboard-${info.project.name}.png`,
@@ -29,8 +29,10 @@ test("manager dashboard, project creation persists, RU/KZ, artwork PDF and annot
     .click();
   const modal = page.getByRole("dialog");
   const projectName = "E2E " + Date.now();
-  await modal.getByLabel("Название", { exact: true }).fill(projectName);
-  await modal.getByLabel("Названия макетов").fill("Тестовая коробка");
+  await modal.getByLabel("Название проекта", { exact: true }).fill(projectName);
+  await modal.getByRole("button", { name: "Продолжить", exact: true }).click();
+  await modal.getByRole("button", { name: "Продолжить", exact: true }).click();
+  await modal.getByLabel("Названия макетов").fill("Тестовая банка");
   await modal.getByRole("button", { name: "Создать проект" }).click();
   await expect(modal).toBeHidden();
   await page.reload();

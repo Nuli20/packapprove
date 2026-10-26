@@ -76,9 +76,9 @@ test("invited staff complete V1 changes / V2 approval / exact production file an
         organizationId: role === "approver" ? client.id : manufacturer.id,
         role,
       });
-      const token = new URL(
-        "http://local" + invite.invitationUrl,
-      ).searchParams.get("token");
+      const token = new URL("http://local" + invite.invitationUrl).hash.slice(
+        "#token=".length,
+      );
       const api = await ctx();
       expect(
         (

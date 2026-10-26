@@ -1,8 +1,5 @@
 "use client";
 import { useState, useEffect } from "react";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { z } from "zod";
 import {
   X,
   UploadCloud,
@@ -13,19 +10,8 @@ import {
 import { translate, eventKeys, type Locale } from "@/lib/i18n";
 import type { Row, State } from "./workspace";
 import { directUpload } from "@/lib/direct-upload";
-import { PreparationPanel } from "./setup-wizard";
-const projectSchema = z.object({
-  name: z.string().min(2).max(160),
-  organizationId: z.string().uuid(),
-  designerId: z.string().uuid(),
-  prepressId: z.string().uuid(),
-  deadline: z.string().min(10),
-  artworks: z.string().min(2),
-  description: z.string(),
-  customerOrder: z.string(),
-  contacts: z.string(),
-  priority: z.enum(["normal", "high", "low"]),
-});
+import { useModalFocus } from "./use-modal-focus";
+import ProjectWizard from "./project-wizard";
 export default function ActionModal({
   modal: m,
   data: initialData,
@@ -64,21 +50,7 @@ export default function ActionModal({
   const [confirm, CF] = useState(false);
   const [localError, LE] = useState("");
   const [uploading, UPLOADING] = useState(false);
-  const form = useForm<z.infer<typeof projectSchema>>({
-    resolver: zodResolver(projectSchema),
-    defaultValues: {
-      priority: "normal",
-      name: "",
-      organizationId: d.organizations.find((o) => o.kind === "client")?.id,
-      designerId: d.profiles.find((p) => p.role === "designer")?.id,
-      prepressId: d.profiles.find((p) => p.role === "prepress")?.id,
-      deadline: new Date(Date.now() + 1209600000).toISOString().slice(0, 10),
-      description: "",
-      customerOrder: "",
-      contacts: "",
-      artworks: "",
-    },
-  });
+  const dialogRef = useModalFocus(onClose, busy || uploading);
   const set = (k: string, v: unknown) => P({ ...p, [k]: v });
   const action = m.action;
   const title = t(eventKeys[action] || action);
@@ -185,7 +157,8 @@ export default function ActionModal({
       }
     >
       <section
-        className="modal"
+        ref={dialogRef}
+        className={`modal ${action === "project.create" ? "project-create-modal" : ""}`}
         role="dialog"
         aria-modal="true"
         aria-label={title}
@@ -217,132 +190,16 @@ export default function ActionModal({
           </div>
         )}
         {action === "project.create" ? (
-          <form
-            onSubmit={form.handleSubmit(async (v) => {
-              try {
-                await onSubmit(action, undefined, {
-                  ...v,
-                  artworks: v.artworks
-                    .split("\n")
-                    .map((s) => s.trim())
-                    .filter(Boolean),
-                });
-              } catch {}
-            })}
-            className="modal-form"
-          >
-            <PreparationPanel
-              data={d}
-              locale={locale}
-              onChanged={D}
-              onClient={(id) =>
-                form.setValue("organizationId", id, { shouldValidate: true })
-              }
-            />
-            <label>
-              {t("name")}
-              <input {...form.register("name")} required />
-            </label>
-            <label>
-              {t("organization")}
-              <select {...form.register("organizationId")} required>
-                <option value="">{t("select")}</option>
-                {d.organizations
-                  .filter((o) => o.kind === "client")
-                  .map((o) => (
-                    <option value={o.id} key={o.id}>
-                      {o.name}
-                    </option>
-                  ))}
-              </select>
-            </label>
-            <div className="form-two">
-              {[
-                ["designerId", "designer"],
-                ["prepressId", "prepress"],
-              ].map(([k, l]) => (
-                <label key={k}>
-                  {t(l)}
-                  <select
-                    {...form.register(k as "designerId" | "prepressId")}
-                    required
-                  >
-                    <option value="">{t("select")}</option>
-                    {d.profiles
-                      .filter((p) => p.role === l && p.active)
-                      .map((p) => (
-                        <option value={p.id} key={p.id}>
-                          {p.full_name}
-                        </option>
-                      ))}
-                  </select>
-                </label>
-              ))}
-            </div>
-            <div className="form-two">
-              <label>
-                {t("deadline")}
-                <input type="date" {...form.register("deadline")} required />
-              </label>
-              <label>
-                {t("priority")}
-                <select {...form.register("priority")}>
-                  {["normal", "high", "low"].map((p) => (
-                    <option value={p} key={p}>
-                      {t(p)}
-                    </option>
-                  ))}
-                </select>
-              </label>
-            </div>
-            <label>
-              {t("contacts")}
-              <input {...form.register("contacts")} />
-            </label>
-            <label>
-              {t("customerOrder")}
-              <input {...form.register("customerOrder")} />
-            </label>
-            <label>
-              {t("description")}
-              <textarea {...form.register("description")} />
-            </label>
-            <label>
-              {t("artworkNames")}
-              <textarea {...form.register("artworks")} required rows={3} />
-            </label>
-            {Object.keys(form.formState.errors).length > 0 && (
-              <p className="error">
-                {t("required")}:{" "}
-                {Object.keys(form.formState.errors)
-                  .map((k) =>
-                    t(
-                      (
-                        {
-                          organizationId: "organization",
-                          designerId: "designer",
-                          prepressId: "prepress",
-                          artworks: "artworkNames",
-                        } as Record<string, string>
-                      )[k] || k,
-                    ),
-                  )
-                  .join(", ")}
-              </p>
-            )}
-            <div className="modal-footer">
-              <button type="button" className="btn" onClick={onClose}>
-                {t("cancel")}
-              </button>
-              <button className="btn primary" disabled={busy || uploading}>
-                {busy ? (
-                  <Loader2 className="spin" size={17} />
-                ) : (
-                  t("newProject")
-                )}
-              </button>
-            </div>
-          </form>
+          <ProjectWizard
+            data={d}
+            locale={locale}
+            busy={busy}
+            onChanged={D}
+            onClose={onClose}
+            onSubmit={async (v) => {
+              await onSubmit(action, undefined, v);
+            }}
+          />
         ) : (
           <form className="modal-form" onSubmit={submit}>
             {action === "invitation.link" && (
