@@ -1,36 +1,14 @@
 "use client";
-import { useState } from "react";
-import {
-  ArrowUpRight,
-  LayoutGrid,
-  List,
-  Clock3,
-  CheckCircle2,
-  FileCheck2,
-  AlertTriangle,
-} from "lucide-react";
+import ProjectCatalog, {
+  type CatalogFilters,
+} from "./workspace/project-catalog";
+import { ArrowUpRight, CheckCircle2 } from "lucide-react";
 import { translate, type Locale } from "@/lib/i18n";
 import { operationalItems, nextBlock } from "@/lib/workflow";
 import type { State, Row } from "./workspace";
-import PdfViewer from "./pdf-viewer";
-export function FileCover({ data, artwork }: { data: State; artwork: Row }) {
-  const f = data.files.find(
-    (f) => f.version_id === artwork.active_version_id && f.kind === "preview",
-  );
-  return (
-    <div className="real-file-cover">
-      {f ? (
-        f.mime_type === "application/pdf" ? (
-          <PdfViewer url={`/api/files/${f.id}?view=1`} zoom={0.24} page={1} />
-        ) : (
-          <img src={`/api/files/${f.id}?view=1`} alt={artwork.name} />
-        )
-      ) : (
-        <span>PDF / —</span>
-      )}
-    </div>
-  );
-}
+
+import { FileCover } from "./workspace/file-cover";
+export { FileCover } from "./workspace/file-cover";
 export default function Operations({
   data: d,
   view,
@@ -39,6 +17,8 @@ export default function Operations({
   onProject,
   search,
   onSearch,
+  filters,
+  onFilters,
 }: {
   data: State;
   view: string;
@@ -47,141 +27,27 @@ export default function Operations({
   onProject: (id: string) => void;
   search: string;
   onSearch: (v: string) => void;
+  filters: CatalogFilters;
+  onFilters: (filters: CatalogFilters) => void;
 }) {
   const t = (k: string) => translate(locale, k);
-  const [layout, L] = useState("table");
-  const [sort, S] = useState("deadline");
-  const [client, C] = useState("");
-  const [status, ST] = useState("");
-  const name = (id: string) =>
+  const name = (id?: string) =>
     d.profiles.find((p) => p.id === id)?.full_name || t("unassigned");
   const date = (v: string) =>
     new Date(v).toLocaleDateString(locale === "ru" ? "ru-RU" : "kk-KZ");
   const items = operationalItems(d);
-  if (view === "projects") {
-    const projects = d.projects
-      .filter(
-        (p) =>
-          (!client || p.organization_id === client) &&
-          (!status || p.status === status) &&
-          `${p.name} ${p.organization_name}`
-            .toLowerCase()
-            .includes(search.toLowerCase()),
-      )
-      .sort((a, b) => String(a[sort]).localeCompare(String(b[sort])));
+  if (view === "projects")
     return (
-      <>
-        <div className="catalog-toolbar">
-          <label className="catalog-search">
-            {t("search")}
-            <input
-              value={search}
-              placeholder={t("search")}
-              onChange={(e) => onSearch(e.target.value)}
-            />
-          </label>
-          <label>
-            {t("organization")}
-            <select value={client} onChange={(e) => C(e.target.value)}>
-              <option value="">{t("all")}</option>
-              {d.organizations
-                .filter((o) => o.kind === "client")
-                .map((o) => (
-                  <option key={o.id} value={o.id}>
-                    {o.name}
-                  </option>
-                ))}
-            </select>
-          </label>
-          <label>
-            {t("status")}
-            <select value={status} onChange={(e) => ST(e.target.value)}>
-              <option value="">{t("all")}</option>
-              {["active", "paused", "completed", "archived"].map((s) => (
-                <option value={s} key={s}>
-                  {t(s)}
-                </option>
-              ))}
-            </select>
-          </label>
-          <label>
-            {t("sort")}
-            <select value={sort} onChange={(e) => S(e.target.value)}>
-              <option value="deadline">{t("deadline")}</option>
-              <option value="name">{t("name")}</option>
-              <option value="created_at">{t("date")}</option>
-            </select>
-          </label>
-          <button
-            className="btn"
-            onClick={() => L(layout === "table" ? "cards" : "table")}
-          >
-            {layout === "table" ? <LayoutGrid size={18} /> : <List size={18} />}{" "}
-            {t(layout === "table" ? "cards" : "table")}
-          </button>
-        </div>
-        {layout === "table" ? (
-          <section className="panel project-table-wrap">
-            <table className="project-table">
-              <thead>
-                <tr>
-                  <th>{t("project")}</th>
-                  <th>{t("artworks")}</th>
-                  <th>{t("deadline")}</th>
-                  <th>{t("manager")}</th>
-                  <th>{t("status")}</th>
-                </tr>
-              </thead>
-              <tbody>
-                {projects.map((p) => (
-                  <tr
-                    key={p.id}
-                    tabIndex={0}
-                    onClick={() => onProject(p.id)}
-                    onKeyDown={(e) => e.key === "Enter" && onProject(p.id)}
-                  >
-                    <td>
-                      <b>{p.name}</b>
-                      <small>{p.organization_name}</small>
-                    </td>
-                    <td>
-                      {d.artworks.filter((a) => a.project_id === p.id).length}
-                    </td>
-                    <td>{date(p.deadline)}</td>
-                    <td>{name(p.manager_id)}</td>
-                    <td>{t(p.status)}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </section>
-        ) : (
-          <div className="queue-grid">
-            {projects.map((p) => (
-              <button
-                className="panel queue-card"
-                key={p.id}
-                onClick={() => onProject(p.id)}
-              >
-                {(() => {
-                  const a = d.artworks.find((a) => a.project_id === p.id);
-                  return a ? <FileCover data={d} artwork={a} /> : null;
-                })()}
-                <small>{p.organization_name}</small>
-                <h2>{p.name}</h2>
-                <p>
-                  {date(p.deadline)} · {t(p.status)}
-                </p>
-              </button>
-            ))}
-          </div>
-        )}
-        {!projects.length && (
-          <div className="empty-state">{t("emptyProjects")}</div>
-        )}
-      </>
+      <ProjectCatalog
+        data={d}
+        locale={locale}
+        onProject={onProject}
+        search={search}
+        onSearch={onSearch}
+        filters={filters}
+        onFilters={onFilters}
+      />
     );
-  }
   const list = items
     .filter(
       (i) =>
@@ -190,7 +56,7 @@ export default function Operations({
           : view === "ready"
             ? i.ready
             : view === "changes"
-              ? i.correction || i.threads.length > 0
+              ? i.correction
               : i.stage === view) &&
         `${i.a.name} ${i.project?.name}`
           .toLowerCase()
@@ -290,19 +156,41 @@ export function WorkflowSteps({
   const i = operationalItems(data).find((i) => i.a.id === artwork.id);
   if (!i) return null;
   const t = (k: string) => translate(locale, k);
-  const keys = ["design", "internal", "approval", "ready", "production"];
+  const keys = i.client
+    ? ["design", "approval", "approved", "production"]
+    : ["design", "internal", "approval", "ready", "production"];
+  const phase =
+    i.stage === "changes"
+      ? "design"
+      : i.stage === "dispatch"
+        ? "approval"
+        : i.stage;
   return (
-    <div className="workflow-steps" aria-label={t("workflow")}>
-      {keys.map((k, n) => (
-        <div
-          key={k}
-          className={`workflow-step ${(i.stage === "changes" ? "design" : i.stage) === k ? "current" : ""}`}
-        >
-          <small>0{n + 1}</small>
-          <b>{t(k === "design" ? "newVersion" : k)}</b>
+    <div className="workflow-overview">
+      <details className="workflow-details">
+        <summary>
+          <span>
+            {t("workflow")} · V{i.version?.number || "—"}
+          </span>
+          <b>
+            {t(i.stage)} · {Math.max(1, keys.indexOf(phase) + 1)}/{keys.length}
+          </b>
+        </summary>
+        <div className="workflow-steps">
+          {keys.map((k, n) => (
+            <div
+              key={k}
+              className={`workflow-step ${phase === k ? "current" : ""}`}
+            >
+              <small>0{n + 1}</small>
+              <b>{t(k === "design" ? "newVersion" : k)}</b>
+            </div>
+          ))}
         </div>
-      ))}
-      <p>{t(nextBlock(i))}</p>
+      </details>
+      <p className={`workflow-next ${i.pkg?.status || ""}`}>
+        {t(nextBlock(i))}
+      </p>
     </div>
   );
 }

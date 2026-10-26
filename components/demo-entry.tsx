@@ -1,4 +1,6 @@
 "use client";
+import { notifySessionChange } from "@/lib/session-events";
+
 import { useState } from "react";
 import Link from "next/link";
 import {
@@ -80,6 +82,7 @@ export default function DemoEntry() {
       });
       const j = await r.json();
       if (!r.ok) throw Error(j.error);
+      notifySessionChange("login");
       location.href = j.next;
     } catch (e) {
       E((e as Error).message);
