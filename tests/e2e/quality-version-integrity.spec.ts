@@ -37,6 +37,7 @@ test("stale client tab is rejected and opens the current saved version through t
 }) => {
   test.setTimeout(90000);
   const contexts: APIRequestContext[] = [];
+  const artworkTitle = "Контроль вкладки " + randomUUID().slice(0, 8);
   const api = async (role: string) => {
     const c = await playwright.request.newContext({
       baseURL: localTestOrigin(),
@@ -80,7 +81,7 @@ test("stale client tab is rejected and opens the current saved version through t
       prepressId: s.profiles.find((p: any) => p.full_name === "Тимур Ахметов")
         .id,
       deadline: "2026-12-20",
-      artworks: ["Контроль устаревшей вкладки"],
+      artworks: [artworkTitle],
     });
     let snapshot = await (await manager.get("/api/state")).json(),
       art = snapshot.artworks.find((a: any) => a.project_id === project.id);
@@ -146,7 +147,7 @@ test("stale client tab is rejected and opens the current saved version through t
     await page.goto("/?view=clientHistory");
     await page
       .locator("button.history-row")
-      .filter({ hasText: "Контроль устаревшей вкладки" })
+      .filter({ hasText: artworkTitle })
       .filter({ hasText: "V1" })
       .click();
     await expect(page).toHaveURL(new RegExp("version=" + first.id));

@@ -24,7 +24,7 @@ try {
     JSON.stringify(
       {
         measurement:
-          "RLS transaction wall time, includes PostgreSQL round trips and materialization; excludes Auth/HTTP/JSON serialization. Same running database and runtime connection. First sample is a cold pool, following 3 are warm.",
+          "RLS transaction wall time, includes PostgreSQL round trips and materialization; excludes Auth/HTTP/JSON serialization. Same running database and runtime connection. Four alternating samples per projection on a warmed connection; discard the first as query warm-up and take the median of the following three.",
         runs,
       },
       null,

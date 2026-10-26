@@ -6,6 +6,7 @@ test.use({ actionTimeout: 15000 });
 const origin = localTestOrigin(),
   fixturePassword = "QualityBrowser2026!";
 async function login(p: Page, email: string, password = "PackApprove2026!") {
+  await p.bringToFront();
   await p.goto("/login");
   await p.getByLabel("Электронная почта", { exact: true }).fill(email);
   await p.getByLabel("Пароль", { exact: true }).fill(password);
@@ -32,6 +33,7 @@ async function state(p: Page) {
   return r.json();
 }
 async function upload(p: Page, artwork: string, file: string, changes: string) {
+  await p.bringToFront();
   await p.goto("/?artwork=" + artwork);
   await p
     .locator(".artwork-heading")
@@ -57,6 +59,7 @@ async function upload(p: Page, artwork: string, file: string, changes: string) {
   );
 }
 async function review(p: Page, artwork: string) {
+  await p.bringToFront();
   await p.goto("/?artwork=" + artwork);
   await p
     .locator(".artwork-heading")
@@ -68,6 +71,7 @@ async function review(p: Page, artwork: string) {
   await save(p);
 }
 async function send(p: Page, artwork: string, person: string) {
+  await p.bringToFront();
   await p.goto("/?artwork=" + artwork);
   await p
     .locator(".artwork-heading")
@@ -80,6 +84,7 @@ async function decision(
   p: Page,
   result: "Утвердить версию" | "Запросить изменения",
 ) {
+  await p.bringToFront();
   const mobile = p.locator(".mobile-decision-bar");
   const area = (await mobile.isVisible())
     ? mobile
@@ -268,6 +273,7 @@ test("UI: new client and one-use invitations → V1 → changes → V2 → appro
     );
     await review(prepress, artwork.id);
     await send(manager, artwork.id, people.approver.name);
+    await client.bringToFront();
     await client.goto("/?artwork=" + artwork.id);
     await expect(client.locator(".large-version")).toHaveText("V1");
     await client
@@ -309,6 +315,7 @@ test("UI: new client and one-use invitations → V1 → changes → V2 → appro
       .click();
     await review(prepress, artwork.id);
     await send(manager, artwork.id, people.approver.name);
+    await client.bringToFront();
     await client.goto("/?artwork=" + artwork.id);
     await expect(client.locator(".large-version")).toHaveText("V2");
     await client.getByRole("tab", { name: "3D-банка", exact: true }).click();

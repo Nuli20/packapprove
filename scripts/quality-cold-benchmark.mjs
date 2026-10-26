@@ -84,8 +84,10 @@ for (let i = 0; i < 3; i++) {
       warm: [await measure(), await measure(), await measure()],
     });
   } finally {
-    child.kill("SIGTERM");
-    await once(child, "exit");
+    if (child.exitCode === null) {
+      child.kill("SIGTERM");
+      await once(child, "exit");
+    }
   }
 }
 await mkdir(resolve(out, ".."), { recursive: true });
