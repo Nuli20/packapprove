@@ -3,6 +3,7 @@ export async function rasterDesign(
   source: File | { url: string; sha256: string },
   page: number,
   signal: AbortSignal,
+  retain?: { filename: string },
 ) {
   let bytes: Uint8Array<ArrayBuffer>;
   if (source instanceof File)
@@ -29,6 +30,9 @@ export async function rasterDesign(
     .join("");
   if (!(source instanceof File) && hash !== source.sha256)
     throw Error("SHA-256 предпросмотра не совпадает с сохранённым файлом.");
+  const originalFile = retain
+    ? new File([bytes], retain.filename, { type: mime })
+    : undefined;
   if (signal.aborted) throw new DOMException("Cancelled", "AbortError");
   const canvas = document.createElement("canvas");
   let pages = 1;
@@ -83,5 +87,5 @@ export async function rasterDesign(
     }
   }
   if (signal.aborted) throw new DOMException("Cancelled", "AbortError");
-  return { canvas, pages, hash, mime };
+  return { canvas, pages, hash, mime, originalFile };
 }

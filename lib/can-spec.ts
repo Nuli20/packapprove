@@ -162,3 +162,32 @@ export function boundedImageDimensions(bytes: Uint8Array, mime: string) {
     );
   return { width, height };
 }
+
+export function placementDiagnostic(
+  width: number,
+  height: number,
+  spec: CanSpec,
+) {
+  const d = canDimensions(spec),
+    ratio = d.wrapWidthMm / d.printHeightMm,
+    w = 2048,
+    h = Math.round(w / ratio),
+    rect = imagePlacement(width, height, w, h, spec.placement);
+  return {
+    ratio,
+    w,
+    h,
+    sourceRatio: width / height,
+    mismatch: Math.abs(width / height / ratio - 1) > 0.01,
+    gaps:
+      rect.x > 1 ||
+      rect.y > 1 ||
+      rect.x + rect.width < w - 1 ||
+      rect.y + rect.height < h - 1,
+    crop:
+      rect.x < -1 ||
+      rect.y < -1 ||
+      rect.x + rect.width > w + 1 ||
+      rect.y + rect.height > h + 1,
+  };
+}
