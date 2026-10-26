@@ -1,0 +1,68 @@
+{
+  "conditions": "3 fresh local production processes. Health and login precede the first state request. DB/OS caches remain warm; this is not Vercel cold-start latency.",
+  "runs": [
+    {
+      "run": 0,
+      "firstAfterHealthAndLogin": {
+        "ms": 987.032971,
+        "bytes": 1855503
+      },
+      "warm": [
+        {
+          "ms": 912.3191860000002,
+          "bytes": 1855503
+        },
+        {
+          "ms": 921.3779610000001,
+          "bytes": 1855503
+        },
+        {
+          "ms": 927.7567870000003,
+          "bytes": 1855503
+        }
+      ]
+    },
+    {
+      "run": 1,
+      "firstAfterHealthAndLogin": {
+        "ms": 962.2216519999993,
+        "bytes": 1855503
+      },
+      "warm": [
+        {
+          "ms": 942.7630509999999,
+          "bytes": 1855503
+        },
+        {
+          "ms": 935.747813,
+          "bytes": 1855503
+        },
+        {
+          "ms": 939.839105,
+          "bytes": 1855503
+        }
+      ]
+    },
+    {
+      "run": 2,
+      "firstAfterHealthAndLogin": {
+        "ms": 970.0850260000007,
+        "bytes": 1855503
+      },
+      "warm": [
+        {
+          "ms": 919.5921990000006,
+          "bytes": 1855503
+        },
+        {
+          "ms": 917.3958340000008,
+          "bytes": 1855503
+        },
+        {
+          "ms": 911.8948010000004,
+          "bytes": 1855503
+        }
+      ]
+    }
+  ]
+}

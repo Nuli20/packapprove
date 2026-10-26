@@ -1,0 +1,10 @@
+{
+  "before": {
+    "dashboardResourcesInspected": 11,
+    "threeWebGLRendererInDashboardResources": []
+  },
+  "after": {
+    "dashboardResourcesInspected": 10,
+    "threeWebGLRendererInDashboardResources": []
+  }
+}

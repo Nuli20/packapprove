@@ -1,0 +1,38 @@
+{
+  "appCommit": "4d98ce81f34dd90931f1df4e80f986bb5e6baa63",
+  "typecheck": "passed",
+  "productionBuild": "passed",
+  "vitest": {
+    "passed": 95,
+    "files": 17
+  },
+  "playwright": {
+    "fullSuite": {
+      "passed": 48,
+      "skipped": 2,
+      "failed": 0,
+      "total": 50
+    },
+    "focusedAfterComparisonFix": {
+      "passed": 9,
+      "skipped": 1,
+      "failed": 0
+    },
+    "uniquePassed": 50,
+    "uniqueSkipped": 2,
+    "uniqueTotal": 52
+  },
+  "migrationChecks": 6,
+  "schemaObjects": 787,
+  "runtime": {
+    "restrictedLogin": true,
+    "directInvitationsSelect": false,
+    "canEscalate": false,
+    "bypassRls": false,
+    "databaseOwner": false,
+    "safe": true
+  },
+  "remoteStagingVerified": false,
+  "productionChanged": false,
+  "mainChanged": false
+}
