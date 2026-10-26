@@ -54,19 +54,20 @@ try {
           await expect(
             p.locator(".project-studio-card,.project-table tbody tr"),
           ).toHaveCount(2, { timeout: 30000 });
-          await expect
-            .poll(() =>
-              p
-                .locator(".real-file-cover img")
-                .evaluateAll(
-                  (images) =>
-                    images.length > 0 &&
-                    images.every(
-                      (image) => image.complete && image.naturalWidth > 0,
-                    ),
-                ),
-            )
-            .toBe(true);
+          if (await p.locator(".project-studio-card").count())
+            await expect
+              .poll(() =>
+                p
+                  .locator(".real-file-cover img")
+                  .evaluateAll(
+                    (images) =>
+                      images.length > 0 &&
+                      images.every(
+                        (image) => image.complete && image.naturalWidth > 0,
+                      ),
+                  ),
+              )
+              .toBe(true);
           await p.screenshot({
             path: `${out}/projects-${width}.png`,
             fullPage: true,
