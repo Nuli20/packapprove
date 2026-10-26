@@ -82,6 +82,19 @@ describe("Scoped workspace projections retain RLS and avoid unrelated history", 
       }),
     ).rejects.toMatchObject({ status: 404 });
   });
+  it("the newest saved discussion is visible on the first page, including after reload", async () => {
+    const [latest] =
+      await db`select t.id,t.version_id,v.artwork_id from comment_threads t join artwork_versions v on v.id=t.version_id order by t.created_at desc,t.id desc limit 1`;
+    expect(latest).toBeTruthy();
+    const first = await workspaceSnapshot(manager, {
+      view: "artwork",
+      artwork: latest.artwork_id,
+      version: latest.version_id,
+      pageSize: 1,
+    });
+    expect(first.threads[0].id).toBe(latest.id);
+    expect(first.pagination!.total).toBeGreaterThanOrEqual(1);
+  });
   it("query validation bounds page sizes and disallows SQL sort expressions", () => {
     expect(
       workspaceQuery.safeParse({ view: "projects", pageSize: 100000 }).success,

@@ -140,6 +140,12 @@ export default function Workspace() {
             : "Өзгерістер сақталды. Деректерді жаңарту үшін бетті қайта жүктеңіз.",
         ),
       );
+      if (action === "comment.create") {
+        CP(1);
+        const params = new URLSearchParams(location.search);
+        params.delete("page");
+        history.replaceState(null, "", "/?" + params);
+      }
       if (action === "project.create") openProject(j.id);
       if (action === "version.create") selectVersion(j.id);
       if (action === "artwork.create")

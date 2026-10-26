@@ -331,7 +331,7 @@ export async function workspaceSnapshot(
             );
             setPage(count);
             d.threads =
-              await tx`select * from comment_threads where version_id=${selected || d.versions[0].id} order by created_at,id limit ${q.pageSize} offset ${offset}`;
+              await tx`select * from comment_threads where version_id=${selected || d.versions[0].id} order by created_at desc,id desc limit ${q.pageSize} offset ${offset}`;
           }
           if (d.threads.length) {
             d.comments =
