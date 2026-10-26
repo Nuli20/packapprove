@@ -1,6 +1,6 @@
 import {AppError} from './security';
 /** Branch deploys must never inherit a usable production backend accidentally. */
-export function assertDeploymentBackend(env:NodeJS.ProcessEnv=process.env){
+export function assertDeploymentBackend(env:Readonly<Record<string,string|undefined>>=process.env){
  if(env.VERCEL_ENV!=='preview')return;
  const ref=env.PACKAPPROVE_PREVIEW_PROJECT_REF;
  let allowed=false;
