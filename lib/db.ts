@@ -1,7 +1,7 @@
 import postgres from "postgres";
-import {assertDeploymentBackend} from './deployment-guard';
-import {isolatedDemoEnabled} from './demo-environment';
-import {AppError} from './security';
+import { assertDeploymentBackend } from "./deployment-guard";
+import { isolatedDemoEnabled } from "./demo-environment";
+import { AppError } from "./security";
 export type Tx = postgres.TransactionSql;
 const globalDb = globalThis as unknown as {
   packDb?: ReturnType<typeof postgres>;
@@ -27,12 +27,27 @@ export async function asUser<T>(
   })) as T;
 }
 
-let runtimeCheck:Promise<void>|undefined;
-async function verifyRuntime(){
- if(process.env.NODE_ENV!=='production'||isolatedDemoEnabled())return;
- if(!runtimeCheck)runtimeCheck=(async()=>{
-  const [r]=await db`select r.rolsuper,r.rolbypassrls,exists(select 1 from pg_database d where d.datname=current_database() and (d.datdba=r.oid or pg_has_role(current_user,d.datdba,'MEMBER'))) as owner,exists(select 1 from pg_class c join pg_namespace n on n.oid=c.relnamespace where n.nspname='public' and c.relowner=r.oid) as owns_tables,exists(select 1 from pg_roles ar where ar.rolname='packapprove_app' and not ar.rolsuper and not ar.rolbypassrls and not ar.rolcanlogin) as app_safe from pg_roles r where r.rolname=current_user`;
-  if(r.rolsuper||r.rolbypassrls||r.owner||r.owns_tables||!r.app_safe)throw new AppError(503,'Нужна безопасная настройка подключения к базе. Обратитесь к администратору.');
- })().catch(e=>{runtimeCheck=undefined;throw e});
- await runtimeCheck;
+let runtimeCheck: Promise<void> | undefined;
+async function verifyRuntime() {
+  if (process.env.NODE_ENV !== "production" || isolatedDemoEnabled()) return;
+  if (!runtimeCheck)
+    runtimeCheck = (async () => {
+      const [r] =
+        await db`select r.rolsuper,r.rolbypassrls,exists(select 1 from pg_database d where d.datname=current_database() and (d.datdba=r.oid or pg_has_role(current_user,d.datdba,'MEMBER'))) as owner,exists(select 1 from pg_class c join pg_namespace n on n.oid=c.relnamespace where n.nspname='public' and (c.relowner=r.oid or pg_has_role(current_user,c.relowner,'MEMBER'))) as owns_tables,exists(select 1 from pg_roles ar where ar.rolname='packapprove_app' and not ar.rolsuper and not ar.rolbypassrls and not ar.rolcanlogin) as app_safe from pg_roles r where r.rolname=current_user`;
+      if (
+        r.rolsuper ||
+        r.rolbypassrls ||
+        r.owner ||
+        r.owns_tables ||
+        !r.app_safe
+      )
+        throw new AppError(
+          503,
+          "Нужна безопасная настройка подключения к базе. Обратитесь к администратору.",
+        );
+    })().catch((e) => {
+      runtimeCheck = undefined;
+      throw e;
+    });
+  await runtimeCheck;
 }
