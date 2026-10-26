@@ -15,6 +15,7 @@ import {
   changeRecoveredPassword,
 } from "@/lib/recovery";
 import { AppError, assert } from "@/lib/security";
+import { assertDeploymentBackend } from "@/lib/deployment-guard";
 export const runtime = "nodejs";
 export const maxDuration = 60;
 export const dynamic = "force-dynamic";
@@ -65,6 +66,7 @@ async function route(
     }
     if (name === "health")
       return NextResponse.json({ status: "ok", service: "PackApprove" });
+    assertDeploymentBackend();
     if (
       ["auth/login", "auth/recover", "auth/password"].includes(name) &&
       req.method === "POST"
