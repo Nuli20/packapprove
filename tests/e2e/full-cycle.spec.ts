@@ -1,3 +1,4 @@
+import { localTestOrigin } from "../local-environment";
 import { test, expect, APIRequestContext } from "@playwright/test";
 import { randomUUID, createHash } from "node:crypto";
 import { readFileSync } from "node:fs";
@@ -25,7 +26,7 @@ test("invited staff complete V1 changes / V2 approval / exact production file an
   const password = "IsolatedCycle2026!";
   const ctx = async () => {
     const c = await playwright.request.newContext({
-      baseURL: "http://127.0.0.1:3000",
+      baseURL: localTestOrigin(),
     });
     contexts.push(c);
     return c;
@@ -94,7 +95,7 @@ test("invited staff complete V1 changes / V2 approval / exact production file an
     // Reproduce an expired access-cookie while retaining the real Supabase refresh cookie.
     const cookieState = await people.approver.api.storageState();
     const refreshOnly = await playwright.request.newContext({
-      baseURL: "http://127.0.0.1:3000",
+      baseURL: localTestOrigin(),
       storageState: {
         cookies: cookieState.cookies.filter((c) => c.name === "pa_refresh"),
         origins: [],

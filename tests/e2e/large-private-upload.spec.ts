@@ -1,3 +1,4 @@
+import { localTestOrigin } from "../local-environment";
 import { test, expect, type APIRequestContext } from "@playwright/test";
 import { randomUUID, createHash } from "node:crypto";
 import { readFile } from "node:fs/promises";
@@ -11,7 +12,7 @@ test("large design bypasses JSON body limits; private verified download streams 
   const contexts: APIRequestContext[] = [];
   const api = async (role: string) => {
     const c = await playwright.request.newContext({
-      baseURL: "http://127.0.0.1:3000",
+      baseURL: localTestOrigin(),
     });
     contexts.push(c);
     expect(
@@ -50,7 +51,9 @@ test("large design bypasses JSON body limits; private verified download streams 
       designerId: state.profiles.find(
         (p: any) => p.full_name === "Арман Касымов",
       ).id,
-      prepressId: state.profiles.find((p: any) => p.role === "prepress").id,
+      prepressId: state.profiles.find(
+        (p: any) => p.full_name === "Тимур Ахметов",
+      ).id,
       deadline: "2026-12-20",
       artworks: ["Large private design"],
     });

@@ -1,29 +1,43 @@
-_format_version: '2.1'
+_format_version: "2.1"
 _transform: true
 services:
   - name: auth
     url: http://auth:9999/
     routes:
       - name: auth
-        paths: ['/auth/v1/']
+        paths: ["/auth/v1/"]
         strip_path: true
   - name: storage
     url: http://storage:5000/
     plugins:
       - name: cors
         config:
-          origins: ['http://127.0.0.1:3000', 'http://localhost:3000']
-          methods: ['GET','POST','PUT','OPTIONS']
-          headers: ['Content-Type','Authorization','apikey','x-upsert','x-client-info','cache-control']
-          exposed_headers: ['Content-Type']
+          origins:
+            [
+              "http://127.0.0.1:3000",
+              "http://localhost:3000",
+              "http://127.0.0.1:3030",
+              "http://localhost:3030",
+            ]
+          methods: ["GET", "POST", "PUT", "OPTIONS"]
+          headers:
+            [
+              "Content-Type",
+              "Authorization",
+              "apikey",
+              "x-upsert",
+              "x-client-info",
+              "cache-control",
+            ]
+          exposed_headers: ["Content-Type"]
           max_age: 600
     routes:
       - name: storage
-        paths: ['/storage/v1/']
+        paths: ["/storage/v1/"]
         strip_path: true
   - name: rest
     url: http://rest:3000/
     routes:
       - name: rest
-        paths: ['/rest/v1/']
+        paths: ["/rest/v1/"]
         strip_path: true

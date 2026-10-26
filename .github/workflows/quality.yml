@@ -1,0 +1,46 @@
+name: Product quality (isolated Supabase)
+on:
+  pull_request:
+  push:
+    branches: [feat/product-quality-pass]
+permissions:
+  contents: read
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "24.19.0"
+          cache: npm
+      - run: npm ci
+      - run: npx playwright install --with-deps chromium
+      - name: Select installed Chromium
+        run: node -e 'console.log("CHROMIUM_PATH="+require("@playwright/test").chromium.executablePath())' >> "$GITHUB_ENV"
+      - name: Start disposable local Auth, PostgreSQL and private Storage
+        run: npm run local:up
+      - run: npm run typecheck
+      - run: npm test
+      - run: npm run db:doctor
+      - run: npm run db:test-migrations
+      - run: npm run build
+      - name: Browser checks with a restricted runtime login
+        shell: bash
+        run: |
+          npm run test:serve-restricted -- --port 3030 > /tmp/packapprove-server.log 2>&1 &
+          runtime_pid=$!
+          trap 'kill "$runtime_pid" || true' EXIT
+          for n in $(seq 1 60); do
+            if curl --silent --fail http://127.0.0.1:3030/api/health > /dev/null; then break; fi
+            sleep 1
+          done
+          PACKAPPROVE_TEST_ORIGIN=http://127.0.0.1:3030 npm run test:e2e
+      # Traces, HTML reports, .env files and one-use invitation links are deliberately not uploaded.
+      - uses: actions/upload-artifact@v4
+        if: success()
+        with:
+          name: browser-screenshots
+          path: .data/quality-ui/*.png
+          if-no-files-found: ignore

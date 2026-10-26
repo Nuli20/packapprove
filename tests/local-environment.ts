@@ -22,3 +22,14 @@ export function localTestEnvironment() {
     throw Error("Tests require isolated demo mode.");
   return values;
 }
+
+export function localTestOrigin() {
+  const value = process.env.PACKAPPROVE_TEST_ORIGIN || "http://127.0.0.1:3000";
+  const u = new URL(value);
+  if (
+    u.protocol !== "http:" ||
+    !["127.0.0.1", "localhost"].includes(u.hostname)
+  )
+    throw Error("E2E refuses a remote application.");
+  return u.origin;
+}

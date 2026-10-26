@@ -1,3 +1,4 @@
+import { localTestOrigin } from "../local-environment";
 import { test, expect } from "@playwright/test";
 import { randomUUID } from "node:crypto";
 import { demoPdf } from "../../scripts/demo-pdf";
@@ -36,12 +37,12 @@ test("manager dashboard, project creation persists, RU/KZ, artwork PDF and annot
   await modal.getByRole("button", { name: "Создать проект" }).click();
   await expect(modal).toBeHidden();
   await page.reload();
-  await expect(
-    page.locator(".project-table").getByText(projectName, { exact: true }),
-  ).toBeVisible();
+  await expect(page.locator("main h1")).toHaveText(projectName);
+  await page.goto("/?view=projects");
+  await page.locator(".catalog-search input").fill("Линейка чая Botanica");
   await page
-    .locator(".project-table")
-    .getByText("Линейка чая Botanica", { exact: true })
+    .locator(".project-studio-card")
+    .filter({ hasText: "Линейка чая Botanica" })
     .click();
   await page
     .locator(".artwork-card")
@@ -98,7 +99,7 @@ test("client cannot see internal comments and can record a durable decision", as
   const contexts: any[] = [];
   async function api(role: string) {
     const ctx = await playwright.request.newContext({
-      baseURL: "http://127.0.0.1:3000",
+      baseURL: localTestOrigin(),
     });
     contexts.push(ctx);
     const r = await ctx.post("/api/auth/login", {
@@ -133,8 +134,10 @@ test("client cannot see internal comments and can record a durable decision", as
     const project = await act(manager, "project.create", undefined, {
       name: "E2E approval " + randomUUID().slice(0, 8),
       organizationId: org.id,
-      designerId: d.profiles.find((p: any) => p.role === "designer").id,
-      prepressId: d.profiles.find((p: any) => p.role === "prepress").id,
+      designerId: d.profiles.find((p: any) => p.full_name === "Арман Касымов")
+        .id,
+      prepressId: d.profiles.find((p: any) => p.full_name === "Тимур Ахметов")
+        .id,
       deadline: "2026-12-20",
       artworks: ["E2E client artwork"],
     });
@@ -186,13 +189,22 @@ test("client cannot see internal comments and can record a durable decision", as
     });
     await login(page, "approver");
     await page.goto("/?artwork=" + a.id);
+    await page
+      .locator(".studio-tabs")
+      .getByRole("button", { name: /Комментарии/, exact: false })
+      .click();
     await expect(page.locator(".threads")).not.toContainText(
       "INTERNAL E2E confidential",
     );
     await page
       .getByRole("button", { name: "Согласование клиента", exact: true })
       .click();
-    await page
+    const decisionArea = (await page
+      .locator(".mobile-decision-bar")
+      .isVisible())
+      ? page.locator(".mobile-decision-bar")
+      : page.locator(".decision-actions");
+    await decisionArea
       .getByRole("button", { name: "Утвердить версию", exact: true })
       .click();
     await page.getByRole("dialog").getByRole("checkbox").check();
