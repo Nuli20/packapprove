@@ -319,13 +319,11 @@ export default function ActionModal({
               <>
                 <div className="alert info">
                   <LockKeyhole size={18} />
-                  <div>
-                    <b>
-                      V{m.versionNumber} · {m.filename}
-                    </b>
-                    <p>{t("fixed")}</p>
-                    <small className="hash">SHA-256 · {m.checksum}</small>
-                  </div>
+                  <p>
+                    {locale === "ru"
+                      ? "Новый файл сохранится отдельной версией. Ранее загруженные файлы останутся неизменными."
+                      : "Жаңа файл жеке нұсқа болып сақталады. Бұрынғы файлдар өзгермейді."}
+                  </p>
                 </div>
                 <label>
                   {locale === "ru"
@@ -507,7 +505,23 @@ export default function ActionModal({
               <>
                 <div className="alert info">
                   <ShieldCheck size={20} />
-                  {t("fixed")}
+                  <div className="approval-file-identity">
+                    <b>
+                      V{m.versionNumber} · {m.filename}
+                    </b>
+                    <p>{t("fixed")}</p>
+                    <small className="hash">SHA-256 · {m.checksum}</small>
+                    <details>
+                      <summary>
+                        {locale === "ru"
+                          ? "Идентификаторы"
+                          : "Идентификаторлар"}
+                      </summary>
+                      <code className="hash">
+                        {m.versionId} / {m.fileId}
+                      </code>
+                    </details>
+                  </div>
                 </div>
                 {field(
                   "comment",

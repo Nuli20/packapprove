@@ -2126,6 +2126,20 @@ td small {
   margin-bottom: 14px;
   background: #fafcfc;
 }
+.design-file-picker > legend {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 7px;
+  max-width: 100%;
+  padding-inline: 5px;
+  font-size: 13px;
+}
+.design-file-picker > legend small {
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 450;
+}
 .design-file-picker.is-selected {
   border-color: #afced2;
   background: #f3f9f8;

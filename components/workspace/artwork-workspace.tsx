@@ -135,6 +135,8 @@ export default function ArtworkWorkspace({
     onModal(action, {
       entityId: selected?.id,
       versionNumber: selected?.number,
+      versionId: selected?.id,
+      fileId: preview?.id,
       filename: preview?.filename,
       checksum: preview?.sha256,
       ...extra,

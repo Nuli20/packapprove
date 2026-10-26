@@ -91,7 +91,12 @@ async function decision(
     : p.locator(".decision-actions");
   await area.getByRole("button", { name: result, exact: true }).click();
   const d = p.getByRole("dialog");
-  await expect(d).toContainText("V");
+  await expect(d.locator(".approval-file-identity b")).toContainText(
+    await p.locator(".large-version").innerText(),
+  );
+  await expect(d.locator(".approval-file-identity")).toContainText(
+    /SHA-256 · [a-f0-9]{64}/,
+  );
   await d
     .getByLabel("Комментарий к решению", { exact: true })
     .fill(
