@@ -1,4 +1,6 @@
 "use client";
+import DesignFilePicker from "../design-file-picker";
+import { filePickerCopy } from "@/lib/file-picker-copy";
 import dynamic from "next/dynamic";
 import {
   Component,
@@ -11,7 +13,6 @@ import {
 import { motion, useReducedMotion } from "motion/react";
 import {
   RotateCcw,
-  Upload,
   Plus,
   Minus,
   ArrowLeft,
@@ -83,7 +84,8 @@ export default function CanStudio({
   demo?: boolean;
 }) {
   const container = useRef<HTMLElement>(null);
-  const fileInput = useRef<HTMLInputElement>(null);
+  const [checkingFile, FILE_CHECKING] = useState(false);
+  const [pickerRevision, PICKER_REVISION] = useState(0);
   useEffect(() => {
     if (window.innerWidth < 681 && !demo)
       container.current?.scrollIntoView({ block: "start", behavior: "auto" });
@@ -170,7 +172,8 @@ export default function CanStudio({
   const reset = () => {
     S(initial);
     F(undefined);
-    if (fileInput.current) fileInput.current.value = "";
+    PICKER_REVISION((v) => v + 1);
+    FILE_CHECKING(false);
     A(false);
     issuePose("angle");
   };
@@ -349,28 +352,19 @@ export default function CanStudio({
             </label>
           )}
           {canUpload && (
-            <label className="can-upload">
-              <Upload size={18} />
-              {c.choose}
-              <small>{c.types}</small>
-              <input
-                type="file"
-                ref={fileInput}
-                aria-label={c.choose}
-                accept="image/png,image/jpeg,application/pdf"
-                onChange={(e) => {
-                  const f = e.target.files?.[0];
-                  if (f) {
-                    if (f.size > 25 * 1024 * 1024) {
-                      E(c.types);
-                      return;
-                    }
-                    F(f);
-                    S((s) => ({ ...s, pdfPage: 1 }));
-                  }
-                }}
-              />
-            </label>
+            <DesignFilePicker
+              key={pickerRevision}
+              label={filePickerCopy[locale].design}
+              inputLabel={c.choose}
+              locale={locale}
+              value={localFile}
+              onChecking={FILE_CHECKING}
+              onChange={(f) => {
+                F(f);
+                E("");
+                if (f) S((s) => ({ ...s, pdfPage: 1 }));
+              }}
+            />
           )}
           {pages > 1 && (
             <label>
@@ -442,7 +436,7 @@ export default function CanStudio({
           {canUpload && onNewVersion && (
             <button
               className="btn primary"
-              disabled={loading || !!error || !raster}
+              disabled={checkingFile || loading || !!error || !raster}
               onClick={() => onNewVersion(localFile, spec)}
             >
               <Plus size={15} />

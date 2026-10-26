@@ -1816,29 +1816,6 @@ details > p {
   line-height: 1.7;
   font-weight: 400;
 }
-.upload-label {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 7px;
-  padding: 19px;
-  border: 1px dashed #d6daf1;
-  border-radius: 9px;
-  background: #fbfbff;
-  color: #8e97bf;
-  text-align: center;
-}
-.upload-label input {
-  border: 0;
-  background: none;
-  font-size: 10px;
-  padding: 5px;
-  max-width: 300px;
-}
-.upload-label small {
-  font-size: 10px;
-  font-weight: 400;
-}
 .loading-screen {
   height: 100vh;
   display: flex;
@@ -3735,20 +3712,6 @@ summary {
   font-size: 12px;
   color: #646a5f;
 }
-.upload-label {
-  background: #f5f2eb;
-  border-color: #c9c5ba;
-  border-radius: 2px;
-  color: #77766f;
-  padding: 25px;
-}
-.upload-label:hover {
-  border-color: #326d7c;
-  background: #ebefe8;
-}
-.upload-label small {
-  font-size: 11px;
-}
 .loading-screen {
   background: #f5f2eb;
   color: #326d7c;
@@ -5218,26 +5181,6 @@ textarea {
 .can-dimensions strong span {
   font-size: 9px;
   color: #9aa497;
-}
-.can-upload {
-  padding: 15px;
-  border: 1px dashed #c5d0bf;
-  border-radius: 11px;
-  align-items: center;
-  text-align: center;
-  background: #fdfefb;
-  cursor: pointer;
-}
-.can-upload small {
-  font-size: 8px;
-  font-weight: 400;
-}
-.can-upload input {
-  width: 100%;
-  font-size: 8px;
-  padding: 4px;
-  border: 0;
-  background: transparent;
 }
 .can-viewport {
   min-width: 0;

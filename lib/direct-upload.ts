@@ -21,6 +21,11 @@ async function metadata(file: File) {
   }
   return pending;
 }
+export async function inspectDesignFile(file: File) {
+  if (!file.size || file.size > 25 * 1024 * 1024)
+    throw Error("Размер файла: от 1 байта до 25 МБ.");
+  return metadata(file);
+}
 export async function directUpload(
   artworkId: string,
   kind: string,
@@ -28,7 +33,7 @@ export async function directUpload(
 ) {
   if (!file.size || file.size > 25 * 1024 * 1024)
     throw Error("Размер файла: от 1 байта до 25 МБ.");
-  const { sha256, mime } = await metadata(file);
+  const { sha256, mime } = await inspectDesignFile(file);
   const prepared = await fetch("/api/uploads/prepare", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
