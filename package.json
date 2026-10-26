@@ -21,7 +21,8 @@
     "pdf:assets": "node scripts/prepare-pdf-assets.mjs",
     "seed:workflow": "tsx scripts/seed-demo-workflow.ts",
     "db:test-migrations": "tsx scripts/check-migrations.ts",
-    "test:serve-restricted": "tsx scripts/serve-restricted-demo.ts"
+    "test:serve-restricted": "tsx scripts/serve-restricted-demo.ts",
+    "db:doctor": "tsx scripts/db-doctor.ts"
   },
   "engines": {
     "node": ">=22"

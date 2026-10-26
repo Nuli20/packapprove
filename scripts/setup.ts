@@ -1,48 +1,15 @@
-import nextEnv from "@next/env";
-nextEnv.loadEnvConfig(process.cwd());
-import postgres from "postgres";
-import { readFile, readdir } from "node:fs/promises";
-const sql = postgres(process.env.DATABASE_URL!, { max: 1 });
-const baseline = "202610240001_core.sql";
-try {
-  const files = (await readdir("supabase/migrations"))
-    .filter((f) => /^\d+_.*\.sql$/.test(f))
-    .sort();
-  const existing = (
-    await sql`select to_regclass('public.organizations') as name`
-  )[0].name;
-  const registry = (
-    await sql`select to_regclass('public.schema_migrations') as name`
-  )[0].name;
-  const applied = registry
-    ? (await sql`select name from public.schema_migrations`).map((r) => r.name)
-    : [];
-  if (process.argv.includes("--plan")) {
-    for (const f of files)
-      console.log(
-        `${applied.includes(f) || (f === baseline && existing) ? "applied" : "pending"} ${f}`,
-      );
-  } else
-    await sql.begin(async (tx) => {
-      await tx`select pg_advisory_xact_lock(703251001)`;
-      await tx`create table if not exists public.schema_migrations(name text primary key,applied_at timestamptz not null default now())`;
-      for (const name of files) {
-        if (
-          (
-            await tx`select name from public.schema_migrations where name=${name}`
-          ).length
-        )
-          continue;
-        if (name === baseline && existing) {
-          await tx`insert into public.schema_migrations(name) values(${name})`;
-          continue;
-        }
-        await tx.unsafe(await readFile(`supabase/migrations/${name}`, "utf8"));
-        await tx`insert into public.schema_migrations(name) values(${name})`;
-        console.log(`Applied ${name}`);
-      }
-    });
-  console.log("Migration check complete.");
-} finally {
-  await sql.end();
-}
+import nextEnv from '@next/env';nextEnv.loadEnvConfig(process.cwd());
+import postgres from 'postgres';
+import {applyMigrations,loadMigrationContracts,migrationDiagnosis} from '../lib/migrations';
+const url=process.env.MIGRATION_DATABASE_URL||process.env.DATABASE_URL;
+if(!url)throw Error('Нужно серверное подключение migration owner.');
+const target=new URL(url),local=['localhost','127.0.0.1'].includes(target.hostname);
+const plan=process.argv.includes('--plan');
+if(!plan&&!local&&!process.argv.includes('--allow-remote'))throw Error('Remote migration is not automatic. Review backup, staging and db:doctor first; use explicit --allow-remote only for the reviewed target.');
+const sql=postgres(url,{max:1,prepare:false});
+try{
+ const contracts=await loadMigrationContracts();
+ if(plan){const d=await sql.begin(async tx=>{await tx`set transaction read only`;await tx`set local search_path=pg_catalog`;return migrationDiagnosis(tx,contracts)});console.log(JSON.stringify({readOnly:true,...d},null,2));if(!d.compatible)process.exitCode=1;}
+ else console.log(JSON.stringify(await applyMigrations(sql,contracts,{repairRegistry:process.argv.includes('--repair-registry')}),null,2));
+}catch(e){console.error(e instanceof Error&&!('code'in e)?e.message:'Миграция не выполнена. Проверьте подключение и права migration owner. Секреты не выводятся.');process.exitCode=1}
+finally{await sql.end()}
