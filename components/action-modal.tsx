@@ -1,16 +1,12 @@
 "use client";
 import { useState, useEffect } from "react";
-import {
-  X,
-  UploadCloud,
-  Loader2,
-  ShieldCheck,
-  LockKeyhole,
-} from "lucide-react";
+import { X, Loader2, ShieldCheck, LockKeyhole } from "lucide-react";
 import { translate, eventKeys, type Locale } from "@/lib/i18n";
 import type { Row, State } from "./workspace";
 import { directUpload } from "@/lib/direct-upload";
 import { useModalFocus } from "./use-modal-focus";
+import DesignFilePicker, { type UploadPhase } from "./design-file-picker";
+import { filePickerCopy } from "@/lib/file-picker-copy";
 import ProjectWizard from "./project-wizard";
 export default function ActionModal({
   modal: m,
@@ -46,11 +42,15 @@ export default function ActionModal({
   const [uploads, U] = useState<Row>(
     m.presetFile ? { preview: m.presetFile, production: m.presetFile } : {},
   );
+  const [fileErrors, FE] = useState<Record<string, string>>({});
+  const [filePhases, FP] = useState<Record<string, UploadPhase>>({});
+  const [checkingFiles, FC] = useState<Record<string, boolean>>({});
+  const selecting = Object.values(checkingFiles).some(Boolean);
   const [checks, CH] = useState<Row>({});
   const [confirm, CF] = useState(false);
   const [localError, LE] = useState("");
   const [uploading, UPLOADING] = useState(false);
-  const dialogRef = useModalFocus(onClose, busy || uploading);
+  const dialogRef = useModalFocus(onClose, busy || uploading || selecting);
   const set = (k: string, v: unknown) => P({ ...p, [k]: v });
   const action = m.action;
   const title = t(eventKeys[action] || action);
@@ -103,20 +103,60 @@ export default function ActionModal({
   async function submit(e: React.FormEvent) {
     e.preventDefault();
     LE("");
+    if (action === "version.create") {
+      if (selecting) return;
+      const c = filePickerCopy[locale];
+      const missing = ["preview", "production"].filter(
+        (kind) => !uploads[kind],
+      );
+      FE(Object.fromEntries(missing.map((kind) => [kind, c.missing])));
+      if (missing.length) {
+        LE(c.addRequired);
+        dialogRef.current
+          ?.querySelector<HTMLButtonElement>(
+            `[data-file-kind="${missing[0]}"] button`,
+          )
+          ?.focus();
+        return;
+      }
+      if (!String(p.changes || "").trim()) {
+        LE(c.changes);
+        dialogRef.current?.querySelector("textarea")?.focus();
+        return;
+      }
+    }
     UPLOADING(true);
+    FP({});
     try {
       let payload = { ...p };
       if (action === "version.create") {
+        const staged = await Promise.allSettled(
+          Object.entries(uploads)
+            .filter(([, file]) => file)
+            .map(async ([kind, file]) => {
+              FP((prev) => ({ ...prev, [kind]: "uploading" }));
+              try {
+                const result = await directUpload(m.entityId, kind, file);
+                FP((prev) => ({ ...prev, [kind]: "staged" }));
+                return result;
+              } catch (e) {
+                FE((prev) => ({ ...prev, [kind]: (e as Error).message }));
+                throw e;
+              }
+            }),
+        );
+        const failure = staged.find((result) => result.status === "rejected");
+        if (failure?.status === "rejected") throw failure.reason;
         payload = {
           changes: p.changes,
           canSpec: p.canSpec,
-          files: await Promise.all(
-            Object.entries(uploads)
-              .filter(([, v]) => v)
-              .map(([kind, file]) => directUpload(m.entityId, kind, file)),
-          ),
+          files: staged.map((result) => {
+            if (result.status !== "fulfilled") throw Error("Upload failed");
+            return result.value;
+          }),
         };
       }
+
       if (action === "review.complete") {
         const template = d.templates.find((t) => t.id === p.templateId);
         payload.items = template!.items.map((label: string) => ({
@@ -140,6 +180,7 @@ export default function ActionModal({
       LE((e as Error).message);
     } finally {
       UPLOADING(false);
+      FP({});
     }
   }
   const approverOptions = d.profiles.filter(
@@ -153,12 +194,16 @@ export default function ActionModal({
     <div
       className="modal-backdrop"
       onMouseDown={(e) =>
-        e.target === e.currentTarget && !busy && !uploading && onClose()
+        e.target === e.currentTarget &&
+        !busy &&
+        !uploading &&
+        !selecting &&
+        onClose()
       }
     >
       <section
         ref={dialogRef}
-        className={`modal ${action === "project.create" ? "project-create-modal" : ""}`}
+        className={`modal ${action === "project.create" ? "project-create-modal" : action === "version.create" ? "version-upload-modal" : ""}`}
         role="dialog"
         aria-modal="true"
         aria-label={title}
@@ -171,7 +216,7 @@ export default function ActionModal({
           <button
             className="icon-btn"
             onClick={onClose}
-            disabled={busy || uploading}
+            disabled={busy || uploading || selecting}
             aria-label={t("close")}
           >
             <X size={21} />
@@ -201,7 +246,11 @@ export default function ActionModal({
             }}
           />
         ) : (
-          <form className="modal-form" onSubmit={submit}>
+          <form
+            className="modal-form"
+            noValidate={action === "version.create"}
+            onSubmit={submit}
+          >
             {action === "invitation.link" && (
               <>
                 <p>{t("shareInvite")}</p>
@@ -223,24 +272,30 @@ export default function ActionModal({
                 </div>
                 {field("changes", "changeLog", "textarea")}
                 {["preview", "production", "source"].map((kind) => (
-                  <label className="upload-label" key={kind}>
-                    <UploadCloud size={23} />
-                    <b>{t(kind === "production" ? "productionFile" : kind)}</b>
-                    <small>{t("upload")}</small>
-                    <input
-                      type="file"
-                      accept="application/pdf,image/png,image/jpeg"
-                      required={kind !== "source" && !uploads[kind]}
-                      onChange={(e) => {
-                        const f = e.target.files?.[0];
-                        if (f && f.size > 25 * 1024 * 1024) {
-                          LE(t("upload"));
-                          return;
-                        }
-                        U({ ...uploads, [kind]: f });
-                      }}
-                    />
-                  </label>
+                  <DesignFilePicker
+                    key={kind}
+                    kind={kind}
+                    label={
+                      filePickerCopy[locale][
+                        kind as "preview" | "production" | "source"
+                      ]
+                    }
+                    locale={locale}
+                    value={uploads[kind]}
+                    required={kind !== "source"}
+                    disabled={busy || uploading}
+                    error={fileErrors[kind]}
+                    phase={filePhases[kind]}
+                    onChecking={(checking) =>
+                      FC((prev) => ({ ...prev, [kind]: checking }))
+                    }
+                    onChange={(file) => {
+                      U((prev) => ({ ...prev, [kind]: file }));
+                      FE((prev) => ({ ...prev, [kind]: "" }));
+                      FP({});
+                      LE("");
+                    }}
+                  />
                 ))}
               </>
             )}
@@ -570,7 +625,7 @@ export default function ActionModal({
                 type="button"
                 className="btn"
                 onClick={onClose}
-                disabled={busy || uploading}
+                disabled={busy || uploading || selecting}
               >
                 {t("cancel")}
               </button>
@@ -580,6 +635,7 @@ export default function ActionModal({
                 disabled={
                   busy ||
                   uploading ||
+                  selecting ||
                   (action === "round.open" && !p.approvers.length)
                 }
               >

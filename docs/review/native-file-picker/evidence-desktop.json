@@ -1,0 +1,79 @@
+{
+  "project": "desktop",
+  "capturedAt": "2026-10-26T06:23:14.403Z",
+  "nativeChooserEvents": 6,
+  "keyboard": [
+    "Tab",
+    "Shift+Tab",
+    "Enter",
+    "Space"
+  ],
+  "touch": false,
+  "versions": [
+    {
+      "id": "bb1e3cd6-3101-4666-aca9-4d53f477322c",
+      "number": 1,
+      "files": [
+        {
+          "id": "c35dd3e7-6cd1-4083-878a-4a320562e4dc",
+          "version_id": "bb1e3cd6-3101-4666-aca9-4d53f477322c",
+          "kind": "preview",
+          "filename": "saia-330.pdf",
+          "mime_type": "application/pdf",
+          "size": "200745",
+          "sha256": "258ac4322967f33f61a54bb111fac972d74107aa2e27f1ea6c88d8140aba0e2a",
+          "created_at": "2026-10-26T06:23:00.800Z"
+        },
+        {
+          "id": "88644192-52aa-4cfa-a5a2-b72cee31ceee",
+          "version_id": "bb1e3cd6-3101-4666-aca9-4d53f477322c",
+          "kind": "production",
+          "filename": "saia-330.pdf",
+          "mime_type": "application/pdf",
+          "size": "200745",
+          "sha256": "258ac4322967f33f61a54bb111fac972d74107aa2e27f1ea6c88d8140aba0e2a",
+          "created_at": "2026-10-26T06:23:00.800Z"
+        },
+        {
+          "id": "a8f18f16-02b2-4590-8399-79c75533509f",
+          "version_id": "bb1e3cd6-3101-4666-aca9-4d53f477322c",
+          "kind": "source",
+          "filename": "tun-250.jpg",
+          "mime_type": "image/jpeg",
+          "size": "150524",
+          "sha256": "39940e05d3026fbd8a993975b88a029d5c2680561642809507b214192b49fe96",
+          "created_at": "2026-10-26T06:23:00.800Z"
+        }
+      ]
+    },
+    {
+      "id": "b600d169-b465-4cea-9426-8c55c9467166",
+      "number": 2,
+      "files": [
+        {
+          "id": "e2fe996c-ade5-4a6c-8a75-b8597dded115",
+          "version_id": "b600d169-b465-4cea-9426-8c55c9467166",
+          "kind": "preview",
+          "filename": "zhyra-450.png",
+          "mime_type": "image/png",
+          "size": "132047",
+          "sha256": "5730c7adbdcf3422b12abe25dde028b3c51acb8d05c6d63c027d0f9c511c4ab9",
+          "created_at": "2026-10-26T06:23:08.107Z"
+        },
+        {
+          "id": "c223e3ca-0ea0-46ca-87f2-5b9629686708",
+          "version_id": "b600d169-b465-4cea-9426-8c55c9467166",
+          "kind": "production",
+          "filename": "zhyra-450.png",
+          "mime_type": "image/png",
+          "size": "132047",
+          "sha256": "5730c7adbdcf3422b12abe25dde028b3c51acb8d05c6d63c027d0f9c511c4ab9",
+          "created_at": "2026-10-26T06:23:08.107Z"
+        }
+      ]
+    }
+  ],
+  "privateDownloadsVerified": true,
+  "oldVersionUnchanged": true,
+  "pageErrors": []
+}
