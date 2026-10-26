@@ -9,6 +9,7 @@ export function readWorkspaceRoute(search: string) {
     project: q.get("project") || "",
     artwork: q.get("artwork") || "",
     version: q.get("version") || "",
+    compare: q.get("compare") || "",
     mode: q.get("mode") || "auto",
     search: q.get("q") || "",
     page: Number(q.get("page") || 1),

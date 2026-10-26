@@ -72,7 +72,7 @@ export default function Workspace() {
     }, 250);
     return () => clearTimeout(timer);
   }, [search]);
-  const [compareId, CI] = useState("");
+  const [compareId, CI] = useState(() => initialRoute().compare);
   const requestUrl =
     workspaceRequest(
       view,
@@ -111,7 +111,7 @@ export default function Workspace() {
       V(r.view);
       MODE(r.mode);
       CP(r.page);
-      CI("");
+      CI(r.compare);
       S(r.search);
       RS(r.search);
       F("all");
@@ -276,11 +276,32 @@ export default function Workspace() {
       E((e as Error).message);
     }
   };
+  const changePreviewMode = (value: string) => {
+    MODE(value);
+    const q = new URLSearchParams(location.search);
+    q.set("mode", value);
+    history.replaceState(null, "", "/?" + q);
+  };
+  const changeComparedVersion = (id: string) => {
+    CI(id);
+    const q = new URLSearchParams(location.search);
+    if (id) q.set("compare", id);
+    else q.delete("compare");
+    history.replaceState(null, "", "/?" + q);
+  };
   const selectVersion = (id: string) => {
     VI(id);
     CP(1);
     const q = new URLSearchParams(location.search);
     q.set("version", id);
+    if (compareId === id) {
+      const next =
+        d.versions.find((v) => v.id !== id && v.artwork_id === artworkId)?.id ||
+        "";
+      CI(next);
+      if (next) q.set("compare", next);
+      else q.delete("compare");
+    }
     q.delete("page");
     history.pushState(null, "", "/?" + q);
   };
@@ -583,9 +604,9 @@ export default function Workspace() {
             artworkId={artworkId}
             versionId={versionId}
             previewChoice={previewChoice}
-            MODE={MODE}
+            MODE={changePreviewMode}
             compareId={compareId}
-            CI={CI}
+            CI={changeComparedVersion}
             loading={loading}
             busy={busy}
             selectVersion={selectVersion}

@@ -116,6 +116,10 @@ export default function ArtworkWorkspace({
   useEffect(() => {
     C(previewChoice === "compare");
   }, [previewChoice]);
+  useEffect(() => {
+    if (previewChoice === "compare" && !compareId && versions.length > 1)
+      CI(versions.find((v) => v.id !== selected?.id)!.id);
+  }, [previewChoice, compareId, versions, selected?.id, CI]);
   const name = (id?: string) =>
     d.profiles.find((p) => p.id === id)?.full_name || t("user");
   const date = (v?: string) =>
@@ -306,9 +310,6 @@ export default function ArtworkWorkspace({
         value={previewMode}
         onValueChange={(value) => {
           MODE(value);
-          const params = new URLSearchParams(location.search);
-          params.set("mode", value);
-          history.replaceState(null, "", "/?" + params);
           C(value === "compare");
           if (value === "compare")
             CI(versions.find((v) => v.id !== selected?.id)?.id || "");
@@ -403,7 +404,11 @@ export default function ArtworkWorkspace({
                 <span>
                   {t("compare")}: V{selected?.number}
                 </span>
-                <select value={compareId} onChange={(e) => CI(e.target.value)}>
+                <select
+                  aria-label={t("compare")}
+                  value={compareId}
+                  onChange={(e) => CI(e.target.value)}
+                >
                   {versions
                     .filter((v) => v.id !== selected?.id)
                     .map((v) => (
