@@ -292,6 +292,7 @@ export default function CanStudio({
               <button
                 className="can-experimental"
                 type="button"
+                disabled={!editable && !demo}
                 aria-pressed={spec.preset === "experimental"}
                 onClick={() => changePreset("experimental")}
               >
