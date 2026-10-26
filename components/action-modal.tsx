@@ -53,6 +53,7 @@ export default function ActionModal({
   const [checks, CH] = useState<Row>({});
   const [confirm, CF] = useState(false);
   const [localError, LE] = useState("");
+  const [failureStatus, FS] = useState(0);
   const [uploading, UPLOADING] = useState(false);
   const submitting = useRef(false);
   const stagedFiles = useRef(
@@ -118,6 +119,7 @@ export default function ActionModal({
     e.preventDefault();
     if (submitting.current) return;
     LE("");
+    FS(0);
     if (action === "version.create") {
       if (selecting) return;
       const c = filePickerCopy[locale];
@@ -196,6 +198,7 @@ export default function ActionModal({
       }
       await onSubmit(action, m.entityId, payload, m.rowVersion);
     } catch (e) {
+      FS((e as { status?: number }).status || 0);
       LE((e as Error).message);
     } finally {
       submitting.current = false;
@@ -251,7 +254,24 @@ export default function ActionModal({
         )}
         {(error || localError) && (
           <div className="alert error" role="alert">
-            {localError || error}
+            <div>
+              {localError || error}
+              {action === "decision.create" &&
+                failureStatus === 409 &&
+                d.rounds.some((r) => r.id === m.entityId) && (
+                  <a
+                    className="btn"
+                    href={
+                      "/?artwork=" +
+                      d.rounds.find((r) => r.id === m.entityId)!.artwork_id
+                    }
+                  >
+                    {locale === "ru"
+                      ? "Открыть актуальную версию"
+                      : "Өзекті нұсқаны ашу"}
+                  </a>
+                )}
+            </div>
           </div>
         )}
         {action === "project.create" ? (

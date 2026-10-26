@@ -330,7 +330,11 @@ export default function ArtworkWorkspace({
       <div
         className={`studio ${previewMode === "3d" ? "studio-with-can" : ""}`}
       >
-        {previewMode === "3d" && selected && !loading ? (
+        {loading ? (
+          <div className="viewer-section empty" role="status">
+            {locale === "ru" ? "Загрузка версии…" : "Нұсқа жүктелуде…"}
+          </div>
+        ) : previewMode === "3d" && selected ? (
           <CanStudio
             key={selected.id + ":" + (preview?.id || "loading")}
             file={preview}
@@ -365,7 +369,7 @@ export default function ArtworkWorkspace({
               <div>
                 <button
                   className="icon-btn"
-                  aria-label={t("zoom")}
+                  aria-label={t("zoomOut")}
                   onClick={() => Z(Math.max(0.3, zoom - 0.15))}
                 >
                   <ZoomOut size={17} />
@@ -373,7 +377,7 @@ export default function ArtworkWorkspace({
                 <b>{Math.round(zoom * 100)}%</b>
                 <button
                   className="icon-btn"
-                  aria-label={t("zoom")}
+                  aria-label={t("zoomIn")}
                   onClick={() => Z(Math.min(3, zoom + 0.15))}
                 >
                   <ZoomIn size={17} />

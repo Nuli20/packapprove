@@ -975,8 +975,7 @@ export default function Workspace() {
                           ),
                         );
                         if (a) {
-                          openArtwork(a);
-                          VI(th.version_id);
+                          openArtwork(a, th.version_id);
                         }
                       }}
                     >
@@ -988,14 +987,21 @@ export default function Workspace() {
                     </button>
                   ))
                 : d.rounds.map((r) => (
-                    <div className="history-row" key={r.id}>
+                    <button
+                      className="history-row clickable"
+                      key={r.id}
+                      onClick={() => {
+                        const a = d.artworks.find((a) => a.id === r.artwork_id);
+                        if (a) openArtwork(a, r.version_id);
+                      }}
+                    >
                       <span>
                         {d.artworks.find((a) => a.id === r.artwork_id)?.name} ·
                         V{d.versions.find((v) => v.id === r.version_id)?.number}
                       </span>
                       {badge(r.status)}
                       <small>{date(r.created_at)}</small>
-                    </div>
+                    </button>
                   ))}
             </section>
           </>
