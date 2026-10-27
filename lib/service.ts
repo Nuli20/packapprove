@@ -1,3 +1,4 @@
+import { importShowcase } from "./showcase-import";
 import { randomUUID, randomBytes } from "node:crypto";
 import { z } from "zod";
 import { asUser, type Tx } from "./db";
@@ -11,6 +12,7 @@ export type User = { id: string; role: string; full_name?: string };
 const uuid = z.string().uuid();
 export const commandSchema = z.object({
   action: z.enum([
+    "showcase.import",
     "project.create",
     "project.update",
     "artwork.create",
@@ -111,7 +113,9 @@ export async function execute(
     let privateEvent = false;
     let auditDetail: Record<string, any> = {};
     let entity = c.entityId || randomUUID();
-    if (c.action === "company.initialize") {
+    if (c.action === "showcase.import") {
+      result = await importShowcase(tx, u, p);
+    } else if (c.action === "company.initialize") {
       permit(u.role, ["admin"]);
       await tx`select pg_advisory_xact_lock(hashtextextended('packapprove-company-initialize',0))`;
       let [company] =

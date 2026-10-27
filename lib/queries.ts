@@ -1,4 +1,5 @@
-import {isolatedDemoEnabled} from "./demo-environment";
+import { appendShowcaseSpecs } from "./showcase-spec";
+import { isolatedDemoEnabled } from "./demo-environment";
 import { asUser } from "./db";
 import { assert, sha256, permit } from "./security";
 import { storageClient } from "./platform";
@@ -41,9 +42,10 @@ export async function snapshot(u: User) {
     const acknowledgements = await tx`select * from package_acknowledgements`;
     const invitations =
       await tx`select id,organization_id,email,role,invited_by,accepted_at,expires_at,created_at from invitations order by created_at desc`;
+    appendShowcaseSpecs(files,visualizations);
     return {
       user: u,
-      demo_context: isolatedDemoEnabled() ? [{enabled:true}] : [],
+      demo_context: isolatedDemoEnabled() ? [{ enabled: true }] : [],
       projects,
       artworks,
       versions,

@@ -1,4 +1,5 @@
 "use client";
+import ShowcaseImport from "./showcase-import";
 import { DemoWorkspaceBar } from "./demo-entry";
 import { useEffect, useState, useRef } from "react";
 import {
@@ -474,6 +475,12 @@ export default function Workspace() {
                 </button>
               )}
             </div>
+            {view === "projects" && u.role === "admin" && (
+              <ShowcaseImport
+                locale={locale}
+                onSubmit={(p) => command("showcase.import", undefined, p)}
+              />
+            )}
             <Operations
               data={d}
               view={view}

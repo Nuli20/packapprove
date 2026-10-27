@@ -3,6 +3,7 @@ const config: NextConfig = {
   allowedDevOrigins: ["127.0.0.1"],
   serverExternalPackages: ["postgres"],
   poweredByHeader: false,
+  outputFileTracingIncludes: { "/*": ["./public/showcase/**"] },
   logging: {
     incomingRequests: {
       ignore: [

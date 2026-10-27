@@ -22,7 +22,9 @@
     "seed:workflow": "tsx scripts/seed-demo-workflow.ts",
     "db:test-migrations": "tsx scripts/check-migrations.ts",
     "test:serve-restricted": "tsx scripts/serve-restricted-demo.ts",
-    "db:doctor": "tsx scripts/db-doctor.ts"
+    "db:doctor": "tsx scripts/db-doctor.ts",
+    "demos:showcase": "node scripts/create-showcase.mjs",
+    "seed:showcase-stages": "tsx scripts/showcase-stages.ts"
   },
   "engines": {
     "node": ">=22"

@@ -1,0 +1,38 @@
+[
+  {
+    "sha256": "5f466075e5ecf8aae713f29b60fc7d3410be0c5c4cb757685ce2984708cdc498",
+    "preset": "standard450"
+  },
+  {
+    "sha256": "88e0f283c97e8fc5ffdb5b618a8f004f75bc0cb0eda7166e8c67527fe3b41410",
+    "preset": "standard450"
+  },
+  {
+    "sha256": "79181f4d8206fb0c91b6a73531fed828d12b2e4ad9eb650bd5b3d75429e9fa67",
+    "preset": "sleek330"
+  },
+  {
+    "sha256": "61680e654cff719351a2c9c77ecec26f967006278bd1a77be6c4be0de625cb32",
+    "preset": "slim250"
+  },
+  {
+    "sha256": "dba80ad8008d058511e8fe2c2e1284fb6c458a51dffad32dd48a6ed0695aab72",
+    "preset": "slim250"
+  },
+  {
+    "sha256": "12deb82350033e7104de858d463c1b585176e9cd5e6cc9df8b4efe30a6c0c580",
+    "preset": "sleek330"
+  },
+  {
+    "sha256": "232b6dad9556b7feaead58ad2ce1fac0afc713140f876799484284231ba00627",
+    "preset": "standard450"
+  },
+  {
+    "sha256": "7f23d3272281b3a3209007762c2f721e1e2bd42dd60facf28ec1c3bb36abb706",
+    "preset": "standard450"
+  },
+  {
+    "sha256": "5469057132dcf8e507020777ee65ad5a8907be9b1f77ac4d2b0f7111b340ed90",
+    "preset": "slim250"
+  }
+]
