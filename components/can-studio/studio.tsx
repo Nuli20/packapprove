@@ -32,6 +32,7 @@ import {
 } from "@/lib/can-spec";
 import { rasterDesign } from "@/lib/can-texture";
 import { canCopy } from "@/lib/can-copy";
+import PlacementGuide from "./placement-guide";
 import type { Locale } from "@/lib/i18n";
 import type { Row } from "../workspace";
 import type { CameraCommand } from "./scene";
@@ -102,6 +103,7 @@ export default function CanStudio({
   const [raster, R] = useState<HTMLCanvasElement | null>(null);
   const [pages, P] = useState(1);
   const [hash, H] = useState("");
+  const originalFile = useRef<File | undefined>(undefined);
   const [error, E] = useState("");
   const [loading, L] = useState(false);
   const [supported, W] = useState<boolean | null>(null);
@@ -133,6 +135,7 @@ export default function CanStudio({
   useEffect(() => {
     const controller = new AbortController();
     R(null);
+    originalFile.current = undefined;
     H("");
     E("");
     if (!localFile && !file) return;
@@ -144,10 +147,14 @@ export default function CanStudio({
       },
       spec.pdfPage,
       controller.signal,
+      canUpload
+        ? { filename: localFile?.name || file?.filename || "preview" }
+        : undefined,
     )
       .then((result) => {
         if (controller.signal.aborted) return;
         R(result.canvas);
+        originalFile.current = result.originalFile;
         P(result.pages);
         onPageChange?.(Math.min(spec.pdfPage, result.pages));
         if (spec.pdfPage > result.pages)
@@ -208,24 +215,25 @@ export default function CanStudio({
     >
       <header className="can-heading">
         <div>
-          <span className="eyebrow">QAZALPACK / MATERIAL LAB</span>
+          {demo && <span className="eyebrow">QAZALPACK / CAN STUDIO</span>}
           <h2>
             {c.title}
             <span> / V{version.number}</span>
           </h2>
-          <p>
-            {demo
-              ? c.subtitle
-              : locale === "ru"
-                ? "Дизайн сохранённой версии на алюминиевой банке."
-                : "Сақталған нұсқа дизайны алюминий құтыда."}
-          </p>
+          {demo && <p>{c.subtitle}</p>}
         </div>
         <span className="can-bound">
           <LockKeyhole size={13} />
           {demo ? "DEMO" : c.bound}
         </span>
       </header>
+      {(localFile || JSON.stringify(spec) !== JSON.stringify(initial)) && (
+        <p className="can-experiment-banner" role="status">
+          {locale === "ru"
+            ? "Экспериментальный предпросмотр. Сохранённая версия не изменяется."
+            : "Тәжірибелік көрініс. Сақталған нұсқа өзгермейді."}
+        </p>
+      )}
       <div className="can-composition">
         <details
           className="can-settings"
@@ -243,6 +251,7 @@ export default function CanStudio({
                 <button
                   type="button"
                   key={key}
+                  disabled={!editable && !demo}
                   aria-label={`${p.name} ${p.volumeMl} мл`}
                   aria-pressed={spec.preset === key}
                   onClick={() => changePreset(key as CanSpec["preset"])}
@@ -283,6 +292,7 @@ export default function CanStudio({
               <button
                 className="can-experimental"
                 type="button"
+                disabled={!editable && !demo}
                 aria-pressed={spec.preset === "experimental"}
                 onClick={() => changePreset("experimental")}
               >
@@ -304,9 +314,17 @@ export default function CanStudio({
               </strong>
             </div>
           </div>
-          <p className="can-note">
-            {c.approx} {c.nominal}
-          </p>
+          {raster && (
+            <PlacementGuide raster={raster} spec={spec} locale={locale} />
+          )}
+          <details className="can-note">
+            <summary>
+              {locale === "ru" ? "О точности размеров" : "Өлшемдердің дәлдігі"}
+            </summary>
+            <p>
+              {c.approx} {c.nominal}
+            </p>
+          </details>
           {spec.preset === "experimental" && editable && (
             <div className="can-custom">
               {[
@@ -437,7 +455,9 @@ export default function CanStudio({
             <button
               className="btn primary"
               disabled={checkingFile || loading || !!error || !raster}
-              onClick={() => onNewVersion(localFile, spec)}
+              onClick={() =>
+                onNewVersion(localFile || originalFile.current, spec)
+              }
             >
               <Plus size={15} />
               {c.save}
@@ -575,9 +595,16 @@ export default function CanStudio({
               {localFile ? c.local : demo ? c.demonstration : c.bound}
             </strong>
             <span>{localFile?.name || file?.filename || "—"}</span>
-            <code>
-              {localFile ? "LOCAL" : file?.id} · {hash || file?.sha256 || "—"}
-            </code>
+            <details>
+              <summary>
+                {locale === "ru"
+                  ? "Идентификатор и SHA-256"
+                  : "Идентификатор және SHA-256"}
+              </summary>
+              <code>
+                {localFile ? "LOCAL" : file?.id} · {hash || file?.sha256 || "—"}
+              </code>
+            </details>
             <p>{c.legal}</p>
           </div>
         </div>

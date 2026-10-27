@@ -1,0 +1,205 @@
+{
+  "dateUTC": "2026-10-26",
+  "baseCommit": "e7cc0978d082d7fa13cec1586d1f76bc7eade974",
+  "browser": "Chromium 154.0.8037.57, Linux, SwiftShader",
+  "viewports": [
+    {
+      "width": 1440,
+      "height": 1050,
+      "dpr": 1
+    },
+    {
+      "width": 768,
+      "height": 1050,
+      "dpr": 1
+    },
+    {
+      "width": 390,
+      "height": 664,
+      "dpr": 3,
+      "screen": [
+        390,
+        844
+      ]
+    }
+  ],
+  "files": [
+    {
+      "path": "README.md",
+      "bytes": 17486,
+      "sha256": "2f3cad60da37511655ddb9d71aa6c168f8bf271bd1590f24746143c5c8a0cb77"
+    },
+    {
+      "path": "after/client-1440.png",
+      "bytes": 249038,
+      "sha256": "b9a36e856cec4535bd9d344720f57d24404c775978ebf213a700facec68df112"
+    },
+    {
+      "path": "after/client-390.png",
+      "bytes": 612997,
+      "sha256": "16103ffbcfab17f018ddea90e191c93fc1aac2393077419adfc1e859f40c1b54"
+    },
+    {
+      "path": "after/client-768.png",
+      "bytes": 164654,
+      "sha256": "4a845595181357bd0bdec9cb25bf2091e2c97758a325bbea6368610ec4ab792b"
+    },
+    {
+      "path": "after/evidence.json",
+      "bytes": 1199,
+      "sha256": "69462b594da33361102f3670420ae4fb3e15024943cec4b93814a8297bf6bb14"
+    },
+    {
+      "path": "after/projects-1440.png",
+      "bytes": 116696,
+      "sha256": "2b3b9ccb7217dad3b28567be273bc9fbf7067d3d067fc268b954c6582fbd29b5"
+    },
+    {
+      "path": "after/projects-390.png",
+      "bytes": 281215,
+      "sha256": "3afa4d81ecc7451cca8156e971e5ecc7f5bb7c629e6231e55990ab7e1b35ad51"
+    },
+    {
+      "path": "after/projects-768.png",
+      "bytes": 76342,
+      "sha256": "e51d55ce6969cb21f40a7e5e17f5938ad21eb00e9ca6dc1db5925aea5bdc769d"
+    },
+    {
+      "path": "after/studio-1440.png",
+      "bytes": 260473,
+      "sha256": "c3a0e201454b9bdf4031bc46f8dceffb6594e200b01cf02f106c13c68d1f6ea0"
+    },
+    {
+      "path": "after/studio-390.png",
+      "bytes": 598665,
+      "sha256": "1184b9f05ca2ce9810304b327b855f1337a4bc1ed340dd4207219c1c2edfd187"
+    },
+    {
+      "path": "after/studio-768.png",
+      "bytes": 167240,
+      "sha256": "821d67f598a336a67b72dc81b10593d969562d9d5e3ed5f545341f39a085054e"
+    },
+    {
+      "path": "after/upload-1440.png",
+      "bytes": 188872,
+      "sha256": "a4fde9d062bb40d84bf7c338a35c2aa195a784ccaba120235cab0026b7248988"
+    },
+    {
+      "path": "after/upload-390.png",
+      "bytes": 188037,
+      "sha256": "aa783972ca9f1bcaa37183f173b1cdc5d98f51c044226d4db0518cd58387d48c"
+    },
+    {
+      "path": "before/client-1440.png",
+      "bytes": 240722,
+      "sha256": "c032ffe1dd689d717a67b85a099d65ce825aedb5c2e48e53914f7d8dbeeca8d6"
+    },
+    {
+      "path": "before/client-390.png",
+      "bytes": 575509,
+      "sha256": "4806e11e125c9b15695c9c18f07820b2c6ec155ba117bdd86a6ab1e3b0a8c3d0"
+    },
+    {
+      "path": "before/client-768.png",
+      "bytes": 197551,
+      "sha256": "186c293ed306a5d1de80a07d596fec332387b5dd2978c06f7786fc286c605e0a"
+    },
+    {
+      "path": "before/evidence.json",
+      "bytes": 1199,
+      "sha256": "86c72fc4dc4e5fd81bacbc51d298df0e35a99647f05179aaf6e5e057e3cd3d12"
+    },
+    {
+      "path": "before/projects-1440.png",
+      "bytes": 93894,
+      "sha256": "3b993432b50c50b3380e09dbe4722a62fdd09a9305a25f216ef6414a64168723"
+    },
+    {
+      "path": "before/projects-390.png",
+      "bytes": 168785,
+      "sha256": "7ac20c10b6ef8567ac23eabdc1809df95d504ac2a99f1504c13d7406c4a827d9"
+    },
+    {
+      "path": "before/projects-768.png",
+      "bytes": 80295,
+      "sha256": "c1691bf9a0a2d0eee92e2c824e7fee73fbb983b03e59ea12beabcb82b3191516"
+    },
+    {
+      "path": "before/studio-1440.png",
+      "bytes": 254832,
+      "sha256": "711f22e1c8b2dec69afcdcd3b65dd437f114a3b118eda56bcc559499bbba6fe0"
+    },
+    {
+      "path": "before/studio-390.png",
+      "bytes": 586564,
+      "sha256": "0acf9fc2d0ee6e15951c37fbde4dcd4363daf3acac78950816a4fd96990e9357"
+    },
+    {
+      "path": "before/studio-768.png",
+      "bytes": 206543,
+      "sha256": "c53fe190b1c0e7f47358de8a0e643a66b6e25f3877b212dc2ffc6931015ea7e1"
+    },
+    {
+      "path": "before/upload-1440.png",
+      "bytes": 204016,
+      "sha256": "39d342e7d54475880841a0b8a777e049103f810a30a673f539d016e22f3cc5ea"
+    },
+    {
+      "path": "before/upload-390.png",
+      "bytes": 168432,
+      "sha256": "aacdde45c214b8095a21de70d995c55f11bdd8be0c8e422c14690017cc18cd0a"
+    },
+    {
+      "path": "measurements/after.json",
+      "bytes": 15455,
+      "sha256": "d747d423c5801a693996d66488aa9c9b2c63308a597453bcbf2b338658fcceb3"
+    },
+    {
+      "path": "measurements/before.json",
+      "bytes": 16744,
+      "sha256": "af58e45230fe4ef673f461e4ae5481f0e06e158f6fc79ab944f6ce6f16803102"
+    },
+    {
+      "path": "measurements/cold-after.json",
+      "bytes": 1361,
+      "sha256": "2c991021822b336566f902db7addd51d1f1c06220ba8f8d2cb91312118094862"
+    },
+    {
+      "path": "measurements/cold-before.json",
+      "bytes": 1379,
+      "sha256": "cfb8542fb95b0026edcdea24401644a3cd7290621e9ce406f2d953fce5bb0af5"
+    },
+    {
+      "path": "measurements/lazy-3d.json",
+      "bytes": 216,
+      "sha256": "0b6f9b7022c2fc57524ba6b35f9ecb03991b9b746f60439ebf0c2866eca1865f"
+    },
+    {
+      "path": "measurements/sql.json",
+      "bytes": 590,
+      "sha256": "a84d8bea5742dac1a7585aa9c207ad0a3708290393819fa356352640a5dac9cc"
+    },
+    {
+      "path": "verification.json",
+      "bytes": 784,
+      "sha256": "276439d1e95b1ccce49ddd24ea05fe1c650d196e5460a6a26173e486d7223093"
+    },
+    {
+      "path": "workflow-demo.mp4",
+      "bytes": 387358,
+      "sha256": "70725f79239db5efc68218ce3fd98973573abc8bccc4564121ac439860ce6192"
+    }
+  ],
+  "capturedFrontendCommit": "0aeab273c0245a2cba0ab8791a14ab11082f8201",
+  "finalReviewCommit": "4d98ce81f34dd90931f1df4e80f986bb5e6baa63",
+  "performanceFixture": {
+    "projectId": "433a76c4-153b-40d6-8eb7-353a8f30a2ff",
+    "artworkId": "08d18ce5-079a-4754-91a6-3c704c365e97",
+    "pdfArtworkId": "21e76e07-1152-4a77-be93-947a26083055",
+    "projects": 244,
+    "artworks": 283,
+    "versions": 284,
+    "datasetHash": "8ef8aad97f3c6e680828ded7d4f9bafe7977a3442f26fca0e553013896b5a180"
+  },
+  "provenanceNote": "Projects/studio/client/upload markup was captured before the later server-role and comparison-URL fixes; those route families keep the same rendered layout. Performance and focused comparison checks use the final review commit."
+}

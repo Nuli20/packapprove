@@ -1,0 +1,599 @@
+{
+  "origin": "http://127.0.0.1:3020",
+  "fixture": {
+    "projectId": "433a76c4-153b-40d6-8eb7-353a8f30a2ff",
+    "artworkId": "08d18ce5-079a-4754-91a6-3c704c365e97",
+    "pdfArtworkId": "21e76e07-1152-4a77-be93-947a26083055",
+    "projects": 244,
+    "artworks": 283,
+    "versions": 284,
+    "datasetHash": "8ef8aad97f3c6e680828ded7d4f9bafe7977a3442f26fca0e553013896b5a180"
+  },
+  "conditions": "Local production build, same machine, no network throttling, 3 fresh browser contexts per width; warm process. INP not measured. GPU SwiftShader.",
+  "runs": [
+    {
+      "width": 1440,
+      "run": 0,
+      "browserCache": "new context per run; server process warm",
+      "homeFirst": {
+        "ms": 951.1538490000003,
+        "bytes": 1855571
+      },
+      "homeWarmMedianMs": 950.8410550000003,
+      "homeWarmBytes": 1855571,
+      "projectsAPI": {
+        "ms": 968.8236900000011,
+        "bytes": 1855571
+      },
+      "dashboardMs": 1469.9685039999995,
+      "projectsMs": 1429.0672520000007,
+      "projectMs": 1371.9810359999992,
+      "artifactMs": 1358.6598090000007,
+      "pdfMs": 1361.7556160000004,
+      "threeMs": 889.6555669999998,
+      "nav": {
+        "ttfb": 6,
+        "fcp": 88,
+        "lcp": 1648,
+        "cls": 0.00021552002383708115,
+        "resources": [
+          {
+            "name": "/_next/static/chunks/368uysl69-xx8.css",
+            "bytes": 21797,
+            "type": "link"
+          },
+          {
+            "name": "/_next/static/chunks/1x6obpmlu1_c2.js",
+            "bytes": 1975,
+            "type": "link"
+          },
+          {
+            "name": "/_next/static/chunks/2n86e7h60o0qo.js",
+            "bytes": 8831,
+            "type": "script"
+          },
+          {
+            "name": "/_next/static/chunks/0umf92h1sb77c.js",
+            "bytes": 3514,
+            "type": "script"
+          },
+          {
+            "name": "/_next/static/chunks/turbopack-2c3mg3r-05n1w.js",
+            "bytes": 4390,
+            "type": "script"
+          },
+          {
+            "name": "/_next/static/chunks/3xf2vy22yomhr.js",
+            "bytes": 349,
+            "type": "script"
+          },
+          {
+            "name": "/_next/static/chunks/2pgxx1eld5ef_.js",
+            "bytes": 45280,
+            "type": "script"
+          },
+          {
+            "name": "/_next/static/chunks/0oz7czwhn8wh9.js",
+            "bytes": 19617,
+            "type": "script"
+          },
+          {
+            "name": "/_next/static/chunks/3wbm-994r45kr.js",
+            "bytes": 71969,
+            "type": "script"
+          },
+          {
+            "name": "/_next/static/chunks/2v9n6j6q_uhe6.js",
+            "bytes": 46603,
+            "type": "script"
+          },
+          {
+            "name": "/_next/static/chunks/01qrxd88p5wj4.js",
+            "bytes": 32098,
+            "type": "script"
+          },
+          {
+            "name": "/_next/static/chunks/38ru-hcqv8dgy.js",
+            "bytes": 135694,
+            "type": "script"
+          }
+        ]
+      },
+      "errors": []
+    },
+    {
+      "width": 1440,
+      "run": 1,
+      "browserCache": "new context per run; server process warm",
+      "homeFirst": {
+        "ms": 944.9066249999996,
+        "bytes": 1855571
+      },
+      "homeWarmMedianMs": 971.9259029999994,
+      "homeWarmBytes": 1855571,
+      "projectsAPI": {
+        "ms": 945.149731999998,
+        "bytes": 1855571
+      },
+      "dashboardMs": 1464.3281399999978,
+      "projectsMs": 1399.2258519999996,
+      "projectMs": 1354.684076999998,
+      "artifactMs": 1388.4193220000016,
+      "pdfMs": 1762.6393499999976,
+      "threeMs": 878.7174699999996,
+      "nav": {
+        "ttfb": 8.400000005960464,
+        "fcp": 116,
+        "lcp": 1452,
+        "cls": 0.00021552002383708115,
+        "resources": [
+          {
+            "name": "/_next/static/chunks/368uysl69-xx8.css",
+            "bytes": 21797,
+            "type": "link"
+          },
+          {
+            "name": "/_next/static/chunks/1x6obpmlu1_c2.js",
+            "bytes": 1975,
+            "type": "link"
+          },
+          {
+            "name": "/_next/static/chunks/2n86e7h60o0qo.js",
+            "bytes": 8831,
+            "type": "script"
+          },
+          {
+            "name": "/_next/static/chunks/turbopack-2c3mg3r-05n1w.js",
+            "bytes": 4390,
+            "type": "script"
+          },
+          {
+            "name": "/_next/static/chunks/0umf92h1sb77c.js",
+            "bytes": 3514,
+            "type": "script"
+          },
+          {
+            "name": "/_next/static/chunks/2pgxx1eld5ef_.js",
+            "bytes": 45280,
+            "type": "script"
+          },
+          {
+            "name": "/_next/static/chunks/3wbm-994r45kr.js",
+            "bytes": 71969,
+            "type": "script"
+          },
+          {
+            "name": "/_next/static/chunks/3xf2vy22yomhr.js",
+            "bytes": 349,
+            "type": "script"
+          },
+          {
+            "name": "/_next/static/chunks/0oz7czwhn8wh9.js",
+            "bytes": 19617,
+            "type": "script"
+          },
+          {
+            "name": "/_next/static/chunks/01qrxd88p5wj4.js",
+            "bytes": 32098,
+            "type": "script"
+          },
+          {
+            "name": "/_next/static/chunks/2v9n6j6q_uhe6.js",
+            "bytes": 46603,
+            "type": "script"
+          },
+          {
+            "name": "/_next/static/chunks/38ru-hcqv8dgy.js",
+            "bytes": 135694,
+            "type": "script"
+          }
+        ]
+      },
+      "errors": []
+    },
+    {
+      "width": 1440,
+      "run": 2,
+      "browserCache": "new context per run; server process warm",
+      "homeFirst": {
+        "ms": 979.2673150000046,
+        "bytes": 1855571
+      },
+      "homeWarmMedianMs": 930.2134070000029,
+      "homeWarmBytes": 1855571,
+      "projectsAPI": {
+        "ms": 943.5155320000049,
+        "bytes": 1855571
+      },
+      "dashboardMs": 1439.2661369999987,
+      "projectsMs": 1491.21529,
+      "projectMs": 1368.808901000004,
+      "artifactMs": 1366.0044479999997,
+      "pdfMs": 1737.337453,
+      "threeMs": 887.7223670000021,
+      "nav": {
+        "ttfb": 2.2000000178813934,
+        "fcp": 60,
+        "lcp": 1428,
+        "cls": 0.00021552002383708115,
+        "resources": [
+          {
+            "name": "/_next/static/chunks/368uysl69-xx8.css",
+            "bytes": 21797,
+            "type": "link"
+          },
+          {
+            "name": "/_next/static/chunks/1x6obpmlu1_c2.js",
+            "bytes": 1975,
+            "type": "link"
+          },
+          {
+            "name": "/_next/static/chunks/2n86e7h60o0qo.js",
+            "bytes": 8831,
+            "type": "script"
+          },
+          {
+            "name": "/_next/static/chunks/turbopack-2c3mg3r-05n1w.js",
+            "bytes": 4390,
+            "type": "script"
+          },
+          {
+            "name": "/_next/static/chunks/0umf92h1sb77c.js",
+            "bytes": 3514,
+            "type": "script"
+          },
+          {
+            "name": "/_next/static/chunks/3wbm-994r45kr.js",
+            "bytes": 71969,
+            "type": "script"
+          },
+          {
+            "name": "/_next/static/chunks/2pgxx1eld5ef_.js",
+            "bytes": 45280,
+            "type": "script"
+          },
+          {
+            "name": "/_next/static/chunks/3xf2vy22yomhr.js",
+            "bytes": 349,
+            "type": "script"
+          },
+          {
+            "name": "/_next/static/chunks/0oz7czwhn8wh9.js",
+            "bytes": 19617,
+            "type": "script"
+          },
+          {
+            "name": "/_next/static/chunks/01qrxd88p5wj4.js",
+            "bytes": 32098,
+            "type": "script"
+          },
+          {
+            "name": "/_next/static/chunks/2v9n6j6q_uhe6.js",
+            "bytes": 46603,
+            "type": "script"
+          },
+          {
+            "name": "/_next/static/chunks/38ru-hcqv8dgy.js",
+            "bytes": 135694,
+            "type": "script"
+          }
+        ]
+      },
+      "errors": []
+    },
+    {
+      "width": 390,
+      "run": 0,
+      "browserCache": "new context per run; server process warm",
+      "homeFirst": {
+        "ms": 958.6039260000034,
+        "bytes": 1855571
+      },
+      "homeWarmMedianMs": 951.3073430000004,
+      "homeWarmBytes": 1855571,
+      "projectsAPI": {
+        "ms": 911.0553110000037,
+        "bytes": 1855571
+      },
+      "dashboardMs": 1453.3045249999996,
+      "projectsMs": 1401.864990999995,
+      "projectMs": 1344.8138869999966,
+      "artifactMs": 1345.4457729999995,
+      "pdfMs": 1427.941786000003,
+      "threeMs": 885.0617050000001,
+      "nav": {
+        "ttfb": 22.19999998807907,
+        "fcp": 116,
+        "lcp": 1420,
+        "cls": 0,
+        "resources": [
+          {
+            "name": "/_next/static/chunks/368uysl69-xx8.css",
+            "bytes": 21797,
+            "type": "link"
+          },
+          {
+            "name": "/_next/static/chunks/1x6obpmlu1_c2.js",
+            "bytes": 1975,
+            "type": "link"
+          },
+          {
+            "name": "/_next/static/chunks/2n86e7h60o0qo.js",
+            "bytes": 8831,
+            "type": "script"
+          },
+          {
+            "name": "/_next/static/chunks/3wbm-994r45kr.js",
+            "bytes": 71969,
+            "type": "script"
+          },
+          {
+            "name": "/_next/static/chunks/turbopack-2c3mg3r-05n1w.js",
+            "bytes": 4390,
+            "type": "script"
+          },
+          {
+            "name": "/_next/static/chunks/0umf92h1sb77c.js",
+            "bytes": 3514,
+            "type": "script"
+          },
+          {
+            "name": "/_next/static/chunks/2pgxx1eld5ef_.js",
+            "bytes": 45280,
+            "type": "script"
+          },
+          {
+            "name": "/_next/static/chunks/3xf2vy22yomhr.js",
+            "bytes": 349,
+            "type": "script"
+          },
+          {
+            "name": "/_next/static/chunks/0oz7czwhn8wh9.js",
+            "bytes": 19617,
+            "type": "script"
+          },
+          {
+            "name": "/_next/static/chunks/01qrxd88p5wj4.js",
+            "bytes": 32098,
+            "type": "script"
+          },
+          {
+            "name": "/_next/static/chunks/2v9n6j6q_uhe6.js",
+            "bytes": 46603,
+            "type": "script"
+          },
+          {
+            "name": "/_next/static/chunks/38ru-hcqv8dgy.js",
+            "bytes": 135694,
+            "type": "script"
+          }
+        ]
+      },
+      "errors": []
+    },
+    {
+      "width": 390,
+      "run": 1,
+      "browserCache": "new context per run; server process warm",
+      "homeFirst": {
+        "ms": 945.8768779999955,
+        "bytes": 1855571
+      },
+      "homeWarmMedianMs": 959.9167980000057,
+      "homeWarmBytes": 1855571,
+      "projectsAPI": {
+        "ms": 968.303384999992,
+        "bytes": 1855571
+      },
+      "dashboardMs": 1438.9483969999856,
+      "projectsMs": 1391.9659720000054,
+      "projectMs": 1361.9861910000036,
+      "artifactMs": 1334.1392620000115,
+      "pdfMs": 1802.2385280000017,
+      "threeMs": 883.8798379999935,
+      "nav": {
+        "ttfb": 2.699999988079071,
+        "fcp": 72,
+        "lcp": 1300,
+        "cls": 0,
+        "resources": [
+          {
+            "name": "/_next/static/chunks/368uysl69-xx8.css",
+            "bytes": 21797,
+            "type": "link"
+          },
+          {
+            "name": "/_next/static/chunks/1x6obpmlu1_c2.js",
+            "bytes": 1975,
+            "type": "link"
+          },
+          {
+            "name": "/_next/static/chunks/2n86e7h60o0qo.js",
+            "bytes": 8831,
+            "type": "script"
+          },
+          {
+            "name": "/_next/static/chunks/turbopack-2c3mg3r-05n1w.js",
+            "bytes": 4390,
+            "type": "script"
+          },
+          {
+            "name": "/_next/static/chunks/2pgxx1eld5ef_.js",
+            "bytes": 45280,
+            "type": "script"
+          },
+          {
+            "name": "/_next/static/chunks/3xf2vy22yomhr.js",
+            "bytes": 349,
+            "type": "script"
+          },
+          {
+            "name": "/_next/static/chunks/0umf92h1sb77c.js",
+            "bytes": 3514,
+            "type": "script"
+          },
+          {
+            "name": "/_next/static/chunks/0oz7czwhn8wh9.js",
+            "bytes": 19617,
+            "type": "script"
+          },
+          {
+            "name": "/_next/static/chunks/01qrxd88p5wj4.js",
+            "bytes": 32098,
+            "type": "script"
+          },
+          {
+            "name": "/_next/static/chunks/3wbm-994r45kr.js",
+            "bytes": 71969,
+            "type": "script"
+          },
+          {
+            "name": "/_next/static/chunks/2v9n6j6q_uhe6.js",
+            "bytes": 46603,
+            "type": "script"
+          },
+          {
+            "name": "/_next/static/chunks/38ru-hcqv8dgy.js",
+            "bytes": 135694,
+            "type": "script"
+          }
+        ]
+      },
+      "errors": []
+    },
+    {
+      "width": 390,
+      "run": 2,
+      "browserCache": "new context per run; server process warm",
+      "homeFirst": {
+        "ms": 955.2030479999958,
+        "bytes": 1855571
+      },
+      "homeWarmMedianMs": 945.2550670000055,
+      "homeWarmBytes": 1855571,
+      "projectsAPI": {
+        "ms": 919.572742999997,
+        "bytes": 1855503
+      },
+      "dashboardMs": 1466.6026270000002,
+      "projectsMs": 1415.622325000004,
+      "projectMs": 1360.9604510000063,
+      "artifactMs": 1363.7724769999913,
+      "pdfMs": 1731.5712919999933,
+      "threeMs": 878.430017000006,
+      "nav": {
+        "ttfb": 13,
+        "fcp": 92,
+        "lcp": 1292,
+        "cls": 0,
+        "resources": [
+          {
+            "name": "/_next/static/chunks/368uysl69-xx8.css",
+            "bytes": 21797,
+            "type": "link"
+          },
+          {
+            "name": "/_next/static/chunks/2n86e7h60o0qo.js",
+            "bytes": 8831,
+            "type": "script"
+          },
+          {
+            "name": "/_next/static/chunks/1x6obpmlu1_c2.js",
+            "bytes": 1975,
+            "type": "link"
+          },
+          {
+            "name": "/_next/static/chunks/2pgxx1eld5ef_.js",
+            "bytes": 45280,
+            "type": "script"
+          },
+          {
+            "name": "/_next/static/chunks/3wbm-994r45kr.js",
+            "bytes": 71969,
+            "type": "script"
+          },
+          {
+            "name": "/_next/static/chunks/turbopack-2c3mg3r-05n1w.js",
+            "bytes": 4390,
+            "type": "script"
+          },
+          {
+            "name": "/_next/static/chunks/0umf92h1sb77c.js",
+            "bytes": 3514,
+            "type": "script"
+          },
+          {
+            "name": "/_next/static/chunks/3xf2vy22yomhr.js",
+            "bytes": 349,
+            "type": "script"
+          },
+          {
+            "name": "/_next/static/chunks/0oz7czwhn8wh9.js",
+            "bytes": 19617,
+            "type": "script"
+          },
+          {
+            "name": "/_next/static/chunks/01qrxd88p5wj4.js",
+            "bytes": 32098,
+            "type": "script"
+          },
+          {
+            "name": "/_next/static/chunks/2v9n6j6q_uhe6.js",
+            "bytes": 46603,
+            "type": "script"
+          },
+          {
+            "name": "/_next/static/chunks/38ru-hcqv8dgy.js",
+            "bytes": 135694,
+            "type": "script"
+          }
+        ]
+      },
+      "errors": []
+    }
+  ],
+  "summary": [
+    {
+      "width": 1440,
+      "medians": {
+        "dashboardMs": 1464.3281399999978,
+        "projectsMs": 1429.0672520000007,
+        "projectMs": 1368.808901000004,
+        "artifactMs": 1366.0044479999997,
+        "pdfMs": 1737.337453,
+        "threeMs": 887.7223670000021,
+        "homeWarmMedianMs": 950.8410550000003
+      },
+      "homeFirstMedianMs": 951.1538490000003,
+      "homeBytes": 1855571,
+      "projectsBytes": 1855571,
+      "jsBytes": 370320,
+      "cssBytes": 21797,
+      "ttfb": 6,
+      "fcp": 88,
+      "lcpAfterNetworkIdle": 1452,
+      "clsAfterNetworkIdle": 0.00021552002383708115
+    },
+    {
+      "width": 390,
+      "medians": {
+        "dashboardMs": 1453.3045249999996,
+        "projectsMs": 1401.864990999995,
+        "projectMs": 1360.9604510000063,
+        "artifactMs": 1345.4457729999995,
+        "pdfMs": 1731.5712919999933,
+        "threeMs": 883.8798379999935,
+        "homeWarmMedianMs": 951.3073430000004
+      },
+      "homeFirstMedianMs": 955.2030479999958,
+      "homeBytes": 1855571,
+      "projectsBytes": 1855571,
+      "jsBytes": 370320,
+      "cssBytes": 21797,
+      "ttfb": 13,
+      "fcp": 92,
+      "lcpAfterNetworkIdle": 1300,
+      "clsAfterNetworkIdle": 0
+    }
+  ]
+}

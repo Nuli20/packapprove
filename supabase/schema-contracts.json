@@ -1,0 +1,4310 @@
+{
+  "version": 1,
+  "migrations": [
+    {
+      "name": "202610240001_core.sql",
+      "sha256": "81225458f563d33455d39d6744332ef8e6258c8d7686f6dc5f1f57b2683b80cb",
+      "put": {
+        "table:approval_decisions": {
+          "rls": true,
+          "forceRls": false
+        },
+        "table:approval_participants": {
+          "rls": true,
+          "forceRls": false
+        },
+        "table:approval_rounds": {
+          "rls": true,
+          "forceRls": false
+        },
+        "table:artwork_versions": {
+          "rls": true,
+          "forceRls": false
+        },
+        "table:artworks": {
+          "rls": true,
+          "forceRls": false
+        },
+        "table:audit_logs": {
+          "rls": true,
+          "forceRls": false
+        },
+        "table:brief_versions": {
+          "rls": true,
+          "forceRls": false
+        },
+        "table:checklist_template_versions": {
+          "rls": true,
+          "forceRls": false
+        },
+        "table:checklist_templates": {
+          "rls": true,
+          "forceRls": false
+        },
+        "table:comment_resolution_links": {
+          "rls": true,
+          "forceRls": false
+        },
+        "table:comment_threads": {
+          "rls": true,
+          "forceRls": false
+        },
+        "table:comments": {
+          "rls": true,
+          "forceRls": false
+        },
+        "table:download_events": {
+          "rls": true,
+          "forceRls": false
+        },
+        "table:file_previews": {
+          "rls": true,
+          "forceRls": false
+        },
+        "table:idempotency_keys": {
+          "rls": true,
+          "forceRls": false
+        },
+        "table:invitations": {
+          "rls": true,
+          "forceRls": false
+        },
+        "table:notifications": {
+          "rls": true,
+          "forceRls": false
+        },
+        "table:organization_memberships": {
+          "rls": true,
+          "forceRls": false
+        },
+        "table:organizations": {
+          "rls": true,
+          "forceRls": false
+        },
+        "table:package_acknowledgements": {
+          "rls": true,
+          "forceRls": false
+        },
+        "table:package_revocations": {
+          "rls": true,
+          "forceRls": false
+        },
+        "table:production_orders": {
+          "rls": true,
+          "forceRls": false
+        },
+        "table:production_package_files": {
+          "rls": true,
+          "forceRls": false
+        },
+        "table:production_packages": {
+          "rls": true,
+          "forceRls": false
+        },
+        "table:profiles": {
+          "rls": true,
+          "forceRls": false
+        },
+        "table:project_members": {
+          "rls": true,
+          "forceRls": false
+        },
+        "table:projects": {
+          "rls": true,
+          "forceRls": false
+        },
+        "table:rate_limits": {
+          "rls": true,
+          "forceRls": false
+        },
+        "table:technical_review_items": {
+          "rls": true,
+          "forceRls": false
+        },
+        "table:technical_reviews": {
+          "rls": true,
+          "forceRls": false
+        },
+        "table:version_files": {
+          "rls": true,
+          "forceRls": false
+        },
+        "column:approval_decisions:id": {
+          "type": "uuid",
+          "required": true,
+          "default": "gen_random_uuid()"
+        },
+        "column:approval_decisions:round_id": {
+          "type": "uuid",
+          "required": true,
+          "default": null
+        },
+        "column:approval_decisions:version_id": {
+          "type": "uuid",
+          "required": true,
+          "default": null
+        },
+        "column:approval_decisions:user_id": {
+          "type": "uuid",
+          "required": true,
+          "default": null
+        },
+        "column:approval_decisions:result": {
+          "type": "text",
+          "required": true,
+          "default": null
+        },
+        "column:approval_decisions:comment": {
+          "type": "text",
+          "required": true,
+          "default": "''::text"
+        },
+        "column:approval_decisions:ip": {
+          "type": "inet",
+          "required": false,
+          "default": null
+        },
+        "column:approval_decisions:user_agent": {
+          "type": "text",
+          "required": false,
+          "default": null
+        },
+        "column:approval_decisions:sha256": {
+          "type": "text",
+          "required": true,
+          "default": null
+        },
+        "column:approval_decisions:created_at": {
+          "type": "timestamp with time zone",
+          "required": true,
+          "default": "now()"
+        },
+        "column:approval_decisions:updated_at": {
+          "type": "timestamp with time zone",
+          "required": true,
+          "default": "now()"
+        },
+        "column:approval_decisions:row_version": {
+          "type": "integer",
+          "required": true,
+          "default": "1"
+        },
+        "column:approval_participants:id": {
+          "type": "uuid",
+          "required": true,
+          "default": "gen_random_uuid()"
+        },
+        "column:approval_participants:round_id": {
+          "type": "uuid",
+          "required": true,
+          "default": null
+        },
+        "column:approval_participants:user_id": {
+          "type": "uuid",
+          "required": true,
+          "default": null
+        },
+        "column:approval_participants:kind": {
+          "type": "text",
+          "required": true,
+          "default": null
+        },
+        "column:approval_participants:created_at": {
+          "type": "timestamp with time zone",
+          "required": true,
+          "default": "now()"
+        },
+        "column:approval_participants:updated_at": {
+          "type": "timestamp with time zone",
+          "required": true,
+          "default": "now()"
+        },
+        "column:approval_participants:row_version": {
+          "type": "integer",
+          "required": true,
+          "default": "1"
+        },
+        "column:approval_rounds:id": {
+          "type": "uuid",
+          "required": true,
+          "default": "gen_random_uuid()"
+        },
+        "column:approval_rounds:version_id": {
+          "type": "uuid",
+          "required": true,
+          "default": null
+        },
+        "column:approval_rounds:artwork_id": {
+          "type": "uuid",
+          "required": true,
+          "default": null
+        },
+        "column:approval_rounds:opened_by": {
+          "type": "uuid",
+          "required": true,
+          "default": null
+        },
+        "column:approval_rounds:deadline": {
+          "type": "timestamp with time zone",
+          "required": true,
+          "default": null
+        },
+        "column:approval_rounds:policy": {
+          "type": "text",
+          "required": true,
+          "default": "'all'::text"
+        },
+        "column:approval_rounds:status": {
+          "type": "text",
+          "required": true,
+          "default": "'open'::text"
+        },
+        "column:approval_rounds:closed_at": {
+          "type": "timestamp with time zone",
+          "required": false,
+          "default": null
+        },
+        "column:approval_rounds:created_at": {
+          "type": "timestamp with time zone",
+          "required": true,
+          "default": "now()"
+        },
+        "column:approval_rounds:updated_at": {
+          "type": "timestamp with time zone",
+          "required": true,
+          "default": "now()"
+        },
+        "column:approval_rounds:row_version": {
+          "type": "integer",
+          "required": true,
+          "default": "1"
+        },
+        "column:artwork_versions:id": {
+          "type": "uuid",
+          "required": true,
+          "default": "gen_random_uuid()"
+        },
+        "column:artwork_versions:artwork_id": {
+          "type": "uuid",
+          "required": true,
+          "default": null
+        },
+        "column:artwork_versions:number": {
+          "type": "integer",
+          "required": true,
+          "default": null
+        },
+        "column:artwork_versions:previous_version_id": {
+          "type": "uuid",
+          "required": false,
+          "default": null
+        },
+        "column:artwork_versions:author_id": {
+          "type": "uuid",
+          "required": true,
+          "default": null
+        },
+        "column:artwork_versions:changes": {
+          "type": "text",
+          "required": true,
+          "default": null
+        },
+        "column:artwork_versions:status": {
+          "type": "text",
+          "required": true,
+          "default": "'fixed'::text"
+        },
+        "column:artwork_versions:created_at": {
+          "type": "timestamp with time zone",
+          "required": true,
+          "default": "now()"
+        },
+        "column:artwork_versions:updated_at": {
+          "type": "timestamp with time zone",
+          "required": true,
+          "default": "now()"
+        },
+        "column:artwork_versions:row_version": {
+          "type": "integer",
+          "required": true,
+          "default": "1"
+        },
+        "column:artworks:id": {
+          "type": "uuid",
+          "required": true,
+          "default": "gen_random_uuid()"
+        },
+        "column:artworks:project_id": {
+          "type": "uuid",
+          "required": true,
+          "default": null
+        },
+        "column:artworks:name": {
+          "type": "text",
+          "required": true,
+          "default": null
+        },
+        "column:artworks:packaging_type": {
+          "type": "text",
+          "required": true,
+          "default": "'Коробка'::text"
+        },
+        "column:artworks:deadline": {
+          "type": "date",
+          "required": true,
+          "default": null
+        },
+        "column:artworks:status": {
+          "type": "text",
+          "required": true,
+          "default": "'draft'::text"
+        },
+        "column:artworks:active_version_id": {
+          "type": "uuid",
+          "required": false,
+          "default": null
+        },
+        "column:artworks:created_at": {
+          "type": "timestamp with time zone",
+          "required": true,
+          "default": "now()"
+        },
+        "column:artworks:updated_at": {
+          "type": "timestamp with time zone",
+          "required": true,
+          "default": "now()"
+        },
+        "column:artworks:row_version": {
+          "type": "integer",
+          "required": true,
+          "default": "1"
+        },
+        "column:audit_logs:id": {
+          "type": "uuid",
+          "required": true,
+          "default": "gen_random_uuid()"
+        },
+        "column:audit_logs:actor_id": {
+          "type": "uuid",
+          "required": false,
+          "default": null
+        },
+        "column:audit_logs:project_id": {
+          "type": "uuid",
+          "required": false,
+          "default": null
+        },
+        "column:audit_logs:action": {
+          "type": "text",
+          "required": true,
+          "default": null
+        },
+        "column:audit_logs:entity_id": {
+          "type": "uuid",
+          "required": false,
+          "default": null
+        },
+        "column:audit_logs:detail": {
+          "type": "jsonb",
+          "required": true,
+          "default": "'{}'::jsonb"
+        },
+        "column:audit_logs:created_at": {
+          "type": "timestamp with time zone",
+          "required": true,
+          "default": "now()"
+        },
+        "column:audit_logs:updated_at": {
+          "type": "timestamp with time zone",
+          "required": true,
+          "default": "now()"
+        },
+        "column:audit_logs:row_version": {
+          "type": "integer",
+          "required": true,
+          "default": "1"
+        },
+        "column:brief_versions:id": {
+          "type": "uuid",
+          "required": true,
+          "default": "gen_random_uuid()"
+        },
+        "column:brief_versions:artwork_id": {
+          "type": "uuid",
+          "required": true,
+          "default": null
+        },
+        "column:brief_versions:number": {
+          "type": "integer",
+          "required": true,
+          "default": null
+        },
+        "column:brief_versions:content": {
+          "type": "jsonb",
+          "required": true,
+          "default": null
+        },
+        "column:brief_versions:author_id": {
+          "type": "uuid",
+          "required": true,
+          "default": null
+        },
+        "column:brief_versions:created_at": {
+          "type": "timestamp with time zone",
+          "required": true,
+          "default": "now()"
+        },
+        "column:brief_versions:updated_at": {
+          "type": "timestamp with time zone",
+          "required": true,
+          "default": "now()"
+        },
+        "column:brief_versions:row_version": {
+          "type": "integer",
+          "required": true,
+          "default": "1"
+        },
+        "column:checklist_template_versions:id": {
+          "type": "uuid",
+          "required": true,
+          "default": "gen_random_uuid()"
+        },
+        "column:checklist_template_versions:template_id": {
+          "type": "uuid",
+          "required": true,
+          "default": null
+        },
+        "column:checklist_template_versions:number": {
+          "type": "integer",
+          "required": true,
+          "default": null
+        },
+        "column:checklist_template_versions:items": {
+          "type": "jsonb",
+          "required": true,
+          "default": null
+        },
+        "column:checklist_template_versions:created_at": {
+          "type": "timestamp with time zone",
+          "required": true,
+          "default": "now()"
+        },
+        "column:checklist_template_versions:updated_at": {
+          "type": "timestamp with time zone",
+          "required": true,
+          "default": "now()"
+        },
+        "column:checklist_template_versions:row_version": {
+          "type": "integer",
+          "required": true,
+          "default": "1"
+        },
+        "column:checklist_templates:id": {
+          "type": "uuid",
+          "required": true,
+          "default": "gen_random_uuid()"
+        },
+        "column:checklist_templates:name": {
+          "type": "text",
+          "required": true,
+          "default": null
+        },
+        "column:checklist_templates:created_at": {
+          "type": "timestamp with time zone",
+          "required": true,
+          "default": "now()"
+        },
+        "column:checklist_templates:updated_at": {
+          "type": "timestamp with time zone",
+          "required": true,
+          "default": "now()"
+        },
+        "column:checklist_templates:row_version": {
+          "type": "integer",
+          "required": true,
+          "default": "1"
+        },
+        "column:comment_resolution_links:id": {
+          "type": "uuid",
+          "required": true,
+          "default": "gen_random_uuid()"
+        },
+        "column:comment_resolution_links:thread_id": {
+          "type": "uuid",
+          "required": true,
+          "default": null
+        },
+        "column:comment_resolution_links:fixed_in_version_id": {
+          "type": "uuid",
+          "required": true,
+          "default": null
+        },
+        "column:comment_resolution_links:created_at": {
+          "type": "timestamp with time zone",
+          "required": true,
+          "default": "now()"
+        },
+        "column:comment_resolution_links:updated_at": {
+          "type": "timestamp with time zone",
+          "required": true,
+          "default": "now()"
+        },
+        "column:comment_resolution_links:row_version": {
+          "type": "integer",
+          "required": true,
+          "default": "1"
+        },
+        "column:comment_threads:id": {
+          "type": "uuid",
+          "required": true,
+          "default": "gen_random_uuid()"
+        },
+        "column:comment_threads:version_id": {
+          "type": "uuid",
+          "required": true,
+          "default": null
+        },
+        "column:comment_threads:author_id": {
+          "type": "uuid",
+          "required": true,
+          "default": null
+        },
+        "column:comment_threads:page": {
+          "type": "integer",
+          "required": true,
+          "default": "1"
+        },
+        "column:comment_threads:x": {
+          "type": "numeric",
+          "required": true,
+          "default": null
+        },
+        "column:comment_threads:y": {
+          "type": "numeric",
+          "required": true,
+          "default": null
+        },
+        "column:comment_threads:type": {
+          "type": "text",
+          "required": true,
+          "default": "'design'::text"
+        },
+        "column:comment_threads:visibility": {
+          "type": "text",
+          "required": true,
+          "default": null
+        },
+        "column:comment_threads:status": {
+          "type": "text",
+          "required": true,
+          "default": "'open'::text"
+        },
+        "column:comment_threads:created_at": {
+          "type": "timestamp with time zone",
+          "required": true,
+          "default": "now()"
+        },
+        "column:comment_threads:updated_at": {
+          "type": "timestamp with time zone",
+          "required": true,
+          "default": "now()"
+        },
+        "column:comment_threads:row_version": {
+          "type": "integer",
+          "required": true,
+          "default": "1"
+        },
+        "column:comment_threads:carried_from_id": {
+          "type": "uuid",
+          "required": false,
+          "default": null
+        },
+        "column:comments:id": {
+          "type": "uuid",
+          "required": true,
+          "default": "gen_random_uuid()"
+        },
+        "column:comments:thread_id": {
+          "type": "uuid",
+          "required": true,
+          "default": null
+        },
+        "column:comments:author_id": {
+          "type": "uuid",
+          "required": true,
+          "default": null
+        },
+        "column:comments:body": {
+          "type": "text",
+          "required": true,
+          "default": null
+        },
+        "column:comments:created_at": {
+          "type": "timestamp with time zone",
+          "required": true,
+          "default": "now()"
+        },
+        "column:comments:updated_at": {
+          "type": "timestamp with time zone",
+          "required": true,
+          "default": "now()"
+        },
+        "column:comments:row_version": {
+          "type": "integer",
+          "required": true,
+          "default": "1"
+        },
+        "column:download_events:id": {
+          "type": "uuid",
+          "required": true,
+          "default": "gen_random_uuid()"
+        },
+        "column:download_events:package_id": {
+          "type": "uuid",
+          "required": false,
+          "default": null
+        },
+        "column:download_events:file_id": {
+          "type": "uuid",
+          "required": true,
+          "default": null
+        },
+        "column:download_events:user_id": {
+          "type": "uuid",
+          "required": true,
+          "default": null
+        },
+        "column:download_events:sha256": {
+          "type": "text",
+          "required": true,
+          "default": null
+        },
+        "column:download_events:created_at": {
+          "type": "timestamp with time zone",
+          "required": true,
+          "default": "now()"
+        },
+        "column:download_events:updated_at": {
+          "type": "timestamp with time zone",
+          "required": true,
+          "default": "now()"
+        },
+        "column:download_events:row_version": {
+          "type": "integer",
+          "required": true,
+          "default": "1"
+        },
+        "column:file_previews:id": {
+          "type": "uuid",
+          "required": true,
+          "default": "gen_random_uuid()"
+        },
+        "column:file_previews:file_id": {
+          "type": "uuid",
+          "required": true,
+          "default": null
+        },
+        "column:file_previews:page": {
+          "type": "integer",
+          "required": true,
+          "default": null
+        },
+        "column:file_previews:storage_path": {
+          "type": "text",
+          "required": true,
+          "default": null
+        },
+        "column:file_previews:created_at": {
+          "type": "timestamp with time zone",
+          "required": true,
+          "default": "now()"
+        },
+        "column:file_previews:updated_at": {
+          "type": "timestamp with time zone",
+          "required": true,
+          "default": "now()"
+        },
+        "column:file_previews:row_version": {
+          "type": "integer",
+          "required": true,
+          "default": "1"
+        },
+        "column:idempotency_keys:id": {
+          "type": "uuid",
+          "required": true,
+          "default": "gen_random_uuid()"
+        },
+        "column:idempotency_keys:user_id": {
+          "type": "uuid",
+          "required": true,
+          "default": null
+        },
+        "column:idempotency_keys:key": {
+          "type": "text",
+          "required": true,
+          "default": null
+        },
+        "column:idempotency_keys:operation": {
+          "type": "text",
+          "required": true,
+          "default": null
+        },
+        "column:idempotency_keys:request_hash": {
+          "type": "text",
+          "required": true,
+          "default": null
+        },
+        "column:idempotency_keys:response": {
+          "type": "jsonb",
+          "required": false,
+          "default": null
+        },
+        "column:idempotency_keys:created_at": {
+          "type": "timestamp with time zone",
+          "required": true,
+          "default": "now()"
+        },
+        "column:idempotency_keys:updated_at": {
+          "type": "timestamp with time zone",
+          "required": true,
+          "default": "now()"
+        },
+        "column:idempotency_keys:row_version": {
+          "type": "integer",
+          "required": true,
+          "default": "1"
+        },
+        "column:invitations:id": {
+          "type": "uuid",
+          "required": true,
+          "default": "gen_random_uuid()"
+        },
+        "column:invitations:organization_id": {
+          "type": "uuid",
+          "required": true,
+          "default": null
+        },
+        "column:invitations:email": {
+          "type": "text",
+          "required": true,
+          "default": null
+        },
+        "column:invitations:role": {
+          "type": "text",
+          "required": true,
+          "default": null
+        },
+        "column:invitations:invited_by": {
+          "type": "uuid",
+          "required": true,
+          "default": null
+        },
+        "column:invitations:token_hash": {
+          "type": "text",
+          "required": false,
+          "default": null
+        },
+        "column:invitations:expires_at": {
+          "type": "timestamp with time zone",
+          "required": true,
+          "default": "(now() + '7 days'::interval)"
+        },
+        "column:invitations:accepted_at": {
+          "type": "timestamp with time zone",
+          "required": false,
+          "default": null
+        },
+        "column:invitations:created_at": {
+          "type": "timestamp with time zone",
+          "required": true,
+          "default": "now()"
+        },
+        "column:invitations:updated_at": {
+          "type": "timestamp with time zone",
+          "required": true,
+          "default": "now()"
+        },
+        "column:invitations:row_version": {
+          "type": "integer",
+          "required": true,
+          "default": "1"
+        },
+        "column:notifications:id": {
+          "type": "uuid",
+          "required": true,
+          "default": "gen_random_uuid()"
+        },
+        "column:notifications:user_id": {
+          "type": "uuid",
+          "required": true,
+          "default": null
+        },
+        "column:notifications:project_id": {
+          "type": "uuid",
+          "required": false,
+          "default": null
+        },
+        "column:notifications:kind": {
+          "type": "text",
+          "required": true,
+          "default": null
+        },
+        "column:notifications:message": {
+          "type": "text",
+          "required": true,
+          "default": null
+        },
+        "column:notifications:read_at": {
+          "type": "timestamp with time zone",
+          "required": false,
+          "default": null
+        },
+        "column:notifications:created_at": {
+          "type": "timestamp with time zone",
+          "required": true,
+          "default": "now()"
+        },
+        "column:notifications:updated_at": {
+          "type": "timestamp with time zone",
+          "required": true,
+          "default": "now()"
+        },
+        "column:notifications:row_version": {
+          "type": "integer",
+          "required": true,
+          "default": "1"
+        },
+        "column:organization_memberships:id": {
+          "type": "uuid",
+          "required": true,
+          "default": "gen_random_uuid()"
+        },
+        "column:organization_memberships:organization_id": {
+          "type": "uuid",
+          "required": true,
+          "default": null
+        },
+        "column:organization_memberships:user_id": {
+          "type": "uuid",
+          "required": true,
+          "default": null
+        },
+        "column:organization_memberships:created_at": {
+          "type": "timestamp with time zone",
+          "required": true,
+          "default": "now()"
+        },
+        "column:organization_memberships:updated_at": {
+          "type": "timestamp with time zone",
+          "required": true,
+          "default": "now()"
+        },
+        "column:organization_memberships:row_version": {
+          "type": "integer",
+          "required": true,
+          "default": "1"
+        },
+        "column:organizations:id": {
+          "type": "uuid",
+          "required": true,
+          "default": "gen_random_uuid()"
+        },
+        "column:organizations:name": {
+          "type": "text",
+          "required": true,
+          "default": null
+        },
+        "column:organizations:kind": {
+          "type": "text",
+          "required": true,
+          "default": null
+        },
+        "column:organizations:created_at": {
+          "type": "timestamp with time zone",
+          "required": true,
+          "default": "now()"
+        },
+        "column:organizations:updated_at": {
+          "type": "timestamp with time zone",
+          "required": true,
+          "default": "now()"
+        },
+        "column:organizations:row_version": {
+          "type": "integer",
+          "required": true,
+          "default": "1"
+        },
+        "column:package_acknowledgements:id": {
+          "type": "uuid",
+          "required": true,
+          "default": "gen_random_uuid()"
+        },
+        "column:package_acknowledgements:package_id": {
+          "type": "uuid",
+          "required": true,
+          "default": null
+        },
+        "column:package_acknowledgements:user_id": {
+          "type": "uuid",
+          "required": true,
+          "default": null
+        },
+        "column:package_acknowledgements:sha256": {
+          "type": "text",
+          "required": true,
+          "default": null
+        },
+        "column:package_acknowledgements:created_at": {
+          "type": "timestamp with time zone",
+          "required": true,
+          "default": "now()"
+        },
+        "column:package_acknowledgements:updated_at": {
+          "type": "timestamp with time zone",
+          "required": true,
+          "default": "now()"
+        },
+        "column:package_acknowledgements:row_version": {
+          "type": "integer",
+          "required": true,
+          "default": "1"
+        },
+        "column:package_revocations:id": {
+          "type": "uuid",
+          "required": true,
+          "default": "gen_random_uuid()"
+        },
+        "column:package_revocations:package_id": {
+          "type": "uuid",
+          "required": true,
+          "default": null
+        },
+        "column:package_revocations:user_id": {
+          "type": "uuid",
+          "required": true,
+          "default": null
+        },
+        "column:package_revocations:reason": {
+          "type": "text",
+          "required": true,
+          "default": null
+        },
+        "column:package_revocations:created_at": {
+          "type": "timestamp with time zone",
+          "required": true,
+          "default": "now()"
+        },
+        "column:package_revocations:updated_at": {
+          "type": "timestamp with time zone",
+          "required": true,
+          "default": "now()"
+        },
+        "column:package_revocations:row_version": {
+          "type": "integer",
+          "required": true,
+          "default": "1"
+        },
+        "column:production_orders:id": {
+          "type": "uuid",
+          "required": true,
+          "default": "gen_random_uuid()"
+        },
+        "column:production_orders:project_id": {
+          "type": "uuid",
+          "required": true,
+          "default": null
+        },
+        "column:production_orders:number": {
+          "type": "text",
+          "required": true,
+          "default": null
+        },
+        "column:production_orders:created_at": {
+          "type": "timestamp with time zone",
+          "required": true,
+          "default": "now()"
+        },
+        "column:production_orders:updated_at": {
+          "type": "timestamp with time zone",
+          "required": true,
+          "default": "now()"
+        },
+        "column:production_orders:row_version": {
+          "type": "integer",
+          "required": true,
+          "default": "1"
+        },
+        "column:production_package_files:id": {
+          "type": "uuid",
+          "required": true,
+          "default": "gen_random_uuid()"
+        },
+        "column:production_package_files:package_id": {
+          "type": "uuid",
+          "required": true,
+          "default": null
+        },
+        "column:production_package_files:file_id": {
+          "type": "uuid",
+          "required": true,
+          "default": null
+        },
+        "column:production_package_files:created_at": {
+          "type": "timestamp with time zone",
+          "required": true,
+          "default": "now()"
+        },
+        "column:production_package_files:updated_at": {
+          "type": "timestamp with time zone",
+          "required": true,
+          "default": "now()"
+        },
+        "column:production_package_files:row_version": {
+          "type": "integer",
+          "required": true,
+          "default": "1"
+        },
+        "column:production_packages:id": {
+          "type": "uuid",
+          "required": true,
+          "default": "gen_random_uuid()"
+        },
+        "column:production_packages:number": {
+          "type": "text",
+          "required": true,
+          "default": null
+        },
+        "column:production_packages:order_id": {
+          "type": "uuid",
+          "required": false,
+          "default": null
+        },
+        "column:production_packages:project_id": {
+          "type": "uuid",
+          "required": true,
+          "default": null
+        },
+        "column:production_packages:artwork_id": {
+          "type": "uuid",
+          "required": true,
+          "default": null
+        },
+        "column:production_packages:version_id": {
+          "type": "uuid",
+          "required": true,
+          "default": null
+        },
+        "column:production_packages:approval_round_id": {
+          "type": "uuid",
+          "required": true,
+          "default": null
+        },
+        "column:production_packages:technical_review_id": {
+          "type": "uuid",
+          "required": true,
+          "default": null
+        },
+        "column:production_packages:file_id": {
+          "type": "uuid",
+          "required": true,
+          "default": null
+        },
+        "column:production_packages:sha256": {
+          "type": "text",
+          "required": true,
+          "default": null
+        },
+        "column:production_packages:issued_by": {
+          "type": "uuid",
+          "required": true,
+          "default": null
+        },
+        "column:production_packages:status": {
+          "type": "text",
+          "required": true,
+          "default": "'transferred'::text"
+        },
+        "column:production_packages:created_at": {
+          "type": "timestamp with time zone",
+          "required": true,
+          "default": "now()"
+        },
+        "column:production_packages:updated_at": {
+          "type": "timestamp with time zone",
+          "required": true,
+          "default": "now()"
+        },
+        "column:production_packages:row_version": {
+          "type": "integer",
+          "required": true,
+          "default": "1"
+        },
+        "column:profiles:id": {
+          "type": "uuid",
+          "required": true,
+          "default": null
+        },
+        "column:profiles:full_name": {
+          "type": "text",
+          "required": true,
+          "default": null
+        },
+        "column:profiles:role": {
+          "type": "text",
+          "required": true,
+          "default": null
+        },
+        "column:profiles:active": {
+          "type": "boolean",
+          "required": true,
+          "default": "true"
+        },
+        "column:profiles:created_at": {
+          "type": "timestamp with time zone",
+          "required": true,
+          "default": "now()"
+        },
+        "column:profiles:updated_at": {
+          "type": "timestamp with time zone",
+          "required": true,
+          "default": "now()"
+        },
+        "column:profiles:row_version": {
+          "type": "integer",
+          "required": true,
+          "default": "1"
+        },
+        "column:project_members:id": {
+          "type": "uuid",
+          "required": true,
+          "default": "gen_random_uuid()"
+        },
+        "column:project_members:project_id": {
+          "type": "uuid",
+          "required": true,
+          "default": null
+        },
+        "column:project_members:user_id": {
+          "type": "uuid",
+          "required": true,
+          "default": null
+        },
+        "column:project_members:created_at": {
+          "type": "timestamp with time zone",
+          "required": true,
+          "default": "now()"
+        },
+        "column:project_members:updated_at": {
+          "type": "timestamp with time zone",
+          "required": true,
+          "default": "now()"
+        },
+        "column:project_members:row_version": {
+          "type": "integer",
+          "required": true,
+          "default": "1"
+        },
+        "column:projects:id": {
+          "type": "uuid",
+          "required": true,
+          "default": "gen_random_uuid()"
+        },
+        "column:projects:organization_id": {
+          "type": "uuid",
+          "required": true,
+          "default": null
+        },
+        "column:projects:name": {
+          "type": "text",
+          "required": true,
+          "default": null
+        },
+        "column:projects:description": {
+          "type": "text",
+          "required": true,
+          "default": "''::text"
+        },
+        "column:projects:customer_order": {
+          "type": "text",
+          "required": true,
+          "default": "''::text"
+        },
+        "column:projects:contacts": {
+          "type": "text",
+          "required": true,
+          "default": "''::text"
+        },
+        "column:projects:manager_id": {
+          "type": "uuid",
+          "required": false,
+          "default": null
+        },
+        "column:projects:designer_id": {
+          "type": "uuid",
+          "required": false,
+          "default": null
+        },
+        "column:projects:prepress_id": {
+          "type": "uuid",
+          "required": false,
+          "default": null
+        },
+        "column:projects:deadline": {
+          "type": "date",
+          "required": true,
+          "default": null
+        },
+        "column:projects:priority": {
+          "type": "text",
+          "required": true,
+          "default": "'normal'::text"
+        },
+        "column:projects:status": {
+          "type": "text",
+          "required": true,
+          "default": "'active'::text"
+        },
+        "column:projects:created_at": {
+          "type": "timestamp with time zone",
+          "required": true,
+          "default": "now()"
+        },
+        "column:projects:updated_at": {
+          "type": "timestamp with time zone",
+          "required": true,
+          "default": "now()"
+        },
+        "column:projects:row_version": {
+          "type": "integer",
+          "required": true,
+          "default": "1"
+        },
+        "column:rate_limits:id": {
+          "type": "uuid",
+          "required": true,
+          "default": "gen_random_uuid()"
+        },
+        "column:rate_limits:user_id": {
+          "type": "uuid",
+          "required": true,
+          "default": null
+        },
+        "column:rate_limits:bucket": {
+          "type": "timestamp with time zone",
+          "required": true,
+          "default": null
+        },
+        "column:rate_limits:count": {
+          "type": "integer",
+          "required": true,
+          "default": "1"
+        },
+        "column:rate_limits:created_at": {
+          "type": "timestamp with time zone",
+          "required": true,
+          "default": "now()"
+        },
+        "column:rate_limits:updated_at": {
+          "type": "timestamp with time zone",
+          "required": true,
+          "default": "now()"
+        },
+        "column:rate_limits:row_version": {
+          "type": "integer",
+          "required": true,
+          "default": "1"
+        },
+        "column:technical_review_items:id": {
+          "type": "uuid",
+          "required": true,
+          "default": "gen_random_uuid()"
+        },
+        "column:technical_review_items:review_id": {
+          "type": "uuid",
+          "required": true,
+          "default": null
+        },
+        "column:technical_review_items:label": {
+          "type": "text",
+          "required": true,
+          "default": null
+        },
+        "column:technical_review_items:passed": {
+          "type": "boolean",
+          "required": true,
+          "default": null
+        },
+        "column:technical_review_items:created_at": {
+          "type": "timestamp with time zone",
+          "required": true,
+          "default": "now()"
+        },
+        "column:technical_review_items:updated_at": {
+          "type": "timestamp with time zone",
+          "required": true,
+          "default": "now()"
+        },
+        "column:technical_review_items:row_version": {
+          "type": "integer",
+          "required": true,
+          "default": "1"
+        },
+        "column:technical_reviews:id": {
+          "type": "uuid",
+          "required": true,
+          "default": "gen_random_uuid()"
+        },
+        "column:technical_reviews:version_id": {
+          "type": "uuid",
+          "required": true,
+          "default": null
+        },
+        "column:technical_reviews:template_version_id": {
+          "type": "uuid",
+          "required": true,
+          "default": null
+        },
+        "column:technical_reviews:reviewer_id": {
+          "type": "uuid",
+          "required": true,
+          "default": null
+        },
+        "column:technical_reviews:status": {
+          "type": "text",
+          "required": true,
+          "default": null
+        },
+        "column:technical_reviews:notes": {
+          "type": "text",
+          "required": true,
+          "default": "''::text"
+        },
+        "column:technical_reviews:created_at": {
+          "type": "timestamp with time zone",
+          "required": true,
+          "default": "now()"
+        },
+        "column:technical_reviews:updated_at": {
+          "type": "timestamp with time zone",
+          "required": true,
+          "default": "now()"
+        },
+        "column:technical_reviews:row_version": {
+          "type": "integer",
+          "required": true,
+          "default": "1"
+        },
+        "column:version_files:id": {
+          "type": "uuid",
+          "required": true,
+          "default": "gen_random_uuid()"
+        },
+        "column:version_files:version_id": {
+          "type": "uuid",
+          "required": true,
+          "default": null
+        },
+        "column:version_files:kind": {
+          "type": "text",
+          "required": true,
+          "default": null
+        },
+        "column:version_files:storage_path": {
+          "type": "text",
+          "required": true,
+          "default": null
+        },
+        "column:version_files:filename": {
+          "type": "text",
+          "required": true,
+          "default": null
+        },
+        "column:version_files:mime_type": {
+          "type": "text",
+          "required": true,
+          "default": null
+        },
+        "column:version_files:size": {
+          "type": "bigint",
+          "required": true,
+          "default": null
+        },
+        "column:version_files:sha256": {
+          "type": "text",
+          "required": true,
+          "default": null
+        },
+        "column:version_files:created_at": {
+          "type": "timestamp with time zone",
+          "required": true,
+          "default": "now()"
+        },
+        "column:version_files:updated_at": {
+          "type": "timestamp with time zone",
+          "required": true,
+          "default": "now()"
+        },
+        "column:version_files:row_version": {
+          "type": "integer",
+          "required": true,
+          "default": "1"
+        },
+        "constraint:approval_decisions:approval_decisions_pkey": {
+          "type": "p",
+          "validated": true,
+          "definition": "PRIMARY KEY (id)"
+        },
+        "constraint:approval_decisions:approval_decisions_result_check": {
+          "type": "c",
+          "validated": true,
+          "definition": "CHECK (result = ANY (ARRAY['approved'::text, 'changes_requested'::text]))"
+        },
+        "constraint:approval_decisions:approval_decisions_round_id_fkey": {
+          "type": "f",
+          "validated": true,
+          "definition": "FOREIGN KEY (round_id) REFERENCES public.approval_rounds(id)"
+        },
+        "constraint:approval_decisions:approval_decisions_round_id_user_id_key": {
+          "type": "u",
+          "validated": true,
+          "definition": "UNIQUE (round_id, user_id)"
+        },
+        "constraint:approval_decisions:approval_decisions_row_version_check": {
+          "type": "c",
+          "validated": true,
+          "definition": "CHECK (row_version > 0)"
+        },
+        "constraint:approval_decisions:approval_decisions_sha256_check": {
+          "type": "c",
+          "validated": true,
+          "definition": "CHECK (sha256 ~ '^[a-f0-9]{64}$'::text)"
+        },
+        "constraint:approval_decisions:approval_decisions_user_id_fkey": {
+          "type": "f",
+          "validated": true,
+          "definition": "FOREIGN KEY (user_id) REFERENCES public.profiles(id)"
+        },
+        "constraint:approval_decisions:approval_decisions_version_id_fkey": {
+          "type": "f",
+          "validated": true,
+          "definition": "FOREIGN KEY (version_id) REFERENCES public.artwork_versions(id)"
+        },
+        "constraint:approval_participants:approval_participants_kind_check": {
+          "type": "c",
+          "validated": true,
+          "definition": "CHECK (kind = ANY (ARRAY['approver'::text, 'observer'::text]))"
+        },
+        "constraint:approval_participants:approval_participants_pkey": {
+          "type": "p",
+          "validated": true,
+          "definition": "PRIMARY KEY (id)"
+        },
+        "constraint:approval_participants:approval_participants_round_id_fkey": {
+          "type": "f",
+          "validated": true,
+          "definition": "FOREIGN KEY (round_id) REFERENCES public.approval_rounds(id)"
+        },
+        "constraint:approval_participants:approval_participants_round_id_user_id_key": {
+          "type": "u",
+          "validated": true,
+          "definition": "UNIQUE (round_id, user_id)"
+        },
+        "constraint:approval_participants:approval_participants_row_version_check": {
+          "type": "c",
+          "validated": true,
+          "definition": "CHECK (row_version > 0)"
+        },
+        "constraint:approval_participants:approval_participants_user_id_fkey": {
+          "type": "f",
+          "validated": true,
+          "definition": "FOREIGN KEY (user_id) REFERENCES public.profiles(id)"
+        },
+        "constraint:approval_rounds:approval_rounds_artwork_id_fkey": {
+          "type": "f",
+          "validated": true,
+          "definition": "FOREIGN KEY (artwork_id) REFERENCES public.artworks(id)"
+        },
+        "constraint:approval_rounds:approval_rounds_opened_by_fkey": {
+          "type": "f",
+          "validated": true,
+          "definition": "FOREIGN KEY (opened_by) REFERENCES public.profiles(id)"
+        },
+        "constraint:approval_rounds:approval_rounds_pkey": {
+          "type": "p",
+          "validated": true,
+          "definition": "PRIMARY KEY (id)"
+        },
+        "constraint:approval_rounds:approval_rounds_policy_check": {
+          "type": "c",
+          "validated": true,
+          "definition": "CHECK (policy = 'all'::text)"
+        },
+        "constraint:approval_rounds:approval_rounds_row_version_check": {
+          "type": "c",
+          "validated": true,
+          "definition": "CHECK (row_version > 0)"
+        },
+        "constraint:approval_rounds:approval_rounds_status_check": {
+          "type": "c",
+          "validated": true,
+          "definition": "CHECK (status = ANY (ARRAY['open'::text, 'approved'::text, 'changes_requested'::text, 'superseded'::text, 'cancelled'::text]))"
+        },
+        "constraint:approval_rounds:approval_rounds_version_id_fkey": {
+          "type": "f",
+          "validated": true,
+          "definition": "FOREIGN KEY (version_id) REFERENCES public.artwork_versions(id)"
+        },
+        "constraint:artwork_versions:artwork_versions_artwork_id_fkey": {
+          "type": "f",
+          "validated": true,
+          "definition": "FOREIGN KEY (artwork_id) REFERENCES public.artworks(id)"
+        },
+        "constraint:artwork_versions:artwork_versions_artwork_id_number_key": {
+          "type": "u",
+          "validated": true,
+          "definition": "UNIQUE (artwork_id, number)"
+        },
+        "constraint:artwork_versions:artwork_versions_author_id_fkey": {
+          "type": "f",
+          "validated": true,
+          "definition": "FOREIGN KEY (author_id) REFERENCES public.profiles(id)"
+        },
+        "constraint:artwork_versions:artwork_versions_number_check": {
+          "type": "c",
+          "validated": true,
+          "definition": "CHECK (number > 0)"
+        },
+        "constraint:artwork_versions:artwork_versions_pkey": {
+          "type": "p",
+          "validated": true,
+          "definition": "PRIMARY KEY (id)"
+        },
+        "constraint:artwork_versions:artwork_versions_previous_version_id_fkey": {
+          "type": "f",
+          "validated": true,
+          "definition": "FOREIGN KEY (previous_version_id) REFERENCES public.artwork_versions(id)"
+        },
+        "constraint:artwork_versions:artwork_versions_row_version_check": {
+          "type": "c",
+          "validated": true,
+          "definition": "CHECK (row_version > 0)"
+        },
+        "constraint:artwork_versions:artwork_versions_status_check": {
+          "type": "c",
+          "validated": true,
+          "definition": "CHECK (status = ANY (ARRAY['fixed'::text, 'internal_review'::text, 'published'::text, 'approved'::text, 'changes_requested'::text, 'superseded'::text]))"
+        },
+        "constraint:artworks:active_version_fk": {
+          "type": "f",
+          "validated": true,
+          "definition": "FOREIGN KEY (active_version_id) REFERENCES public.artwork_versions(id)"
+        },
+        "constraint:artworks:artworks_pkey": {
+          "type": "p",
+          "validated": true,
+          "definition": "PRIMARY KEY (id)"
+        },
+        "constraint:artworks:artworks_project_id_fkey": {
+          "type": "f",
+          "validated": true,
+          "definition": "FOREIGN KEY (project_id) REFERENCES public.projects(id)"
+        },
+        "constraint:artworks:artworks_row_version_check": {
+          "type": "c",
+          "validated": true,
+          "definition": "CHECK (row_version > 0)"
+        },
+        "constraint:artworks:artworks_status_check": {
+          "type": "c",
+          "validated": true,
+          "definition": "CHECK (status = ANY (ARRAY['draft'::text, 'in_progress'::text, 'review'::text, 'approved'::text, 'production'::text]))"
+        },
+        "constraint:audit_logs:audit_logs_actor_id_fkey": {
+          "type": "f",
+          "validated": true,
+          "definition": "FOREIGN KEY (actor_id) REFERENCES public.profiles(id)"
+        },
+        "constraint:audit_logs:audit_logs_pkey": {
+          "type": "p",
+          "validated": true,
+          "definition": "PRIMARY KEY (id)"
+        },
+        "constraint:audit_logs:audit_logs_project_id_fkey": {
+          "type": "f",
+          "validated": true,
+          "definition": "FOREIGN KEY (project_id) REFERENCES public.projects(id)"
+        },
+        "constraint:audit_logs:audit_logs_row_version_check": {
+          "type": "c",
+          "validated": true,
+          "definition": "CHECK (row_version > 0)"
+        },
+        "constraint:brief_versions:brief_versions_artwork_id_fkey": {
+          "type": "f",
+          "validated": true,
+          "definition": "FOREIGN KEY (artwork_id) REFERENCES public.artworks(id)"
+        },
+        "constraint:brief_versions:brief_versions_artwork_id_number_key": {
+          "type": "u",
+          "validated": true,
+          "definition": "UNIQUE (artwork_id, number)"
+        },
+        "constraint:brief_versions:brief_versions_author_id_fkey": {
+          "type": "f",
+          "validated": true,
+          "definition": "FOREIGN KEY (author_id) REFERENCES public.profiles(id)"
+        },
+        "constraint:brief_versions:brief_versions_number_check": {
+          "type": "c",
+          "validated": true,
+          "definition": "CHECK (number > 0)"
+        },
+        "constraint:brief_versions:brief_versions_pkey": {
+          "type": "p",
+          "validated": true,
+          "definition": "PRIMARY KEY (id)"
+        },
+        "constraint:brief_versions:brief_versions_row_version_check": {
+          "type": "c",
+          "validated": true,
+          "definition": "CHECK (row_version > 0)"
+        },
+        "constraint:checklist_template_versions:checklist_template_versions_items_check": {
+          "type": "c",
+          "validated": true,
+          "definition": "CHECK (jsonb_typeof(items) = 'array'::text)"
+        },
+        "constraint:checklist_template_versions:checklist_template_versions_number_check": {
+          "type": "c",
+          "validated": true,
+          "definition": "CHECK (number > 0)"
+        },
+        "constraint:checklist_template_versions:checklist_template_versions_pkey": {
+          "type": "p",
+          "validated": true,
+          "definition": "PRIMARY KEY (id)"
+        },
+        "constraint:checklist_template_versions:checklist_template_versions_row_version_check": {
+          "type": "c",
+          "validated": true,
+          "definition": "CHECK (row_version > 0)"
+        },
+        "constraint:checklist_template_versions:checklist_template_versions_template_id_fkey": {
+          "type": "f",
+          "validated": true,
+          "definition": "FOREIGN KEY (template_id) REFERENCES public.checklist_templates(id)"
+        },
+        "constraint:checklist_template_versions:checklist_template_versions_template_id_number_key": {
+          "type": "u",
+          "validated": true,
+          "definition": "UNIQUE (template_id, number)"
+        },
+        "constraint:checklist_templates:checklist_templates_pkey": {
+          "type": "p",
+          "validated": true,
+          "definition": "PRIMARY KEY (id)"
+        },
+        "constraint:checklist_templates:checklist_templates_row_version_check": {
+          "type": "c",
+          "validated": true,
+          "definition": "CHECK (row_version > 0)"
+        },
+        "constraint:comment_resolution_links:comment_resolution_links_fixed_in_version_id_fkey": {
+          "type": "f",
+          "validated": true,
+          "definition": "FOREIGN KEY (fixed_in_version_id) REFERENCES public.artwork_versions(id)"
+        },
+        "constraint:comment_resolution_links:comment_resolution_links_pkey": {
+          "type": "p",
+          "validated": true,
+          "definition": "PRIMARY KEY (id)"
+        },
+        "constraint:comment_resolution_links:comment_resolution_links_row_version_check": {
+          "type": "c",
+          "validated": true,
+          "definition": "CHECK (row_version > 0)"
+        },
+        "constraint:comment_resolution_links:comment_resolution_links_thread_id_fkey": {
+          "type": "f",
+          "validated": true,
+          "definition": "FOREIGN KEY (thread_id) REFERENCES public.comment_threads(id)"
+        },
+        "constraint:comment_resolution_links:comment_resolution_links_thread_id_key": {
+          "type": "u",
+          "validated": true,
+          "definition": "UNIQUE (thread_id)"
+        },
+        "constraint:comment_threads:comment_threads_author_id_fkey": {
+          "type": "f",
+          "validated": true,
+          "definition": "FOREIGN KEY (author_id) REFERENCES public.profiles(id)"
+        },
+        "constraint:comment_threads:comment_threads_carried_from_id_fkey": {
+          "type": "f",
+          "validated": true,
+          "definition": "FOREIGN KEY (carried_from_id) REFERENCES public.comment_threads(id)"
+        },
+        "constraint:comment_threads:comment_threads_page_check": {
+          "type": "c",
+          "validated": true,
+          "definition": "CHECK (page > 0)"
+        },
+        "constraint:comment_threads:comment_threads_pkey": {
+          "type": "p",
+          "validated": true,
+          "definition": "PRIMARY KEY (id)"
+        },
+        "constraint:comment_threads:comment_threads_row_version_check": {
+          "type": "c",
+          "validated": true,
+          "definition": "CHECK (row_version > 0)"
+        },
+        "constraint:comment_threads:comment_threads_status_check": {
+          "type": "c",
+          "validated": true,
+          "definition": "CHECK (status = ANY (ARRAY['open'::text, 'resolved'::text]))"
+        },
+        "constraint:comment_threads:comment_threads_type_check": {
+          "type": "c",
+          "validated": true,
+          "definition": "CHECK (type = ANY (ARRAY['design'::text, 'technical'::text, 'question'::text]))"
+        },
+        "constraint:comment_threads:comment_threads_version_id_fkey": {
+          "type": "f",
+          "validated": true,
+          "definition": "FOREIGN KEY (version_id) REFERENCES public.artwork_versions(id)"
+        },
+        "constraint:comment_threads:comment_threads_visibility_check": {
+          "type": "c",
+          "validated": true,
+          "definition": "CHECK (visibility = ANY (ARRAY['client'::text, 'internal'::text]))"
+        },
+        "constraint:comment_threads:comment_threads_x_check": {
+          "type": "c",
+          "validated": true,
+          "definition": "CHECK (x >= 0::numeric AND x <= 1::numeric)"
+        },
+        "constraint:comment_threads:comment_threads_y_check": {
+          "type": "c",
+          "validated": true,
+          "definition": "CHECK (y >= 0::numeric AND y <= 1::numeric)"
+        },
+        "constraint:comments:comments_author_id_fkey": {
+          "type": "f",
+          "validated": true,
+          "definition": "FOREIGN KEY (author_id) REFERENCES public.profiles(id)"
+        },
+        "constraint:comments:comments_body_check": {
+          "type": "c",
+          "validated": true,
+          "definition": "CHECK (length(body) >= 1 AND length(body) <= 5000)"
+        },
+        "constraint:comments:comments_pkey": {
+          "type": "p",
+          "validated": true,
+          "definition": "PRIMARY KEY (id)"
+        },
+        "constraint:comments:comments_row_version_check": {
+          "type": "c",
+          "validated": true,
+          "definition": "CHECK (row_version > 0)"
+        },
+        "constraint:comments:comments_thread_id_fkey": {
+          "type": "f",
+          "validated": true,
+          "definition": "FOREIGN KEY (thread_id) REFERENCES public.comment_threads(id)"
+        },
+        "constraint:download_events:download_events_file_id_fkey": {
+          "type": "f",
+          "validated": true,
+          "definition": "FOREIGN KEY (file_id) REFERENCES public.version_files(id)"
+        },
+        "constraint:download_events:download_events_package_id_fkey": {
+          "type": "f",
+          "validated": true,
+          "definition": "FOREIGN KEY (package_id) REFERENCES public.production_packages(id)"
+        },
+        "constraint:download_events:download_events_pkey": {
+          "type": "p",
+          "validated": true,
+          "definition": "PRIMARY KEY (id)"
+        },
+        "constraint:download_events:download_events_row_version_check": {
+          "type": "c",
+          "validated": true,
+          "definition": "CHECK (row_version > 0)"
+        },
+        "constraint:download_events:download_events_user_id_fkey": {
+          "type": "f",
+          "validated": true,
+          "definition": "FOREIGN KEY (user_id) REFERENCES public.profiles(id)"
+        },
+        "constraint:file_previews:file_previews_file_id_fkey": {
+          "type": "f",
+          "validated": true,
+          "definition": "FOREIGN KEY (file_id) REFERENCES public.version_files(id)"
+        },
+        "constraint:file_previews:file_previews_file_id_page_key": {
+          "type": "u",
+          "validated": true,
+          "definition": "UNIQUE (file_id, page)"
+        },
+        "constraint:file_previews:file_previews_page_check": {
+          "type": "c",
+          "validated": true,
+          "definition": "CHECK (page > 0)"
+        },
+        "constraint:file_previews:file_previews_pkey": {
+          "type": "p",
+          "validated": true,
+          "definition": "PRIMARY KEY (id)"
+        },
+        "constraint:file_previews:file_previews_row_version_check": {
+          "type": "c",
+          "validated": true,
+          "definition": "CHECK (row_version > 0)"
+        },
+        "constraint:idempotency_keys:idempotency_keys_pkey": {
+          "type": "p",
+          "validated": true,
+          "definition": "PRIMARY KEY (id)"
+        },
+        "constraint:idempotency_keys:idempotency_keys_row_version_check": {
+          "type": "c",
+          "validated": true,
+          "definition": "CHECK (row_version > 0)"
+        },
+        "constraint:idempotency_keys:idempotency_keys_user_id_fkey": {
+          "type": "f",
+          "validated": true,
+          "definition": "FOREIGN KEY (user_id) REFERENCES public.profiles(id)"
+        },
+        "constraint:idempotency_keys:idempotency_keys_user_id_key_key": {
+          "type": "u",
+          "validated": true,
+          "definition": "UNIQUE (user_id, key)"
+        },
+        "constraint:invitations:invitations_invited_by_fkey": {
+          "type": "f",
+          "validated": true,
+          "definition": "FOREIGN KEY (invited_by) REFERENCES public.profiles(id)"
+        },
+        "constraint:invitations:invitations_organization_id_fkey": {
+          "type": "f",
+          "validated": true,
+          "definition": "FOREIGN KEY (organization_id) REFERENCES public.organizations(id)"
+        },
+        "constraint:invitations:invitations_pkey": {
+          "type": "p",
+          "validated": true,
+          "definition": "PRIMARY KEY (id)"
+        },
+        "constraint:invitations:invitations_role_check": {
+          "type": "c",
+          "validated": true,
+          "definition": "CHECK (role = ANY (ARRAY['admin'::text, 'manager'::text, 'designer'::text, 'prepress'::text, 'observer'::text, 'approver'::text, 'production'::text]))"
+        },
+        "constraint:invitations:invitations_row_version_check": {
+          "type": "c",
+          "validated": true,
+          "definition": "CHECK (row_version > 0)"
+        },
+        "constraint:invitations:invitations_token_hash_key": {
+          "type": "u",
+          "validated": true,
+          "definition": "UNIQUE (token_hash)"
+        },
+        "constraint:notifications:notifications_pkey": {
+          "type": "p",
+          "validated": true,
+          "definition": "PRIMARY KEY (id)"
+        },
+        "constraint:notifications:notifications_project_id_fkey": {
+          "type": "f",
+          "validated": true,
+          "definition": "FOREIGN KEY (project_id) REFERENCES public.projects(id)"
+        },
+        "constraint:notifications:notifications_row_version_check": {
+          "type": "c",
+          "validated": true,
+          "definition": "CHECK (row_version > 0)"
+        },
+        "constraint:notifications:notifications_user_id_fkey": {
+          "type": "f",
+          "validated": true,
+          "definition": "FOREIGN KEY (user_id) REFERENCES public.profiles(id)"
+        },
+        "constraint:organization_memberships:organization_memberships_organization_id_fkey": {
+          "type": "f",
+          "validated": true,
+          "definition": "FOREIGN KEY (organization_id) REFERENCES public.organizations(id)"
+        },
+        "constraint:organization_memberships:organization_memberships_organization_id_user_id_key": {
+          "type": "u",
+          "validated": true,
+          "definition": "UNIQUE (organization_id, user_id)"
+        },
+        "constraint:organization_memberships:organization_memberships_pkey": {
+          "type": "p",
+          "validated": true,
+          "definition": "PRIMARY KEY (id)"
+        },
+        "constraint:organization_memberships:organization_memberships_row_version_check": {
+          "type": "c",
+          "validated": true,
+          "definition": "CHECK (row_version > 0)"
+        },
+        "constraint:organization_memberships:organization_memberships_user_id_fkey": {
+          "type": "f",
+          "validated": true,
+          "definition": "FOREIGN KEY (user_id) REFERENCES public.profiles(id)"
+        },
+        "constraint:organizations:organizations_kind_check": {
+          "type": "c",
+          "validated": true,
+          "definition": "CHECK (kind = ANY (ARRAY['manufacturer'::text, 'client'::text]))"
+        },
+        "constraint:organizations:organizations_name_key": {
+          "type": "u",
+          "validated": true,
+          "definition": "UNIQUE (name)"
+        },
+        "constraint:organizations:organizations_pkey": {
+          "type": "p",
+          "validated": true,
+          "definition": "PRIMARY KEY (id)"
+        },
+        "constraint:organizations:organizations_row_version_check": {
+          "type": "c",
+          "validated": true,
+          "definition": "CHECK (row_version > 0)"
+        },
+        "constraint:package_acknowledgements:package_acknowledgements_package_id_fkey": {
+          "type": "f",
+          "validated": true,
+          "definition": "FOREIGN KEY (package_id) REFERENCES public.production_packages(id)"
+        },
+        "constraint:package_acknowledgements:package_acknowledgements_package_id_key": {
+          "type": "u",
+          "validated": true,
+          "definition": "UNIQUE (package_id)"
+        },
+        "constraint:package_acknowledgements:package_acknowledgements_pkey": {
+          "type": "p",
+          "validated": true,
+          "definition": "PRIMARY KEY (id)"
+        },
+        "constraint:package_acknowledgements:package_acknowledgements_row_version_check": {
+          "type": "c",
+          "validated": true,
+          "definition": "CHECK (row_version > 0)"
+        },
+        "constraint:package_acknowledgements:package_acknowledgements_user_id_fkey": {
+          "type": "f",
+          "validated": true,
+          "definition": "FOREIGN KEY (user_id) REFERENCES public.profiles(id)"
+        },
+        "constraint:package_revocations:package_revocations_package_id_fkey": {
+          "type": "f",
+          "validated": true,
+          "definition": "FOREIGN KEY (package_id) REFERENCES public.production_packages(id)"
+        },
+        "constraint:package_revocations:package_revocations_package_id_key": {
+          "type": "u",
+          "validated": true,
+          "definition": "UNIQUE (package_id)"
+        },
+        "constraint:package_revocations:package_revocations_pkey": {
+          "type": "p",
+          "validated": true,
+          "definition": "PRIMARY KEY (id)"
+        },
+        "constraint:package_revocations:package_revocations_reason_check": {
+          "type": "c",
+          "validated": true,
+          "definition": "CHECK (length(reason) > 0)"
+        },
+        "constraint:package_revocations:package_revocations_row_version_check": {
+          "type": "c",
+          "validated": true,
+          "definition": "CHECK (row_version > 0)"
+        },
+        "constraint:package_revocations:package_revocations_user_id_fkey": {
+          "type": "f",
+          "validated": true,
+          "definition": "FOREIGN KEY (user_id) REFERENCES public.profiles(id)"
+        },
+        "constraint:production_orders:production_orders_number_key": {
+          "type": "u",
+          "validated": true,
+          "definition": "UNIQUE (number)"
+        },
+        "constraint:production_orders:production_orders_pkey": {
+          "type": "p",
+          "validated": true,
+          "definition": "PRIMARY KEY (id)"
+        },
+        "constraint:production_orders:production_orders_project_id_fkey": {
+          "type": "f",
+          "validated": true,
+          "definition": "FOREIGN KEY (project_id) REFERENCES public.projects(id)"
+        },
+        "constraint:production_orders:production_orders_row_version_check": {
+          "type": "c",
+          "validated": true,
+          "definition": "CHECK (row_version > 0)"
+        },
+        "constraint:production_package_files:production_package_files_file_id_fkey": {
+          "type": "f",
+          "validated": true,
+          "definition": "FOREIGN KEY (file_id) REFERENCES public.version_files(id)"
+        },
+        "constraint:production_package_files:production_package_files_package_id_file_id_key": {
+          "type": "u",
+          "validated": true,
+          "definition": "UNIQUE (package_id, file_id)"
+        },
+        "constraint:production_package_files:production_package_files_package_id_fkey": {
+          "type": "f",
+          "validated": true,
+          "definition": "FOREIGN KEY (package_id) REFERENCES public.production_packages(id)"
+        },
+        "constraint:production_package_files:production_package_files_pkey": {
+          "type": "p",
+          "validated": true,
+          "definition": "PRIMARY KEY (id)"
+        },
+        "constraint:production_package_files:production_package_files_row_version_check": {
+          "type": "c",
+          "validated": true,
+          "definition": "CHECK (row_version > 0)"
+        },
+        "constraint:production_packages:production_packages_approval_round_id_fkey": {
+          "type": "f",
+          "validated": true,
+          "definition": "FOREIGN KEY (approval_round_id) REFERENCES public.approval_rounds(id)"
+        },
+        "constraint:production_packages:production_packages_artwork_id_fkey": {
+          "type": "f",
+          "validated": true,
+          "definition": "FOREIGN KEY (artwork_id) REFERENCES public.artworks(id)"
+        },
+        "constraint:production_packages:production_packages_file_id_fkey": {
+          "type": "f",
+          "validated": true,
+          "definition": "FOREIGN KEY (file_id) REFERENCES public.version_files(id)"
+        },
+        "constraint:production_packages:production_packages_issued_by_fkey": {
+          "type": "f",
+          "validated": true,
+          "definition": "FOREIGN KEY (issued_by) REFERENCES public.profiles(id)"
+        },
+        "constraint:production_packages:production_packages_number_key": {
+          "type": "u",
+          "validated": true,
+          "definition": "UNIQUE (number)"
+        },
+        "constraint:production_packages:production_packages_order_id_fkey": {
+          "type": "f",
+          "validated": true,
+          "definition": "FOREIGN KEY (order_id) REFERENCES public.production_orders(id)"
+        },
+        "constraint:production_packages:production_packages_pkey": {
+          "type": "p",
+          "validated": true,
+          "definition": "PRIMARY KEY (id)"
+        },
+        "constraint:production_packages:production_packages_project_id_fkey": {
+          "type": "f",
+          "validated": true,
+          "definition": "FOREIGN KEY (project_id) REFERENCES public.projects(id)"
+        },
+        "constraint:production_packages:production_packages_row_version_check": {
+          "type": "c",
+          "validated": true,
+          "definition": "CHECK (row_version > 0)"
+        },
+        "constraint:production_packages:production_packages_sha256_check": {
+          "type": "c",
+          "validated": true,
+          "definition": "CHECK (sha256 ~ '^[a-f0-9]{64}$'::text)"
+        },
+        "constraint:production_packages:production_packages_status_check": {
+          "type": "c",
+          "validated": true,
+          "definition": "CHECK (status = ANY (ARRAY['prepared'::text, 'transferred'::text, 'received'::text, 'revoked'::text, 'replaced'::text]))"
+        },
+        "constraint:production_packages:production_packages_technical_review_id_fkey": {
+          "type": "f",
+          "validated": true,
+          "definition": "FOREIGN KEY (technical_review_id) REFERENCES public.technical_reviews(id)"
+        },
+        "constraint:production_packages:production_packages_version_id_fkey": {
+          "type": "f",
+          "validated": true,
+          "definition": "FOREIGN KEY (version_id) REFERENCES public.artwork_versions(id)"
+        },
+        "constraint:production_packages:production_packages_version_id_key": {
+          "type": "u",
+          "validated": true,
+          "definition": "UNIQUE (version_id)"
+        },
+        "constraint:profiles:profiles_id_fkey": {
+          "type": "f",
+          "validated": true,
+          "definition": "FOREIGN KEY (id) REFERENCES auth.users(id)"
+        },
+        "constraint:profiles:profiles_pkey": {
+          "type": "p",
+          "validated": true,
+          "definition": "PRIMARY KEY (id)"
+        },
+        "constraint:profiles:profiles_role_check": {
+          "type": "c",
+          "validated": true,
+          "definition": "CHECK (role = ANY (ARRAY['admin'::text, 'manager'::text, 'designer'::text, 'prepress'::text, 'observer'::text, 'approver'::text, 'production'::text]))"
+        },
+        "constraint:profiles:profiles_row_version_check": {
+          "type": "c",
+          "validated": true,
+          "definition": "CHECK (row_version > 0)"
+        },
+        "constraint:project_members:project_members_pkey": {
+          "type": "p",
+          "validated": true,
+          "definition": "PRIMARY KEY (id)"
+        },
+        "constraint:project_members:project_members_project_id_fkey": {
+          "type": "f",
+          "validated": true,
+          "definition": "FOREIGN KEY (project_id) REFERENCES public.projects(id)"
+        },
+        "constraint:project_members:project_members_project_id_user_id_key": {
+          "type": "u",
+          "validated": true,
+          "definition": "UNIQUE (project_id, user_id)"
+        },
+        "constraint:project_members:project_members_row_version_check": {
+          "type": "c",
+          "validated": true,
+          "definition": "CHECK (row_version > 0)"
+        },
+        "constraint:project_members:project_members_user_id_fkey": {
+          "type": "f",
+          "validated": true,
+          "definition": "FOREIGN KEY (user_id) REFERENCES public.profiles(id)"
+        },
+        "constraint:projects:projects_designer_id_fkey": {
+          "type": "f",
+          "validated": true,
+          "definition": "FOREIGN KEY (designer_id) REFERENCES public.profiles(id)"
+        },
+        "constraint:projects:projects_manager_id_fkey": {
+          "type": "f",
+          "validated": true,
+          "definition": "FOREIGN KEY (manager_id) REFERENCES public.profiles(id)"
+        },
+        "constraint:projects:projects_organization_id_fkey": {
+          "type": "f",
+          "validated": true,
+          "definition": "FOREIGN KEY (organization_id) REFERENCES public.organizations(id)"
+        },
+        "constraint:projects:projects_pkey": {
+          "type": "p",
+          "validated": true,
+          "definition": "PRIMARY KEY (id)"
+        },
+        "constraint:projects:projects_prepress_id_fkey": {
+          "type": "f",
+          "validated": true,
+          "definition": "FOREIGN KEY (prepress_id) REFERENCES public.profiles(id)"
+        },
+        "constraint:projects:projects_priority_check": {
+          "type": "c",
+          "validated": true,
+          "definition": "CHECK (priority = ANY (ARRAY['low'::text, 'normal'::text, 'high'::text]))"
+        },
+        "constraint:projects:projects_row_version_check": {
+          "type": "c",
+          "validated": true,
+          "definition": "CHECK (row_version > 0)"
+        },
+        "constraint:projects:projects_status_check": {
+          "type": "c",
+          "validated": true,
+          "definition": "CHECK (status = ANY (ARRAY['active'::text, 'paused'::text, 'completed'::text, 'archived'::text]))"
+        },
+        "constraint:rate_limits:rate_limits_pkey": {
+          "type": "p",
+          "validated": true,
+          "definition": "PRIMARY KEY (id)"
+        },
+        "constraint:rate_limits:rate_limits_row_version_check": {
+          "type": "c",
+          "validated": true,
+          "definition": "CHECK (row_version > 0)"
+        },
+        "constraint:rate_limits:rate_limits_user_id_bucket_key": {
+          "type": "u",
+          "validated": true,
+          "definition": "UNIQUE (user_id, bucket)"
+        },
+        "constraint:rate_limits:rate_limits_user_id_fkey": {
+          "type": "f",
+          "validated": true,
+          "definition": "FOREIGN KEY (user_id) REFERENCES public.profiles(id)"
+        },
+        "constraint:technical_review_items:technical_review_items_pkey": {
+          "type": "p",
+          "validated": true,
+          "definition": "PRIMARY KEY (id)"
+        },
+        "constraint:technical_review_items:technical_review_items_review_id_fkey": {
+          "type": "f",
+          "validated": true,
+          "definition": "FOREIGN KEY (review_id) REFERENCES public.technical_reviews(id)"
+        },
+        "constraint:technical_review_items:technical_review_items_review_id_label_key": {
+          "type": "u",
+          "validated": true,
+          "definition": "UNIQUE (review_id, label)"
+        },
+        "constraint:technical_review_items:technical_review_items_row_version_check": {
+          "type": "c",
+          "validated": true,
+          "definition": "CHECK (row_version > 0)"
+        },
+        "constraint:technical_reviews:technical_reviews_pkey": {
+          "type": "p",
+          "validated": true,
+          "definition": "PRIMARY KEY (id)"
+        },
+        "constraint:technical_reviews:technical_reviews_reviewer_id_fkey": {
+          "type": "f",
+          "validated": true,
+          "definition": "FOREIGN KEY (reviewer_id) REFERENCES public.profiles(id)"
+        },
+        "constraint:technical_reviews:technical_reviews_row_version_check": {
+          "type": "c",
+          "validated": true,
+          "definition": "CHECK (row_version > 0)"
+        },
+        "constraint:technical_reviews:technical_reviews_status_check": {
+          "type": "c",
+          "validated": true,
+          "definition": "CHECK (status = ANY (ARRAY['ready'::text, 'limited'::text, 'correction'::text]))"
+        },
+        "constraint:technical_reviews:technical_reviews_template_version_id_fkey": {
+          "type": "f",
+          "validated": true,
+          "definition": "FOREIGN KEY (template_version_id) REFERENCES public.checklist_template_versions(id)"
+        },
+        "constraint:technical_reviews:technical_reviews_version_id_fkey": {
+          "type": "f",
+          "validated": true,
+          "definition": "FOREIGN KEY (version_id) REFERENCES public.artwork_versions(id)"
+        },
+        "constraint:technical_reviews:technical_reviews_version_id_key": {
+          "type": "u",
+          "validated": true,
+          "definition": "UNIQUE (version_id)"
+        },
+        "constraint:version_files:version_files_kind_check": {
+          "type": "c",
+          "validated": true,
+          "definition": "CHECK (kind = ANY (ARRAY['source'::text, 'preview'::text, 'production'::text]))"
+        },
+        "constraint:version_files:version_files_mime_type_check": {
+          "type": "c",
+          "validated": true,
+          "definition": "CHECK (mime_type = ANY (ARRAY['application/pdf'::text, 'image/png'::text, 'image/jpeg'::text]))"
+        },
+        "constraint:version_files:version_files_pkey": {
+          "type": "p",
+          "validated": true,
+          "definition": "PRIMARY KEY (id)"
+        },
+        "constraint:version_files:version_files_row_version_check": {
+          "type": "c",
+          "validated": true,
+          "definition": "CHECK (row_version > 0)"
+        },
+        "constraint:version_files:version_files_sha256_check": {
+          "type": "c",
+          "validated": true,
+          "definition": "CHECK (sha256 ~ '^[a-f0-9]{64}$'::text)"
+        },
+        "constraint:version_files:version_files_size_check": {
+          "type": "c",
+          "validated": true,
+          "definition": "CHECK (size > 0 AND size <= 26214400)"
+        },
+        "constraint:version_files:version_files_storage_path_key": {
+          "type": "u",
+          "validated": true,
+          "definition": "UNIQUE (storage_path)"
+        },
+        "constraint:version_files:version_files_version_id_fkey": {
+          "type": "f",
+          "validated": true,
+          "definition": "FOREIGN KEY (version_id) REFERENCES public.artwork_versions(id)"
+        },
+        "constraint:version_files:version_files_version_id_kind_key": {
+          "type": "u",
+          "validated": true,
+          "definition": "UNIQUE (version_id, kind)"
+        },
+        "index:approval_decisions:approval_decisions_pkey": "CREATE UNIQUE INDEX approval_decisions_pkey ON public.approval_decisions USING btree (id)",
+        "index:approval_decisions:approval_decisions_round_id_user_id_key": "CREATE UNIQUE INDEX approval_decisions_round_id_user_id_key ON public.approval_decisions USING btree (round_id, user_id)",
+        "index:approval_participants:approval_participants_pkey": "CREATE UNIQUE INDEX approval_participants_pkey ON public.approval_participants USING btree (id)",
+        "index:approval_participants:approval_participants_round_id_user_id_key": "CREATE UNIQUE INDEX approval_participants_round_id_user_id_key ON public.approval_participants USING btree (round_id, user_id)",
+        "index:approval_rounds:approval_rounds_pkey": "CREATE UNIQUE INDEX approval_rounds_pkey ON public.approval_rounds USING btree (id)",
+        "index:approval_rounds:one_open_round": "CREATE UNIQUE INDEX one_open_round ON public.approval_rounds USING btree (artwork_id) WHERE (status = 'open'::text)",
+        "index:approval_rounds:rounds_version": "CREATE INDEX rounds_version ON public.approval_rounds USING btree (version_id)",
+        "index:artwork_versions:artwork_versions_artwork_id_number_key": "CREATE UNIQUE INDEX artwork_versions_artwork_id_number_key ON public.artwork_versions USING btree (artwork_id, number)",
+        "index:artwork_versions:artwork_versions_pkey": "CREATE UNIQUE INDEX artwork_versions_pkey ON public.artwork_versions USING btree (id)",
+        "index:artwork_versions:versions_artwork": "CREATE INDEX versions_artwork ON public.artwork_versions USING btree (artwork_id)",
+        "index:artworks:artworks_pkey": "CREATE UNIQUE INDEX artworks_pkey ON public.artworks USING btree (id)",
+        "index:artworks:artworks_project": "CREATE INDEX artworks_project ON public.artworks USING btree (project_id)",
+        "index:audit_logs:audit_logs_pkey": "CREATE UNIQUE INDEX audit_logs_pkey ON public.audit_logs USING btree (id)",
+        "index:audit_logs:audit_project": "CREATE INDEX audit_project ON public.audit_logs USING btree (project_id, created_at DESC)",
+        "index:brief_versions:brief_versions_artwork_id_number_key": "CREATE UNIQUE INDEX brief_versions_artwork_id_number_key ON public.brief_versions USING btree (artwork_id, number)",
+        "index:brief_versions:brief_versions_pkey": "CREATE UNIQUE INDEX brief_versions_pkey ON public.brief_versions USING btree (id)",
+        "index:checklist_template_versions:checklist_template_versions_pkey": "CREATE UNIQUE INDEX checklist_template_versions_pkey ON public.checklist_template_versions USING btree (id)",
+        "index:checklist_template_versions:checklist_template_versions_template_id_number_key": "CREATE UNIQUE INDEX checklist_template_versions_template_id_number_key ON public.checklist_template_versions USING btree (template_id, number)",
+        "index:checklist_templates:checklist_templates_pkey": "CREATE UNIQUE INDEX checklist_templates_pkey ON public.checklist_templates USING btree (id)",
+        "index:comment_resolution_links:comment_resolution_links_pkey": "CREATE UNIQUE INDEX comment_resolution_links_pkey ON public.comment_resolution_links USING btree (id)",
+        "index:comment_resolution_links:comment_resolution_links_thread_id_key": "CREATE UNIQUE INDEX comment_resolution_links_thread_id_key ON public.comment_resolution_links USING btree (thread_id)",
+        "index:comment_threads:comment_threads_pkey": "CREATE UNIQUE INDEX comment_threads_pkey ON public.comment_threads USING btree (id)",
+        "index:comment_threads:threads_version": "CREATE INDEX threads_version ON public.comment_threads USING btree (version_id)",
+        "index:comment_threads:unique_carried_comment": "CREATE UNIQUE INDEX unique_carried_comment ON public.comment_threads USING btree (version_id, carried_from_id) WHERE (carried_from_id IS NOT NULL)",
+        "index:comments:comments_pkey": "CREATE UNIQUE INDEX comments_pkey ON public.comments USING btree (id)",
+        "index:comments:comments_thread": "CREATE INDEX comments_thread ON public.comments USING btree (thread_id)",
+        "index:download_events:download_events_pkey": "CREATE UNIQUE INDEX download_events_pkey ON public.download_events USING btree (id)",
+        "index:file_previews:file_previews_file_id_page_key": "CREATE UNIQUE INDEX file_previews_file_id_page_key ON public.file_previews USING btree (file_id, page)",
+        "index:file_previews:file_previews_pkey": "CREATE UNIQUE INDEX file_previews_pkey ON public.file_previews USING btree (id)",
+        "index:idempotency_keys:idempotency_keys_pkey": "CREATE UNIQUE INDEX idempotency_keys_pkey ON public.idempotency_keys USING btree (id)",
+        "index:idempotency_keys:idempotency_keys_user_id_key_key": "CREATE UNIQUE INDEX idempotency_keys_user_id_key_key ON public.idempotency_keys USING btree (user_id, key)",
+        "index:invitations:invitations_pkey": "CREATE UNIQUE INDEX invitations_pkey ON public.invitations USING btree (id)",
+        "index:invitations:invitations_token_hash_key": "CREATE UNIQUE INDEX invitations_token_hash_key ON public.invitations USING btree (token_hash)",
+        "index:notifications:notifications_pkey": "CREATE UNIQUE INDEX notifications_pkey ON public.notifications USING btree (id)",
+        "index:notifications:notifications_user": "CREATE INDEX notifications_user ON public.notifications USING btree (user_id, created_at DESC)",
+        "index:organization_memberships:organization_memberships_organization_id_user_id_key": "CREATE UNIQUE INDEX organization_memberships_organization_id_user_id_key ON public.organization_memberships USING btree (organization_id, user_id)",
+        "index:organization_memberships:organization_memberships_pkey": "CREATE UNIQUE INDEX organization_memberships_pkey ON public.organization_memberships USING btree (id)",
+        "index:organizations:one_manufacturer": "CREATE UNIQUE INDEX one_manufacturer ON public.organizations USING btree (kind) WHERE (kind = 'manufacturer'::text)",
+        "index:organizations:organizations_name_key": "CREATE UNIQUE INDEX organizations_name_key ON public.organizations USING btree (name)",
+        "index:organizations:organizations_pkey": "CREATE UNIQUE INDEX organizations_pkey ON public.organizations USING btree (id)",
+        "index:package_acknowledgements:package_acknowledgements_package_id_key": "CREATE UNIQUE INDEX package_acknowledgements_package_id_key ON public.package_acknowledgements USING btree (package_id)",
+        "index:package_acknowledgements:package_acknowledgements_pkey": "CREATE UNIQUE INDEX package_acknowledgements_pkey ON public.package_acknowledgements USING btree (id)",
+        "index:package_revocations:package_revocations_package_id_key": "CREATE UNIQUE INDEX package_revocations_package_id_key ON public.package_revocations USING btree (package_id)",
+        "index:package_revocations:package_revocations_pkey": "CREATE UNIQUE INDEX package_revocations_pkey ON public.package_revocations USING btree (id)",
+        "index:production_orders:production_orders_number_key": "CREATE UNIQUE INDEX production_orders_number_key ON public.production_orders USING btree (number)",
+        "index:production_orders:production_orders_pkey": "CREATE UNIQUE INDEX production_orders_pkey ON public.production_orders USING btree (id)",
+        "index:production_package_files:production_package_files_package_id_file_id_key": "CREATE UNIQUE INDEX production_package_files_package_id_file_id_key ON public.production_package_files USING btree (package_id, file_id)",
+        "index:production_package_files:production_package_files_pkey": "CREATE UNIQUE INDEX production_package_files_pkey ON public.production_package_files USING btree (id)",
+        "index:production_packages:packages_status": "CREATE INDEX packages_status ON public.production_packages USING btree (status)",
+        "index:production_packages:production_packages_number_key": "CREATE UNIQUE INDEX production_packages_number_key ON public.production_packages USING btree (number)",
+        "index:production_packages:production_packages_pkey": "CREATE UNIQUE INDEX production_packages_pkey ON public.production_packages USING btree (id)",
+        "index:production_packages:production_packages_version_id_key": "CREATE UNIQUE INDEX production_packages_version_id_key ON public.production_packages USING btree (version_id)",
+        "index:profiles:profiles_pkey": "CREATE UNIQUE INDEX profiles_pkey ON public.profiles USING btree (id)",
+        "index:project_members:project_members_pkey": "CREATE UNIQUE INDEX project_members_pkey ON public.project_members USING btree (id)",
+        "index:project_members:project_members_project_id_user_id_key": "CREATE UNIQUE INDEX project_members_project_id_user_id_key ON public.project_members USING btree (project_id, user_id)",
+        "index:projects:projects_organization": "CREATE INDEX projects_organization ON public.projects USING btree (organization_id)",
+        "index:projects:projects_pkey": "CREATE UNIQUE INDEX projects_pkey ON public.projects USING btree (id)",
+        "index:rate_limits:rate_limits_pkey": "CREATE UNIQUE INDEX rate_limits_pkey ON public.rate_limits USING btree (id)",
+        "index:rate_limits:rate_limits_user_id_bucket_key": "CREATE UNIQUE INDEX rate_limits_user_id_bucket_key ON public.rate_limits USING btree (user_id, bucket)",
+        "index:technical_review_items:technical_review_items_pkey": "CREATE UNIQUE INDEX technical_review_items_pkey ON public.technical_review_items USING btree (id)",
+        "index:technical_review_items:technical_review_items_review_id_label_key": "CREATE UNIQUE INDEX technical_review_items_review_id_label_key ON public.technical_review_items USING btree (review_id, label)",
+        "index:technical_reviews:technical_reviews_pkey": "CREATE UNIQUE INDEX technical_reviews_pkey ON public.technical_reviews USING btree (id)",
+        "index:technical_reviews:technical_reviews_version_id_key": "CREATE UNIQUE INDEX technical_reviews_version_id_key ON public.technical_reviews USING btree (version_id)",
+        "index:version_files:version_files_pkey": "CREATE UNIQUE INDEX version_files_pkey ON public.version_files USING btree (id)",
+        "index:version_files:version_files_storage_path_key": "CREATE UNIQUE INDEX version_files_storage_path_key ON public.version_files USING btree (storage_path)",
+        "index:version_files:version_files_version_id_kind_key": "CREATE UNIQUE INDEX version_files_version_id_kind_key ON public.version_files USING btree (version_id, kind)",
+        "policy:approval_decisions:read_decisions": {
+          "permissive": "PERMISSIVE",
+          "roles": [
+            "public"
+          ],
+          "command": "SELECT",
+          "using": "(EXISTS ( SELECT 1\n   FROM public.approval_rounds r\n  WHERE (r.id = approval_decisions.round_id)))",
+          "check": null
+        },
+        "policy:approval_decisions:service_insert": {
+          "permissive": "PERMISSIVE",
+          "roles": [
+            "packapprove_app"
+          ],
+          "command": "INSERT",
+          "using": null,
+          "check": "(public.actor_role() IS NOT NULL)"
+        },
+        "policy:approval_decisions:service_update": {
+          "permissive": "PERMISSIVE",
+          "roles": [
+            "packapprove_app"
+          ],
+          "command": "UPDATE",
+          "using": "(public.actor_role() IS NOT NULL)",
+          "check": "(public.actor_role() IS NOT NULL)"
+        },
+        "policy:approval_participants:read_participants": {
+          "permissive": "PERMISSIVE",
+          "roles": [
+            "public"
+          ],
+          "command": "SELECT",
+          "using": "(EXISTS ( SELECT 1\n   FROM public.approval_rounds r\n  WHERE (r.id = approval_participants.round_id)))",
+          "check": null
+        },
+        "policy:approval_participants:service_insert": {
+          "permissive": "PERMISSIVE",
+          "roles": [
+            "packapprove_app"
+          ],
+          "command": "INSERT",
+          "using": null,
+          "check": "(public.actor_role() IS NOT NULL)"
+        },
+        "policy:approval_participants:service_update": {
+          "permissive": "PERMISSIVE",
+          "roles": [
+            "packapprove_app"
+          ],
+          "command": "UPDATE",
+          "using": "(public.actor_role() IS NOT NULL)",
+          "check": "(public.actor_role() IS NOT NULL)"
+        },
+        "policy:approval_rounds:read_rounds": {
+          "permissive": "PERMISSIVE",
+          "roles": [
+            "public"
+          ],
+          "command": "SELECT",
+          "using": "public.can_version(version_id)",
+          "check": null
+        },
+        "policy:approval_rounds:service_insert": {
+          "permissive": "PERMISSIVE",
+          "roles": [
+            "packapprove_app"
+          ],
+          "command": "INSERT",
+          "using": null,
+          "check": "(public.actor_role() IS NOT NULL)"
+        },
+        "policy:approval_rounds:service_update": {
+          "permissive": "PERMISSIVE",
+          "roles": [
+            "packapprove_app"
+          ],
+          "command": "UPDATE",
+          "using": "(public.actor_role() IS NOT NULL)",
+          "check": "(public.actor_role() IS NOT NULL)"
+        },
+        "policy:artwork_versions:production_version": {
+          "permissive": "PERMISSIVE",
+          "roles": [
+            "public"
+          ],
+          "command": "SELECT",
+          "using": "((public.actor_role() = 'production'::text) AND (EXISTS ( SELECT 1\n   FROM public.production_packages pp\n  WHERE (pp.version_id = artwork_versions.id))))",
+          "check": null
+        },
+        "policy:artwork_versions:read_versions": {
+          "permissive": "PERMISSIVE",
+          "roles": [
+            "public"
+          ],
+          "command": "SELECT",
+          "using": "public.can_version(id)",
+          "check": null
+        },
+        "policy:artwork_versions:service_insert": {
+          "permissive": "PERMISSIVE",
+          "roles": [
+            "packapprove_app"
+          ],
+          "command": "INSERT",
+          "using": null,
+          "check": "(public.actor_role() IS NOT NULL)"
+        },
+        "policy:artwork_versions:service_update": {
+          "permissive": "PERMISSIVE",
+          "roles": [
+            "packapprove_app"
+          ],
+          "command": "UPDATE",
+          "using": "(public.actor_role() IS NOT NULL)",
+          "check": "(public.actor_role() IS NOT NULL)"
+        },
+        "policy:artwork_versions:staff_version_read": {
+          "permissive": "PERMISSIVE",
+          "roles": [
+            "public"
+          ],
+          "command": "SELECT",
+          "using": "((public.actor_role() = ANY (ARRAY['admin'::text, 'manager'::text, 'designer'::text, 'prepress'::text])) AND (EXISTS ( SELECT 1\n   FROM public.artworks a\n  WHERE ((a.id = artwork_versions.artwork_id) AND public.can_project(a.project_id)))))",
+          "check": null
+        },
+        "policy:artworks:production_artwork": {
+          "permissive": "PERMISSIVE",
+          "roles": [
+            "public"
+          ],
+          "command": "SELECT",
+          "using": "((public.actor_role() = 'production'::text) AND (EXISTS ( SELECT 1\n   FROM public.production_packages pp\n  WHERE (pp.artwork_id = artworks.id))))",
+          "check": null
+        },
+        "policy:artworks:read_artworks": {
+          "permissive": "PERMISSIVE",
+          "roles": [
+            "public"
+          ],
+          "command": "SELECT",
+          "using": "public.can_project(project_id)",
+          "check": null
+        },
+        "policy:artworks:service_insert": {
+          "permissive": "PERMISSIVE",
+          "roles": [
+            "packapprove_app"
+          ],
+          "command": "INSERT",
+          "using": null,
+          "check": "(public.actor_role() IS NOT NULL)"
+        },
+        "policy:artworks:service_update": {
+          "permissive": "PERMISSIVE",
+          "roles": [
+            "packapprove_app"
+          ],
+          "command": "UPDATE",
+          "using": "(public.actor_role() IS NOT NULL)",
+          "check": "(public.actor_role() IS NOT NULL)"
+        },
+        "policy:audit_logs:read_audit": {
+          "permissive": "PERMISSIVE",
+          "roles": [
+            "public"
+          ],
+          "command": "SELECT",
+          "using": "(public.actor_role() = 'admin'::text)",
+          "check": null
+        },
+        "policy:audit_logs:service_insert": {
+          "permissive": "PERMISSIVE",
+          "roles": [
+            "packapprove_app"
+          ],
+          "command": "INSERT",
+          "using": null,
+          "check": "(public.actor_role() IS NOT NULL)"
+        },
+        "policy:audit_logs:service_update": {
+          "permissive": "PERMISSIVE",
+          "roles": [
+            "packapprove_app"
+          ],
+          "command": "UPDATE",
+          "using": "(public.actor_role() IS NOT NULL)",
+          "check": "(public.actor_role() IS NOT NULL)"
+        },
+        "policy:brief_versions:read_briefs": {
+          "permissive": "PERMISSIVE",
+          "roles": [
+            "public"
+          ],
+          "command": "SELECT",
+          "using": "(EXISTS ( SELECT 1\n   FROM public.artworks a\n  WHERE ((a.id = brief_versions.artwork_id) AND public.can_project(a.project_id))))",
+          "check": null
+        },
+        "policy:brief_versions:service_insert": {
+          "permissive": "PERMISSIVE",
+          "roles": [
+            "packapprove_app"
+          ],
+          "command": "INSERT",
+          "using": null,
+          "check": "(public.actor_role() IS NOT NULL)"
+        },
+        "policy:brief_versions:service_update": {
+          "permissive": "PERMISSIVE",
+          "roles": [
+            "packapprove_app"
+          ],
+          "command": "UPDATE",
+          "using": "(public.actor_role() IS NOT NULL)",
+          "check": "(public.actor_role() IS NOT NULL)"
+        },
+        "policy:checklist_template_versions:read_template_versions": {
+          "permissive": "PERMISSIVE",
+          "roles": [
+            "public"
+          ],
+          "command": "SELECT",
+          "using": "(public.actor_role() = ANY (ARRAY['admin'::text, 'manager'::text, 'prepress'::text, 'designer'::text]))",
+          "check": null
+        },
+        "policy:checklist_template_versions:service_insert": {
+          "permissive": "PERMISSIVE",
+          "roles": [
+            "packapprove_app"
+          ],
+          "command": "INSERT",
+          "using": null,
+          "check": "(public.actor_role() IS NOT NULL)"
+        },
+        "policy:checklist_template_versions:service_update": {
+          "permissive": "PERMISSIVE",
+          "roles": [
+            "packapprove_app"
+          ],
+          "command": "UPDATE",
+          "using": "(public.actor_role() IS NOT NULL)",
+          "check": "(public.actor_role() IS NOT NULL)"
+        },
+        "policy:checklist_templates:read_templates": {
+          "permissive": "PERMISSIVE",
+          "roles": [
+            "public"
+          ],
+          "command": "SELECT",
+          "using": "(public.actor_role() = ANY (ARRAY['admin'::text, 'manager'::text, 'prepress'::text, 'designer'::text]))",
+          "check": null
+        },
+        "policy:checklist_templates:service_insert": {
+          "permissive": "PERMISSIVE",
+          "roles": [
+            "packapprove_app"
+          ],
+          "command": "INSERT",
+          "using": null,
+          "check": "(public.actor_role() IS NOT NULL)"
+        },
+        "policy:checklist_templates:service_update": {
+          "permissive": "PERMISSIVE",
+          "roles": [
+            "packapprove_app"
+          ],
+          "command": "UPDATE",
+          "using": "(public.actor_role() IS NOT NULL)",
+          "check": "(public.actor_role() IS NOT NULL)"
+        },
+        "policy:comment_resolution_links:read_resolutions": {
+          "permissive": "PERMISSIVE",
+          "roles": [
+            "public"
+          ],
+          "command": "SELECT",
+          "using": "(EXISTS ( SELECT 1\n   FROM public.comment_threads t\n  WHERE (t.id = comment_resolution_links.thread_id)))",
+          "check": null
+        },
+        "policy:comment_resolution_links:service_insert": {
+          "permissive": "PERMISSIVE",
+          "roles": [
+            "packapprove_app"
+          ],
+          "command": "INSERT",
+          "using": null,
+          "check": "(public.actor_role() IS NOT NULL)"
+        },
+        "policy:comment_resolution_links:service_update": {
+          "permissive": "PERMISSIVE",
+          "roles": [
+            "packapprove_app"
+          ],
+          "command": "UPDATE",
+          "using": "(public.actor_role() IS NOT NULL)",
+          "check": "(public.actor_role() IS NOT NULL)"
+        },
+        "policy:comment_threads:read_threads": {
+          "permissive": "PERMISSIVE",
+          "roles": [
+            "public"
+          ],
+          "command": "SELECT",
+          "using": "(public.can_version(version_id) AND ((visibility = 'client'::text) OR (public.actor_role() <> ALL (ARRAY['observer'::text, 'approver'::text, 'production'::text]))))",
+          "check": null
+        },
+        "policy:comment_threads:service_insert": {
+          "permissive": "PERMISSIVE",
+          "roles": [
+            "packapprove_app"
+          ],
+          "command": "INSERT",
+          "using": null,
+          "check": "(public.actor_role() IS NOT NULL)"
+        },
+        "policy:comment_threads:service_update": {
+          "permissive": "PERMISSIVE",
+          "roles": [
+            "packapprove_app"
+          ],
+          "command": "UPDATE",
+          "using": "(public.actor_role() IS NOT NULL)",
+          "check": "(public.actor_role() IS NOT NULL)"
+        },
+        "policy:comments:read_comments": {
+          "permissive": "PERMISSIVE",
+          "roles": [
+            "public"
+          ],
+          "command": "SELECT",
+          "using": "(EXISTS ( SELECT 1\n   FROM public.comment_threads t\n  WHERE (t.id = comments.thread_id)))",
+          "check": null
+        },
+        "policy:comments:service_insert": {
+          "permissive": "PERMISSIVE",
+          "roles": [
+            "packapprove_app"
+          ],
+          "command": "INSERT",
+          "using": null,
+          "check": "(public.actor_role() IS NOT NULL)"
+        },
+        "policy:comments:service_update": {
+          "permissive": "PERMISSIVE",
+          "roles": [
+            "packapprove_app"
+          ],
+          "command": "UPDATE",
+          "using": "(public.actor_role() IS NOT NULL)",
+          "check": "(public.actor_role() IS NOT NULL)"
+        },
+        "policy:download_events:read_downloads": {
+          "permissive": "PERMISSIVE",
+          "roles": [
+            "public"
+          ],
+          "command": "SELECT",
+          "using": "((user_id = public.actor_id()) OR (public.actor_role() = ANY (ARRAY['admin'::text, 'manager'::text])))",
+          "check": null
+        },
+        "policy:download_events:service_insert": {
+          "permissive": "PERMISSIVE",
+          "roles": [
+            "packapprove_app"
+          ],
+          "command": "INSERT",
+          "using": null,
+          "check": "(public.actor_role() IS NOT NULL)"
+        },
+        "policy:download_events:service_update": {
+          "permissive": "PERMISSIVE",
+          "roles": [
+            "packapprove_app"
+          ],
+          "command": "UPDATE",
+          "using": "(public.actor_role() IS NOT NULL)",
+          "check": "(public.actor_role() IS NOT NULL)"
+        },
+        "policy:file_previews:read_previews": {
+          "permissive": "PERMISSIVE",
+          "roles": [
+            "public"
+          ],
+          "command": "SELECT",
+          "using": "(EXISTS ( SELECT 1\n   FROM public.version_files f\n  WHERE (f.id = file_previews.file_id)))",
+          "check": null
+        },
+        "policy:file_previews:service_insert": {
+          "permissive": "PERMISSIVE",
+          "roles": [
+            "packapprove_app"
+          ],
+          "command": "INSERT",
+          "using": null,
+          "check": "(public.actor_role() IS NOT NULL)"
+        },
+        "policy:file_previews:service_update": {
+          "permissive": "PERMISSIVE",
+          "roles": [
+            "packapprove_app"
+          ],
+          "command": "UPDATE",
+          "using": "(public.actor_role() IS NOT NULL)",
+          "check": "(public.actor_role() IS NOT NULL)"
+        },
+        "policy:idempotency_keys:read_idempotency": {
+          "permissive": "PERMISSIVE",
+          "roles": [
+            "packapprove_app"
+          ],
+          "command": "SELECT",
+          "using": "(user_id = public.actor_id())",
+          "check": null
+        },
+        "policy:idempotency_keys:service_insert": {
+          "permissive": "PERMISSIVE",
+          "roles": [
+            "packapprove_app"
+          ],
+          "command": "INSERT",
+          "using": null,
+          "check": "(public.actor_role() IS NOT NULL)"
+        },
+        "policy:idempotency_keys:service_update": {
+          "permissive": "PERMISSIVE",
+          "roles": [
+            "packapprove_app"
+          ],
+          "command": "UPDATE",
+          "using": "(public.actor_role() IS NOT NULL)",
+          "check": "(public.actor_role() IS NOT NULL)"
+        },
+        "policy:invitations:read_invitations": {
+          "permissive": "PERMISSIVE",
+          "roles": [
+            "public"
+          ],
+          "command": "SELECT",
+          "using": "(public.actor_role() = ANY (ARRAY['admin'::text, 'manager'::text]))",
+          "check": null
+        },
+        "policy:invitations:service_insert": {
+          "permissive": "PERMISSIVE",
+          "roles": [
+            "packapprove_app"
+          ],
+          "command": "INSERT",
+          "using": null,
+          "check": "(public.actor_role() IS NOT NULL)"
+        },
+        "policy:invitations:service_update": {
+          "permissive": "PERMISSIVE",
+          "roles": [
+            "packapprove_app"
+          ],
+          "command": "UPDATE",
+          "using": "(public.actor_role() IS NOT NULL)",
+          "check": "(public.actor_role() IS NOT NULL)"
+        },
+        "policy:notifications:read_notifications": {
+          "permissive": "PERMISSIVE",
+          "roles": [
+            "public"
+          ],
+          "command": "SELECT",
+          "using": "(user_id = public.actor_id())",
+          "check": null
+        },
+        "policy:notifications:service_insert": {
+          "permissive": "PERMISSIVE",
+          "roles": [
+            "packapprove_app"
+          ],
+          "command": "INSERT",
+          "using": null,
+          "check": "(public.actor_role() IS NOT NULL)"
+        },
+        "policy:notifications:service_update": {
+          "permissive": "PERMISSIVE",
+          "roles": [
+            "packapprove_app"
+          ],
+          "command": "UPDATE",
+          "using": "(public.actor_role() IS NOT NULL)",
+          "check": "(public.actor_role() IS NOT NULL)"
+        },
+        "policy:organization_memberships:read_memberships": {
+          "permissive": "PERMISSIVE",
+          "roles": [
+            "public"
+          ],
+          "command": "SELECT",
+          "using": "((user_id = public.actor_id()) OR (public.actor_role() = ANY (ARRAY['admin'::text, 'manager'::text])))",
+          "check": null
+        },
+        "policy:organization_memberships:service_insert": {
+          "permissive": "PERMISSIVE",
+          "roles": [
+            "packapprove_app"
+          ],
+          "command": "INSERT",
+          "using": null,
+          "check": "(public.actor_role() IS NOT NULL)"
+        },
+        "policy:organization_memberships:service_update": {
+          "permissive": "PERMISSIVE",
+          "roles": [
+            "packapprove_app"
+          ],
+          "command": "UPDATE",
+          "using": "(public.actor_role() IS NOT NULL)",
+          "check": "(public.actor_role() IS NOT NULL)"
+        },
+        "policy:organizations:production_org": {
+          "permissive": "PERMISSIVE",
+          "roles": [
+            "public"
+          ],
+          "command": "SELECT",
+          "using": "((public.actor_role() = 'production'::text) AND (EXISTS ( SELECT 1\n   FROM (public.projects p\n     JOIN public.production_packages pp ON ((pp.project_id = p.id)))\n  WHERE (p.organization_id = organizations.id))))",
+          "check": null
+        },
+        "policy:organizations:read_org": {
+          "permissive": "PERMISSIVE",
+          "roles": [
+            "public"
+          ],
+          "command": "SELECT",
+          "using": "((public.actor_role() = ANY (ARRAY['admin'::text, 'manager'::text, 'designer'::text, 'prepress'::text])) OR (EXISTS ( SELECT 1\n   FROM public.organization_memberships m\n  WHERE ((m.organization_id = organizations.id) AND (m.user_id = public.actor_id())))))",
+          "check": null
+        },
+        "policy:organizations:service_insert": {
+          "permissive": "PERMISSIVE",
+          "roles": [
+            "packapprove_app"
+          ],
+          "command": "INSERT",
+          "using": null,
+          "check": "(public.actor_role() IS NOT NULL)"
+        },
+        "policy:organizations:service_update": {
+          "permissive": "PERMISSIVE",
+          "roles": [
+            "packapprove_app"
+          ],
+          "command": "UPDATE",
+          "using": "(public.actor_role() IS NOT NULL)",
+          "check": "(public.actor_role() IS NOT NULL)"
+        },
+        "policy:package_acknowledgements:read_acks": {
+          "permissive": "PERMISSIVE",
+          "roles": [
+            "public"
+          ],
+          "command": "SELECT",
+          "using": "public.can_package(package_id)",
+          "check": null
+        },
+        "policy:package_acknowledgements:service_insert": {
+          "permissive": "PERMISSIVE",
+          "roles": [
+            "packapprove_app"
+          ],
+          "command": "INSERT",
+          "using": null,
+          "check": "(public.actor_role() IS NOT NULL)"
+        },
+        "policy:package_acknowledgements:service_update": {
+          "permissive": "PERMISSIVE",
+          "roles": [
+            "packapprove_app"
+          ],
+          "command": "UPDATE",
+          "using": "(public.actor_role() IS NOT NULL)",
+          "check": "(public.actor_role() IS NOT NULL)"
+        },
+        "policy:package_revocations:read_revocations": {
+          "permissive": "PERMISSIVE",
+          "roles": [
+            "public"
+          ],
+          "command": "SELECT",
+          "using": "public.can_package(package_id)",
+          "check": null
+        },
+        "policy:package_revocations:service_insert": {
+          "permissive": "PERMISSIVE",
+          "roles": [
+            "packapprove_app"
+          ],
+          "command": "INSERT",
+          "using": null,
+          "check": "(public.actor_role() IS NOT NULL)"
+        },
+        "policy:package_revocations:service_update": {
+          "permissive": "PERMISSIVE",
+          "roles": [
+            "packapprove_app"
+          ],
+          "command": "UPDATE",
+          "using": "(public.actor_role() IS NOT NULL)",
+          "check": "(public.actor_role() IS NOT NULL)"
+        },
+        "policy:production_orders:read_orders": {
+          "permissive": "PERMISSIVE",
+          "roles": [
+            "public"
+          ],
+          "command": "SELECT",
+          "using": "(public.can_project(project_id) OR (public.actor_role() = 'production'::text))",
+          "check": null
+        },
+        "policy:production_orders:service_insert": {
+          "permissive": "PERMISSIVE",
+          "roles": [
+            "packapprove_app"
+          ],
+          "command": "INSERT",
+          "using": null,
+          "check": "(public.actor_role() IS NOT NULL)"
+        },
+        "policy:production_orders:service_update": {
+          "permissive": "PERMISSIVE",
+          "roles": [
+            "packapprove_app"
+          ],
+          "command": "UPDATE",
+          "using": "(public.actor_role() IS NOT NULL)",
+          "check": "(public.actor_role() IS NOT NULL)"
+        },
+        "policy:production_package_files:read_package_files": {
+          "permissive": "PERMISSIVE",
+          "roles": [
+            "public"
+          ],
+          "command": "SELECT",
+          "using": "public.can_package(package_id)",
+          "check": null
+        },
+        "policy:production_package_files:service_insert": {
+          "permissive": "PERMISSIVE",
+          "roles": [
+            "packapprove_app"
+          ],
+          "command": "INSERT",
+          "using": null,
+          "check": "(public.actor_role() IS NOT NULL)"
+        },
+        "policy:production_package_files:service_update": {
+          "permissive": "PERMISSIVE",
+          "roles": [
+            "packapprove_app"
+          ],
+          "command": "UPDATE",
+          "using": "(public.actor_role() IS NOT NULL)",
+          "check": "(public.actor_role() IS NOT NULL)"
+        },
+        "policy:production_packages:read_packages": {
+          "permissive": "PERMISSIVE",
+          "roles": [
+            "public"
+          ],
+          "command": "SELECT",
+          "using": "public.can_package(id)",
+          "check": null
+        },
+        "policy:production_packages:service_insert": {
+          "permissive": "PERMISSIVE",
+          "roles": [
+            "packapprove_app"
+          ],
+          "command": "INSERT",
+          "using": null,
+          "check": "(public.actor_role() IS NOT NULL)"
+        },
+        "policy:production_packages:service_update": {
+          "permissive": "PERMISSIVE",
+          "roles": [
+            "packapprove_app"
+          ],
+          "command": "UPDATE",
+          "using": "(public.actor_role() IS NOT NULL)",
+          "check": "(public.actor_role() IS NOT NULL)"
+        },
+        "policy:profiles:project_profile_names": {
+          "permissive": "PERMISSIVE",
+          "roles": [
+            "public"
+          ],
+          "command": "SELECT",
+          "using": "(EXISTS ( SELECT 1\n   FROM public.project_members m\n  WHERE ((m.user_id = profiles.id) AND public.can_project(m.project_id))))",
+          "check": null
+        },
+        "policy:profiles:read_profiles": {
+          "permissive": "PERMISSIVE",
+          "roles": [
+            "public"
+          ],
+          "command": "SELECT",
+          "using": "((id = public.actor_id()) OR (public.actor_role() = ANY (ARRAY['admin'::text, 'manager'::text])) OR ((public.actor_role() = ANY (ARRAY['designer'::text, 'prepress'::text])) AND (role <> ALL (ARRAY['observer'::text, 'approver'::text]))) OR (EXISTS ( SELECT 1\n   FROM (public.organization_memberships m\n     JOIN public.organization_memberships mine ON ((mine.organization_id = m.organization_id)))\n  WHERE ((m.user_id = profiles.id) AND (mine.user_id = public.actor_id())))))",
+          "check": null
+        },
+        "policy:profiles:service_insert": {
+          "permissive": "PERMISSIVE",
+          "roles": [
+            "packapprove_app"
+          ],
+          "command": "INSERT",
+          "using": null,
+          "check": "(public.actor_role() IS NOT NULL)"
+        },
+        "policy:profiles:service_update": {
+          "permissive": "PERMISSIVE",
+          "roles": [
+            "packapprove_app"
+          ],
+          "command": "UPDATE",
+          "using": "(public.actor_role() IS NOT NULL)",
+          "check": "(public.actor_role() IS NOT NULL)"
+        },
+        "policy:project_members:read_project_members": {
+          "permissive": "PERMISSIVE",
+          "roles": [
+            "public"
+          ],
+          "command": "SELECT",
+          "using": "public.can_project(project_id)",
+          "check": null
+        },
+        "policy:project_members:service_delete_members": {
+          "permissive": "PERMISSIVE",
+          "roles": [
+            "packapprove_app"
+          ],
+          "command": "DELETE",
+          "using": "(public.actor_role() = ANY (ARRAY['admin'::text, 'manager'::text]))",
+          "check": null
+        },
+        "policy:project_members:service_insert": {
+          "permissive": "PERMISSIVE",
+          "roles": [
+            "packapprove_app"
+          ],
+          "command": "INSERT",
+          "using": null,
+          "check": "(public.actor_role() IS NOT NULL)"
+        },
+        "policy:project_members:service_update": {
+          "permissive": "PERMISSIVE",
+          "roles": [
+            "packapprove_app"
+          ],
+          "command": "UPDATE",
+          "using": "(public.actor_role() IS NOT NULL)",
+          "check": "(public.actor_role() IS NOT NULL)"
+        },
+        "policy:projects:production_project": {
+          "permissive": "PERMISSIVE",
+          "roles": [
+            "public"
+          ],
+          "command": "SELECT",
+          "using": "((public.actor_role() = 'production'::text) AND (EXISTS ( SELECT 1\n   FROM public.production_packages pp\n  WHERE (pp.project_id = projects.id))))",
+          "check": null
+        },
+        "policy:projects:read_projects": {
+          "permissive": "PERMISSIVE",
+          "roles": [
+            "public"
+          ],
+          "command": "SELECT",
+          "using": "public.can_project(id)",
+          "check": null
+        },
+        "policy:projects:service_insert": {
+          "permissive": "PERMISSIVE",
+          "roles": [
+            "packapprove_app"
+          ],
+          "command": "INSERT",
+          "using": null,
+          "check": "(public.actor_role() IS NOT NULL)"
+        },
+        "policy:projects:service_update": {
+          "permissive": "PERMISSIVE",
+          "roles": [
+            "packapprove_app"
+          ],
+          "command": "UPDATE",
+          "using": "(public.actor_role() IS NOT NULL)",
+          "check": "(public.actor_role() IS NOT NULL)"
+        },
+        "policy:projects:staff_project_read": {
+          "permissive": "PERMISSIVE",
+          "roles": [
+            "public"
+          ],
+          "command": "SELECT",
+          "using": "(public.actor_role() = ANY (ARRAY['admin'::text, 'manager'::text]))",
+          "check": null
+        },
+        "policy:rate_limits:read_limits": {
+          "permissive": "PERMISSIVE",
+          "roles": [
+            "packapprove_app"
+          ],
+          "command": "SELECT",
+          "using": "(user_id = public.actor_id())",
+          "check": null
+        },
+        "policy:rate_limits:service_insert": {
+          "permissive": "PERMISSIVE",
+          "roles": [
+            "packapprove_app"
+          ],
+          "command": "INSERT",
+          "using": null,
+          "check": "(public.actor_role() IS NOT NULL)"
+        },
+        "policy:rate_limits:service_update": {
+          "permissive": "PERMISSIVE",
+          "roles": [
+            "packapprove_app"
+          ],
+          "command": "UPDATE",
+          "using": "(public.actor_role() IS NOT NULL)",
+          "check": "(public.actor_role() IS NOT NULL)"
+        },
+        "policy:technical_review_items:read_technical_items": {
+          "permissive": "PERMISSIVE",
+          "roles": [
+            "public"
+          ],
+          "command": "SELECT",
+          "using": "(EXISTS ( SELECT 1\n   FROM public.technical_reviews r\n  WHERE (r.id = technical_review_items.review_id)))",
+          "check": null
+        },
+        "policy:technical_review_items:service_insert": {
+          "permissive": "PERMISSIVE",
+          "roles": [
+            "packapprove_app"
+          ],
+          "command": "INSERT",
+          "using": null,
+          "check": "(public.actor_role() IS NOT NULL)"
+        },
+        "policy:technical_review_items:service_update": {
+          "permissive": "PERMISSIVE",
+          "roles": [
+            "packapprove_app"
+          ],
+          "command": "UPDATE",
+          "using": "(public.actor_role() IS NOT NULL)",
+          "check": "(public.actor_role() IS NOT NULL)"
+        },
+        "policy:technical_reviews:read_technical": {
+          "permissive": "PERMISSIVE",
+          "roles": [
+            "public"
+          ],
+          "command": "SELECT",
+          "using": "(public.can_version(version_id) AND (public.actor_role() <> ALL (ARRAY['observer'::text, 'approver'::text])))",
+          "check": null
+        },
+        "policy:technical_reviews:service_insert": {
+          "permissive": "PERMISSIVE",
+          "roles": [
+            "packapprove_app"
+          ],
+          "command": "INSERT",
+          "using": null,
+          "check": "(public.actor_role() IS NOT NULL)"
+        },
+        "policy:technical_reviews:service_update": {
+          "permissive": "PERMISSIVE",
+          "roles": [
+            "packapprove_app"
+          ],
+          "command": "UPDATE",
+          "using": "(public.actor_role() IS NOT NULL)",
+          "check": "(public.actor_role() IS NOT NULL)"
+        },
+        "policy:version_files:read_files": {
+          "permissive": "PERMISSIVE",
+          "roles": [
+            "public"
+          ],
+          "command": "SELECT",
+          "using": "((public.can_version(version_id) AND ((public.actor_role() <> ALL (ARRAY['observer'::text, 'approver'::text])) OR (kind = 'preview'::text))) OR ((public.actor_role() = 'production'::text) AND (EXISTS ( SELECT 1\n   FROM public.production_packages p\n  WHERE ((p.file_id = version_files.id) AND (p.status = ANY (ARRAY['transferred'::text, 'received'::text])))))))",
+          "check": null
+        },
+        "policy:version_files:service_insert": {
+          "permissive": "PERMISSIVE",
+          "roles": [
+            "packapprove_app"
+          ],
+          "command": "INSERT",
+          "using": null,
+          "check": "(public.actor_role() IS NOT NULL)"
+        },
+        "policy:version_files:service_update": {
+          "permissive": "PERMISSIVE",
+          "roles": [
+            "packapprove_app"
+          ],
+          "command": "UPDATE",
+          "using": "(public.actor_role() IS NOT NULL)",
+          "check": "(public.actor_role() IS NOT NULL)"
+        },
+        "trigger:approval_decisions:immutable": {
+          "enabled": "O",
+          "definition": "CREATE TRIGGER immutable BEFORE DELETE OR UPDATE ON public.approval_decisions FOR EACH ROW EXECUTE FUNCTION public.reject_mutation()"
+        },
+        "trigger:approval_decisions:touch": {
+          "enabled": "O",
+          "definition": "CREATE TRIGGER touch BEFORE UPDATE ON public.approval_decisions FOR EACH ROW EXECUTE FUNCTION public.touch_row()"
+        },
+        "trigger:approval_participants:touch": {
+          "enabled": "O",
+          "definition": "CREATE TRIGGER touch BEFORE UPDATE ON public.approval_participants FOR EACH ROW EXECUTE FUNCTION public.touch_row()"
+        },
+        "trigger:approval_rounds:touch": {
+          "enabled": "O",
+          "definition": "CREATE TRIGGER touch BEFORE UPDATE ON public.approval_rounds FOR EACH ROW EXECUTE FUNCTION public.touch_row()"
+        },
+        "trigger:artwork_versions:protect_version": {
+          "enabled": "O",
+          "definition": "CREATE TRIGGER protect_version BEFORE DELETE OR UPDATE ON public.artwork_versions FOR EACH ROW EXECUTE FUNCTION public.protect_version()"
+        },
+        "trigger:artwork_versions:touch": {
+          "enabled": "O",
+          "definition": "CREATE TRIGGER touch BEFORE UPDATE ON public.artwork_versions FOR EACH ROW EXECUTE FUNCTION public.touch_row()"
+        },
+        "trigger:artworks:touch": {
+          "enabled": "O",
+          "definition": "CREATE TRIGGER touch BEFORE UPDATE ON public.artworks FOR EACH ROW EXECUTE FUNCTION public.touch_row()"
+        },
+        "trigger:audit_logs:immutable": {
+          "enabled": "O",
+          "definition": "CREATE TRIGGER immutable BEFORE DELETE OR UPDATE ON public.audit_logs FOR EACH ROW EXECUTE FUNCTION public.reject_mutation()"
+        },
+        "trigger:audit_logs:touch": {
+          "enabled": "O",
+          "definition": "CREATE TRIGGER touch BEFORE UPDATE ON public.audit_logs FOR EACH ROW EXECUTE FUNCTION public.touch_row()"
+        },
+        "trigger:brief_versions:immutable": {
+          "enabled": "O",
+          "definition": "CREATE TRIGGER immutable BEFORE DELETE OR UPDATE ON public.brief_versions FOR EACH ROW EXECUTE FUNCTION public.reject_mutation()"
+        },
+        "trigger:brief_versions:touch": {
+          "enabled": "O",
+          "definition": "CREATE TRIGGER touch BEFORE UPDATE ON public.brief_versions FOR EACH ROW EXECUTE FUNCTION public.touch_row()"
+        },
+        "trigger:checklist_template_versions:immutable": {
+          "enabled": "O",
+          "definition": "CREATE TRIGGER immutable BEFORE DELETE OR UPDATE ON public.checklist_template_versions FOR EACH ROW EXECUTE FUNCTION public.reject_mutation()"
+        },
+        "trigger:checklist_template_versions:touch": {
+          "enabled": "O",
+          "definition": "CREATE TRIGGER touch BEFORE UPDATE ON public.checklist_template_versions FOR EACH ROW EXECUTE FUNCTION public.touch_row()"
+        },
+        "trigger:checklist_templates:touch": {
+          "enabled": "O",
+          "definition": "CREATE TRIGGER touch BEFORE UPDATE ON public.checklist_templates FOR EACH ROW EXECUTE FUNCTION public.touch_row()"
+        },
+        "trigger:comment_resolution_links:touch": {
+          "enabled": "O",
+          "definition": "CREATE TRIGGER touch BEFORE UPDATE ON public.comment_resolution_links FOR EACH ROW EXECUTE FUNCTION public.touch_row()"
+        },
+        "trigger:comment_threads:touch": {
+          "enabled": "O",
+          "definition": "CREATE TRIGGER touch BEFORE UPDATE ON public.comment_threads FOR EACH ROW EXECUTE FUNCTION public.touch_row()"
+        },
+        "trigger:comments:touch": {
+          "enabled": "O",
+          "definition": "CREATE TRIGGER touch BEFORE UPDATE ON public.comments FOR EACH ROW EXECUTE FUNCTION public.touch_row()"
+        },
+        "trigger:download_events:immutable": {
+          "enabled": "O",
+          "definition": "CREATE TRIGGER immutable BEFORE DELETE OR UPDATE ON public.download_events FOR EACH ROW EXECUTE FUNCTION public.reject_mutation()"
+        },
+        "trigger:download_events:touch": {
+          "enabled": "O",
+          "definition": "CREATE TRIGGER touch BEFORE UPDATE ON public.download_events FOR EACH ROW EXECUTE FUNCTION public.touch_row()"
+        },
+        "trigger:file_previews:touch": {
+          "enabled": "O",
+          "definition": "CREATE TRIGGER touch BEFORE UPDATE ON public.file_previews FOR EACH ROW EXECUTE FUNCTION public.touch_row()"
+        },
+        "trigger:idempotency_keys:touch": {
+          "enabled": "O",
+          "definition": "CREATE TRIGGER touch BEFORE UPDATE ON public.idempotency_keys FOR EACH ROW EXECUTE FUNCTION public.touch_row()"
+        },
+        "trigger:invitations:touch": {
+          "enabled": "O",
+          "definition": "CREATE TRIGGER touch BEFORE UPDATE ON public.invitations FOR EACH ROW EXECUTE FUNCTION public.touch_row()"
+        },
+        "trigger:notifications:touch": {
+          "enabled": "O",
+          "definition": "CREATE TRIGGER touch BEFORE UPDATE ON public.notifications FOR EACH ROW EXECUTE FUNCTION public.touch_row()"
+        },
+        "trigger:organization_memberships:touch": {
+          "enabled": "O",
+          "definition": "CREATE TRIGGER touch BEFORE UPDATE ON public.organization_memberships FOR EACH ROW EXECUTE FUNCTION public.touch_row()"
+        },
+        "trigger:organizations:touch": {
+          "enabled": "O",
+          "definition": "CREATE TRIGGER touch BEFORE UPDATE ON public.organizations FOR EACH ROW EXECUTE FUNCTION public.touch_row()"
+        },
+        "trigger:package_acknowledgements:immutable": {
+          "enabled": "O",
+          "definition": "CREATE TRIGGER immutable BEFORE DELETE OR UPDATE ON public.package_acknowledgements FOR EACH ROW EXECUTE FUNCTION public.reject_mutation()"
+        },
+        "trigger:package_acknowledgements:touch": {
+          "enabled": "O",
+          "definition": "CREATE TRIGGER touch BEFORE UPDATE ON public.package_acknowledgements FOR EACH ROW EXECUTE FUNCTION public.touch_row()"
+        },
+        "trigger:package_revocations:immutable": {
+          "enabled": "O",
+          "definition": "CREATE TRIGGER immutable BEFORE DELETE OR UPDATE ON public.package_revocations FOR EACH ROW EXECUTE FUNCTION public.reject_mutation()"
+        },
+        "trigger:package_revocations:touch": {
+          "enabled": "O",
+          "definition": "CREATE TRIGGER touch BEFORE UPDATE ON public.package_revocations FOR EACH ROW EXECUTE FUNCTION public.touch_row()"
+        },
+        "trigger:production_orders:touch": {
+          "enabled": "O",
+          "definition": "CREATE TRIGGER touch BEFORE UPDATE ON public.production_orders FOR EACH ROW EXECUTE FUNCTION public.touch_row()"
+        },
+        "trigger:production_package_files:touch": {
+          "enabled": "O",
+          "definition": "CREATE TRIGGER touch BEFORE UPDATE ON public.production_package_files FOR EACH ROW EXECUTE FUNCTION public.touch_row()"
+        },
+        "trigger:production_packages:guard_package": {
+          "enabled": "O",
+          "definition": "CREATE TRIGGER guard_package BEFORE INSERT OR UPDATE ON public.production_packages FOR EACH ROW EXECUTE FUNCTION public.guard_package()"
+        },
+        "trigger:production_packages:touch": {
+          "enabled": "O",
+          "definition": "CREATE TRIGGER touch BEFORE UPDATE ON public.production_packages FOR EACH ROW EXECUTE FUNCTION public.touch_row()"
+        },
+        "trigger:profiles:touch": {
+          "enabled": "O",
+          "definition": "CREATE TRIGGER touch BEFORE UPDATE ON public.profiles FOR EACH ROW EXECUTE FUNCTION public.touch_row()"
+        },
+        "trigger:project_members:touch": {
+          "enabled": "O",
+          "definition": "CREATE TRIGGER touch BEFORE UPDATE ON public.project_members FOR EACH ROW EXECUTE FUNCTION public.touch_row()"
+        },
+        "trigger:projects:touch": {
+          "enabled": "O",
+          "definition": "CREATE TRIGGER touch BEFORE UPDATE ON public.projects FOR EACH ROW EXECUTE FUNCTION public.touch_row()"
+        },
+        "trigger:rate_limits:touch": {
+          "enabled": "O",
+          "definition": "CREATE TRIGGER touch BEFORE UPDATE ON public.rate_limits FOR EACH ROW EXECUTE FUNCTION public.touch_row()"
+        },
+        "trigger:technical_review_items:immutable": {
+          "enabled": "O",
+          "definition": "CREATE TRIGGER immutable BEFORE DELETE OR UPDATE ON public.technical_review_items FOR EACH ROW EXECUTE FUNCTION public.reject_mutation()"
+        },
+        "trigger:technical_review_items:touch": {
+          "enabled": "O",
+          "definition": "CREATE TRIGGER touch BEFORE UPDATE ON public.technical_review_items FOR EACH ROW EXECUTE FUNCTION public.touch_row()"
+        },
+        "trigger:technical_reviews:immutable": {
+          "enabled": "O",
+          "definition": "CREATE TRIGGER immutable BEFORE DELETE OR UPDATE ON public.technical_reviews FOR EACH ROW EXECUTE FUNCTION public.reject_mutation()"
+        },
+        "trigger:technical_reviews:touch": {
+          "enabled": "O",
+          "definition": "CREATE TRIGGER touch BEFORE UPDATE ON public.technical_reviews FOR EACH ROW EXECUTE FUNCTION public.touch_row()"
+        },
+        "trigger:version_files:immutable": {
+          "enabled": "O",
+          "definition": "CREATE TRIGGER immutable BEFORE DELETE OR UPDATE ON public.version_files FOR EACH ROW EXECUTE FUNCTION public.reject_mutation()"
+        },
+        "trigger:version_files:touch": {
+          "enabled": "O",
+          "definition": "CREATE TRIGGER touch BEFORE UPDATE ON public.version_files FOR EACH ROW EXECUTE FUNCTION public.touch_row()"
+        },
+        "function:actor_id()": {
+          "result": "uuid",
+          "securityDefiner": false,
+          "config": null,
+          "definitionSha256": "90e934aafd10a99d3c37a8e38fd173f5f96ff3e192e25935eadb76300287867f",
+          "execute": {
+            "anon": true,
+            "browser": true,
+            "server": true
+          }
+        },
+        "function:actor_role()": {
+          "result": "text",
+          "securityDefiner": true,
+          "config": [
+            "search_path=public"
+          ],
+          "definitionSha256": "f6a903c98b97ed2bd6e491f164c50460a68edf822309a4f06a2a35c75907bb0b",
+          "execute": {
+            "anon": true,
+            "browser": true,
+            "server": true
+          }
+        },
+        "function:can_package(pid uuid)": {
+          "result": "boolean",
+          "securityDefiner": true,
+          "config": [
+            "search_path=public"
+          ],
+          "definitionSha256": "7378b8f4a593c1019a5444bc59324c286b6ef66879d8f341030acb36e8d6a6fe",
+          "execute": {
+            "anon": true,
+            "browser": true,
+            "server": true
+          }
+        },
+        "function:can_project(pid uuid)": {
+          "result": "boolean",
+          "securityDefiner": true,
+          "config": [
+            "search_path=public"
+          ],
+          "definitionSha256": "b30bc2b86c65feedcadeee116fad8d3dc962e50182a27019b60e794e73704f97",
+          "execute": {
+            "anon": true,
+            "browser": true,
+            "server": true
+          }
+        },
+        "function:can_version(vid uuid)": {
+          "result": "boolean",
+          "securityDefiner": true,
+          "config": [
+            "search_path=public"
+          ],
+          "definitionSha256": "157769f10fc0719d19e8cfb3b408fa4bece3ffca776f53acd8aa7d78222d721e",
+          "execute": {
+            "anon": true,
+            "browser": true,
+            "server": true
+          }
+        },
+        "function:enqueue_event(pid uuid, event text)": {
+          "result": "void",
+          "securityDefiner": true,
+          "config": [
+            "search_path=public"
+          ],
+          "definitionSha256": "eeded4e29cdc4bb2d6374d47a7941bd338535986f499ac4ece900a0193f1089a",
+          "execute": {
+            "anon": false,
+            "browser": false,
+            "server": true
+          }
+        },
+        "function:guard_package()": {
+          "result": "trigger",
+          "securityDefiner": false,
+          "config": null,
+          "definitionSha256": "c13020ee926e218c10090a4a43ed5fbf2cd8edc2789727e9ff940753c43b1066",
+          "execute": {
+            "anon": true,
+            "browser": true,
+            "server": true
+          }
+        },
+        "function:protect_version()": {
+          "result": "trigger",
+          "securityDefiner": false,
+          "config": null,
+          "definitionSha256": "cfdb7151e3867294e9bd58b00e7ba602174f07ec937e27abbc46fc1e625ed153",
+          "execute": {
+            "anon": true,
+            "browser": true,
+            "server": true
+          }
+        },
+        "function:reject_mutation()": {
+          "result": "trigger",
+          "securityDefiner": false,
+          "config": null,
+          "definitionSha256": "7f7f61cc517b59ef96806fc859998ff9948836bd877f99683eecf2f7b892989e",
+          "execute": {
+            "anon": true,
+            "browser": true,
+            "server": true
+          }
+        },
+        "function:touch_row()": {
+          "result": "trigger",
+          "securityDefiner": false,
+          "config": null,
+          "definitionSha256": "ce576575af769ad897463f60b1c3a217e03895c23e1ed8b3bb03a2350b2a2626",
+          "execute": {
+            "anon": true,
+            "browser": true,
+            "server": true
+          }
+        },
+        "acl:approval_decisions": {
+          "anon_read": false,
+          "anon_write": false,
+          "browser_read": true,
+          "browser_write": false,
+          "server_read": true,
+          "server_insert": true,
+          "server_update": true,
+          "server_delete": true
+        },
+        "acl:approval_participants": {
+          "anon_read": false,
+          "anon_write": false,
+          "browser_read": true,
+          "browser_write": false,
+          "server_read": true,
+          "server_insert": true,
+          "server_update": true,
+          "server_delete": true
+        },
+        "acl:approval_rounds": {
+          "anon_read": false,
+          "anon_write": false,
+          "browser_read": true,
+          "browser_write": false,
+          "server_read": true,
+          "server_insert": true,
+          "server_update": true,
+          "server_delete": true
+        },
+        "acl:artwork_versions": {
+          "anon_read": false,
+          "anon_write": false,
+          "browser_read": true,
+          "browser_write": false,
+          "server_read": true,
+          "server_insert": true,
+          "server_update": true,
+          "server_delete": true
+        },
+        "acl:artworks": {
+          "anon_read": false,
+          "anon_write": false,
+          "browser_read": true,
+          "browser_write": false,
+          "server_read": true,
+          "server_insert": true,
+          "server_update": true,
+          "server_delete": true
+        },
+        "acl:audit_logs": {
+          "anon_read": false,
+          "anon_write": false,
+          "browser_read": true,
+          "browser_write": false,
+          "server_read": true,
+          "server_insert": true,
+          "server_update": true,
+          "server_delete": true
+        },
+        "acl:brief_versions": {
+          "anon_read": false,
+          "anon_write": false,
+          "browser_read": true,
+          "browser_write": false,
+          "server_read": true,
+          "server_insert": true,
+          "server_update": true,
+          "server_delete": true
+        },
+        "acl:checklist_template_versions": {
+          "anon_read": false,
+          "anon_write": false,
+          "browser_read": true,
+          "browser_write": false,
+          "server_read": true,
+          "server_insert": true,
+          "server_update": true,
+          "server_delete": true
+        },
+        "acl:checklist_templates": {
+          "anon_read": false,
+          "anon_write": false,
+          "browser_read": true,
+          "browser_write": false,
+          "server_read": true,
+          "server_insert": true,
+          "server_update": true,
+          "server_delete": true
+        },
+        "acl:comment_resolution_links": {
+          "anon_read": false,
+          "anon_write": false,
+          "browser_read": true,
+          "browser_write": false,
+          "server_read": true,
+          "server_insert": true,
+          "server_update": true,
+          "server_delete": true
+        },
+        "acl:comment_threads": {
+          "anon_read": false,
+          "anon_write": false,
+          "browser_read": true,
+          "browser_write": false,
+          "server_read": true,
+          "server_insert": true,
+          "server_update": true,
+          "server_delete": true
+        },
+        "acl:comments": {
+          "anon_read": false,
+          "anon_write": false,
+          "browser_read": true,
+          "browser_write": false,
+          "server_read": true,
+          "server_insert": true,
+          "server_update": true,
+          "server_delete": true
+        },
+        "acl:download_events": {
+          "anon_read": false,
+          "anon_write": false,
+          "browser_read": true,
+          "browser_write": false,
+          "server_read": true,
+          "server_insert": true,
+          "server_update": true,
+          "server_delete": true
+        },
+        "acl:file_previews": {
+          "anon_read": false,
+          "anon_write": false,
+          "browser_read": true,
+          "browser_write": false,
+          "server_read": true,
+          "server_insert": true,
+          "server_update": true,
+          "server_delete": true
+        },
+        "acl:idempotency_keys": {
+          "anon_read": false,
+          "anon_write": false,
+          "browser_read": true,
+          "browser_write": false,
+          "server_read": true,
+          "server_insert": true,
+          "server_update": true,
+          "server_delete": true
+        },
+        "acl:invitations": {
+          "anon_read": false,
+          "anon_write": false,
+          "browser_read": true,
+          "browser_write": false,
+          "server_read": true,
+          "server_insert": true,
+          "server_update": true,
+          "server_delete": true
+        },
+        "acl:notifications": {
+          "anon_read": false,
+          "anon_write": false,
+          "browser_read": true,
+          "browser_write": false,
+          "server_read": true,
+          "server_insert": true,
+          "server_update": true,
+          "server_delete": true
+        },
+        "acl:organization_memberships": {
+          "anon_read": false,
+          "anon_write": false,
+          "browser_read": true,
+          "browser_write": false,
+          "server_read": true,
+          "server_insert": true,
+          "server_update": true,
+          "server_delete": true
+        },
+        "acl:organizations": {
+          "anon_read": false,
+          "anon_write": false,
+          "browser_read": true,
+          "browser_write": false,
+          "server_read": true,
+          "server_insert": true,
+          "server_update": true,
+          "server_delete": true
+        },
+        "acl:package_acknowledgements": {
+          "anon_read": false,
+          "anon_write": false,
+          "browser_read": true,
+          "browser_write": false,
+          "server_read": true,
+          "server_insert": true,
+          "server_update": true,
+          "server_delete": true
+        },
+        "acl:package_revocations": {
+          "anon_read": false,
+          "anon_write": false,
+          "browser_read": true,
+          "browser_write": false,
+          "server_read": true,
+          "server_insert": true,
+          "server_update": true,
+          "server_delete": true
+        },
+        "acl:production_orders": {
+          "anon_read": false,
+          "anon_write": false,
+          "browser_read": true,
+          "browser_write": false,
+          "server_read": true,
+          "server_insert": true,
+          "server_update": true,
+          "server_delete": true
+        },
+        "acl:production_package_files": {
+          "anon_read": false,
+          "anon_write": false,
+          "browser_read": true,
+          "browser_write": false,
+          "server_read": true,
+          "server_insert": true,
+          "server_update": true,
+          "server_delete": true
+        },
+        "acl:production_packages": {
+          "anon_read": false,
+          "anon_write": false,
+          "browser_read": true,
+          "browser_write": false,
+          "server_read": true,
+          "server_insert": true,
+          "server_update": true,
+          "server_delete": true
+        },
+        "acl:profiles": {
+          "anon_read": false,
+          "anon_write": false,
+          "browser_read": true,
+          "browser_write": false,
+          "server_read": true,
+          "server_insert": true,
+          "server_update": true,
+          "server_delete": true
+        },
+        "acl:project_members": {
+          "anon_read": false,
+          "anon_write": false,
+          "browser_read": true,
+          "browser_write": false,
+          "server_read": true,
+          "server_insert": true,
+          "server_update": true,
+          "server_delete": true
+        },
+        "acl:projects": {
+          "anon_read": false,
+          "anon_write": false,
+          "browser_read": true,
+          "browser_write": false,
+          "server_read": true,
+          "server_insert": true,
+          "server_update": true,
+          "server_delete": true
+        },
+        "acl:rate_limits": {
+          "anon_read": false,
+          "anon_write": false,
+          "browser_read": true,
+          "browser_write": false,
+          "server_read": true,
+          "server_insert": true,
+          "server_update": true,
+          "server_delete": true
+        },
+        "acl:technical_review_items": {
+          "anon_read": false,
+          "anon_write": false,
+          "browser_read": true,
+          "browser_write": false,
+          "server_read": true,
+          "server_insert": true,
+          "server_update": true,
+          "server_delete": true
+        },
+        "acl:technical_reviews": {
+          "anon_read": false,
+          "anon_write": false,
+          "browser_read": true,
+          "browser_write": false,
+          "server_read": true,
+          "server_insert": true,
+          "server_update": true,
+          "server_delete": true
+        },
+        "acl:version_files": {
+          "anon_read": false,
+          "anon_write": false,
+          "browser_read": true,
+          "browser_write": false,
+          "server_read": true,
+          "server_insert": true,
+          "server_update": true,
+          "server_delete": true
+        },
+        "bucket:artworks": {
+          "public": false,
+          "fileSizeLimit": "26214400",
+          "mimeTypes": [
+            "application/pdf",
+            "image/jpeg",
+            "image/png"
+          ]
+        }
+      },
+      "remove": []
+    },
+    {
+      "name": "202610250001_client_peer_names.sql",
+      "sha256": "e5c2ca87e890e1311207f6e1293753561c48ec3bdfc8ffcb580c0fc46296d8e3",
+      "put": {
+        "policy:profiles:client_peer_names": {
+          "permissive": "PERMISSIVE",
+          "roles": [
+            "public"
+          ],
+          "command": "SELECT",
+          "using": "public.shares_client_organization(id)",
+          "check": null
+        },
+        "function:shares_client_organization(subject uuid)": {
+          "result": "boolean",
+          "securityDefiner": true,
+          "config": [
+            "search_path=pg_catalog, public"
+          ],
+          "definitionSha256": "d12a5deeaab6b74e50da3eb3dcd4e5b32a14a840f2b1556c7d44ecab84f92ad2",
+          "execute": {
+            "anon": false,
+            "browser": true,
+            "server": true
+          }
+        }
+      },
+      "remove": []
+    },
+    {
+      "name": "202610250002_can_studio.sql",
+      "sha256": "aaeba41c7ecd87bc82753a5a1cf9bea02a970de978fbc2cd371fd66bccf59bec",
+      "put": {
+        "table:upload_tickets": {
+          "rls": true,
+          "forceRls": false
+        },
+        "table:version_visualizations": {
+          "rls": true,
+          "forceRls": false
+        },
+        "column:artworks:packaging_type": {
+          "type": "text",
+          "required": true,
+          "default": "'Алюминиевая банка'::text"
+        },
+        "column:upload_tickets:id": {
+          "type": "uuid",
+          "required": true,
+          "default": "gen_random_uuid()"
+        },
+        "column:upload_tickets:user_id": {
+          "type": "uuid",
+          "required": true,
+          "default": null
+        },
+        "column:upload_tickets:artwork_id": {
+          "type": "uuid",
+          "required": true,
+          "default": null
+        },
+        "column:upload_tickets:kind": {
+          "type": "text",
+          "required": true,
+          "default": null
+        },
+        "column:upload_tickets:filename": {
+          "type": "text",
+          "required": true,
+          "default": null
+        },
+        "column:upload_tickets:storage_path": {
+          "type": "text",
+          "required": true,
+          "default": null
+        },
+        "column:upload_tickets:expected_size": {
+          "type": "bigint",
+          "required": true,
+          "default": null
+        },
+        "column:upload_tickets:expected_sha256": {
+          "type": "text",
+          "required": true,
+          "default": null
+        },
+        "column:upload_tickets:status": {
+          "type": "text",
+          "required": true,
+          "default": "'pending'::text"
+        },
+        "column:upload_tickets:expires_at": {
+          "type": "timestamp with time zone",
+          "required": true,
+          "default": "(now() + '02:00:00'::interval)"
+        },
+        "column:upload_tickets:created_at": {
+          "type": "timestamp with time zone",
+          "required": true,
+          "default": "now()"
+        },
+        "column:upload_tickets:updated_at": {
+          "type": "timestamp with time zone",
+          "required": true,
+          "default": "now()"
+        },
+        "column:upload_tickets:row_version": {
+          "type": "integer",
+          "required": true,
+          "default": "1"
+        },
+        "column:version_visualizations:id": {
+          "type": "uuid",
+          "required": true,
+          "default": "gen_random_uuid()"
+        },
+        "column:version_visualizations:version_id": {
+          "type": "uuid",
+          "required": true,
+          "default": null
+        },
+        "column:version_visualizations:author_id": {
+          "type": "uuid",
+          "required": true,
+          "default": null
+        },
+        "column:version_visualizations:spec": {
+          "type": "jsonb",
+          "required": true,
+          "default": null
+        },
+        "column:version_visualizations:created_at": {
+          "type": "timestamp with time zone",
+          "required": true,
+          "default": "now()"
+        },
+        "column:version_visualizations:updated_at": {
+          "type": "timestamp with time zone",
+          "required": true,
+          "default": "now()"
+        },
+        "column:version_visualizations:row_version": {
+          "type": "integer",
+          "required": true,
+          "default": "1"
+        },
+        "constraint:upload_tickets:upload_tickets_artwork_id_fkey": {
+          "type": "f",
+          "validated": true,
+          "definition": "FOREIGN KEY (artwork_id) REFERENCES public.artworks(id)"
+        },
+        "constraint:upload_tickets:upload_tickets_expected_sha256_check": {
+          "type": "c",
+          "validated": true,
+          "definition": "CHECK (expected_sha256 ~ '^[a-f0-9]{64}$'::text)"
+        },
+        "constraint:upload_tickets:upload_tickets_expected_size_check": {
+          "type": "c",
+          "validated": true,
+          "definition": "CHECK (expected_size > 0 AND expected_size <= 26214400)"
+        },
+        "constraint:upload_tickets:upload_tickets_filename_check": {
+          "type": "c",
+          "validated": true,
+          "definition": "CHECK (length(filename) >= 1 AND length(filename) <= 180)"
+        },
+        "constraint:upload_tickets:upload_tickets_kind_check": {
+          "type": "c",
+          "validated": true,
+          "definition": "CHECK (kind = ANY (ARRAY['source'::text, 'preview'::text, 'production'::text]))"
+        },
+        "constraint:upload_tickets:upload_tickets_pkey": {
+          "type": "p",
+          "validated": true,
+          "definition": "PRIMARY KEY (id)"
+        },
+        "constraint:upload_tickets:upload_tickets_row_version_check": {
+          "type": "c",
+          "validated": true,
+          "definition": "CHECK (row_version > 0)"
+        },
+        "constraint:upload_tickets:upload_tickets_status_check": {
+          "type": "c",
+          "validated": true,
+          "definition": "CHECK (status = ANY (ARRAY['pending'::text, 'consumed'::text]))"
+        },
+        "constraint:upload_tickets:upload_tickets_storage_path_key": {
+          "type": "u",
+          "validated": true,
+          "definition": "UNIQUE (storage_path)"
+        },
+        "constraint:upload_tickets:upload_tickets_user_id_fkey": {
+          "type": "f",
+          "validated": true,
+          "definition": "FOREIGN KEY (user_id) REFERENCES public.profiles(id)"
+        },
+        "constraint:version_visualizations:version_visualizations_author_id_fkey": {
+          "type": "f",
+          "validated": true,
+          "definition": "FOREIGN KEY (author_id) REFERENCES public.profiles(id)"
+        },
+        "constraint:version_visualizations:version_visualizations_pkey": {
+          "type": "p",
+          "validated": true,
+          "definition": "PRIMARY KEY (id)"
+        },
+        "constraint:version_visualizations:version_visualizations_row_version_check": {
+          "type": "c",
+          "validated": true,
+          "definition": "CHECK (row_version > 0)"
+        },
+        "constraint:version_visualizations:version_visualizations_spec_check": {
+          "type": "c",
+          "validated": true,
+          "definition": "CHECK (jsonb_typeof(spec) = 'object'::text AND ((spec ->> 'preset'::text) = ANY (ARRAY['standard450'::text, 'sleek330'::text, 'slim250'::text, 'experimental'::text])))"
+        },
+        "constraint:version_visualizations:version_visualizations_version_id_fkey": {
+          "type": "f",
+          "validated": true,
+          "definition": "FOREIGN KEY (version_id) REFERENCES public.artwork_versions(id)"
+        },
+        "constraint:version_visualizations:version_visualizations_version_id_key": {
+          "type": "u",
+          "validated": true,
+          "definition": "UNIQUE (version_id)"
+        },
+        "index:upload_tickets:upload_tickets_cleanup": "CREATE INDEX upload_tickets_cleanup ON public.upload_tickets USING btree (expires_at, status)",
+        "index:upload_tickets:upload_tickets_pkey": "CREATE UNIQUE INDEX upload_tickets_pkey ON public.upload_tickets USING btree (id)",
+        "index:upload_tickets:upload_tickets_storage_path_key": "CREATE UNIQUE INDEX upload_tickets_storage_path_key ON public.upload_tickets USING btree (storage_path)",
+        "index:version_visualizations:version_visualizations_pkey": "CREATE UNIQUE INDEX version_visualizations_pkey ON public.version_visualizations USING btree (id)",
+        "index:version_visualizations:version_visualizations_version_id_key": "CREATE UNIQUE INDEX version_visualizations_version_id_key ON public.version_visualizations USING btree (version_id)",
+        "policy:upload_tickets:tickets_insert": {
+          "permissive": "PERMISSIVE",
+          "roles": [
+            "packapprove_app"
+          ],
+          "command": "INSERT",
+          "using": null,
+          "check": "((user_id = public.actor_id()) AND (public.actor_role() = 'designer'::text) AND (EXISTS ( SELECT 1\n   FROM public.artworks a\n  WHERE ((a.id = upload_tickets.artwork_id) AND public.can_project(a.project_id)))))"
+        },
+        "policy:upload_tickets:tickets_read": {
+          "permissive": "PERMISSIVE",
+          "roles": [
+            "packapprove_app"
+          ],
+          "command": "SELECT",
+          "using": "(user_id = public.actor_id())",
+          "check": null
+        },
+        "policy:upload_tickets:tickets_update": {
+          "permissive": "PERMISSIVE",
+          "roles": [
+            "packapprove_app"
+          ],
+          "command": "UPDATE",
+          "using": "((user_id = public.actor_id()) AND (public.actor_role() = 'designer'::text))",
+          "check": "(user_id = public.actor_id())"
+        },
+        "policy:version_visualizations:visual_insert": {
+          "permissive": "PERMISSIVE",
+          "roles": [
+            "packapprove_app"
+          ],
+          "command": "INSERT",
+          "using": null,
+          "check": "((author_id = public.actor_id()) AND (public.actor_role() = 'designer'::text) AND public.can_version(version_id))"
+        },
+        "policy:version_visualizations:visual_read": {
+          "permissive": "PERMISSIVE",
+          "roles": [
+            "public"
+          ],
+          "command": "SELECT",
+          "using": "public.can_version(version_id)",
+          "check": null
+        },
+        "trigger:upload_tickets:ticket_touch": {
+          "enabled": "O",
+          "definition": "CREATE TRIGGER ticket_touch BEFORE UPDATE ON public.upload_tickets FOR EACH ROW EXECUTE FUNCTION public.touch_row()"
+        },
+        "trigger:version_visualizations:visual_immutable": {
+          "enabled": "O",
+          "definition": "CREATE TRIGGER visual_immutable BEFORE DELETE OR UPDATE ON public.version_visualizations FOR EACH ROW EXECUTE FUNCTION public.reject_mutation()"
+        },
+        "acl:upload_tickets": {
+          "anon_read": false,
+          "anon_write": false,
+          "browser_read": false,
+          "browser_write": false,
+          "server_read": true,
+          "server_insert": true,
+          "server_update": true,
+          "server_delete": false
+        },
+        "acl:version_visualizations": {
+          "anon_read": false,
+          "anon_write": false,
+          "browser_read": true,
+          "browser_write": false,
+          "server_read": true,
+          "server_insert": true,
+          "server_update": false,
+          "server_delete": false
+        }
+      },
+      "remove": []
+    },
+    {
+      "name": "202610250003_invitation_capabilities.sql",
+      "sha256": "0ccd1c54296026264111d73a7d1650349104e9ad3a403a4da0e4983c34b77721",
+      "put": {
+        "column:invitations:accepted_user_id": {
+          "type": "uuid",
+          "required": false,
+          "default": null
+        },
+        "constraint:invitations:invitations_accepted_user_id_fkey": {
+          "type": "f",
+          "validated": true,
+          "definition": "FOREIGN KEY (accepted_user_id) REFERENCES public.profiles(id)"
+        },
+        "function:invitation_finish(p_hash text, p_user uuid, p_name text)": {
+          "result": "void",
+          "securityDefiner": true,
+          "config": [
+            "search_path=pg_catalog"
+          ],
+          "definitionSha256": "616e47d43611d7e1f59c0427982cfbd008f44e50927763909eabc3cf44b1e968",
+          "execute": {
+            "anon": false,
+            "browser": false,
+            "server": true
+          }
+        },
+        "function:invitation_lookup(p_hash text, p_lock boolean)": {
+          "result": "TABLE(email text, role text, organization text)",
+          "securityDefiner": true,
+          "config": [
+            "search_path=pg_catalog"
+          ],
+          "definitionSha256": "e30d942951599113198b3da9262d5e6460a1c0d3561c940f4e7526cd84186554",
+          "execute": {
+            "anon": false,
+            "browser": false,
+            "server": true
+          }
+        },
+        "function:invitation_registration_state(p_hash text, p_user uuid)": {
+          "result": "text",
+          "securityDefiner": true,
+          "config": [
+            "search_path=pg_catalog"
+          ],
+          "definitionSha256": "030718360834aad2a7f390dcfce864d69a66ad44ddcf7e38aa9ea972cc5106b8",
+          "execute": {
+            "anon": false,
+            "browser": false,
+            "server": true
+          }
+        }
+      },
+      "remove": []
+    }
+  ]
+}

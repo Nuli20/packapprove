@@ -1,3 +1,4 @@
+import { localTestOrigin } from "../local-environment";
 import { test, expect, type Page, type Locator } from "@playwright/test";
 import { randomUUID, createHash } from "node:crypto";
 import { readFile, writeFile } from "node:fs/promises";
@@ -35,7 +36,7 @@ test("native chooser works with mouse, touch and keyboard; PNG/PDF replacement a
   let chooserEvents = 0;
   page.on("filechooser", () => chooserEvents++);
   const manager = await playwright.request.newContext({
-    baseURL: "http://127.0.0.1:3000",
+    baseURL: localTestOrigin(),
   });
   try {
     expect(
@@ -84,7 +85,10 @@ test("native chooser works with mouse, touch and keyboard; PNG/PDF replacement a
     await expect(page.locator(".user-card")).toBeAttached();
     await page.goto("/?artwork=" + artwork.id);
     await page
-      .getByRole("button", { name: "Новая версия", exact: true })
+      .getByRole("button", {
+        name: /Новая версия|Загрузить первый макет|Добавить новую версию/,
+        exact: true,
+      })
       .click();
     const dialog = page.getByRole("dialog");
     await dialog
@@ -233,7 +237,7 @@ test("native chooser works with mouse, touch and keyboard; PNG/PDF replacement a
         .locator(".can-settings")
         .evaluate((e) => (e as HTMLDetailsElement).open))
     )
-      await page.locator(".can-settings summary").click();
+      await page.locator(".can-settings > summary").click();
     const studio = page.getByRole("group", {
       name: "Дизайн для 3D",
       exact: true,
@@ -266,11 +270,23 @@ test("native chooser works with mouse, touch and keyboard; PNG/PDF replacement a
         .getByRole("group", { name: "Предпросмотр", exact: true })
         .locator(".design-file-name"),
     ).toHaveText("zhyra-450.png");
-    await expect(
-      secondDialog
-        .getByRole("group", { name: "Производственный файл", exact: true })
-        .locator(".design-file-name"),
-    ).toHaveText("zhyra-450.png");
+    const productionPicker = secondDialog.getByRole("group", {
+      name: "Производственный файл",
+      exact: true,
+    });
+    await expect(productionPicker.locator(".design-file-name")).toHaveCount(0);
+    await choose(
+      page,
+      productionPicker.getByRole("button", {
+        name: "Выбрать файл",
+        exact: true,
+      }),
+      fixture.png,
+      "click",
+    );
+    await expect(productionPicker.locator(".design-file-name")).toHaveText(
+      "zhyra-450.png",
+    );
     await secondDialog
       .getByLabel("Список изменений")
       .fill("V2 PNG selected in 3D Studio");
@@ -297,7 +313,7 @@ test("native chooser works with mouse, touch and keyboard; PNG/PDF replacement a
     expect(final.files.filter((f: any) => f.version_id === first.id)).toEqual(
       firstFiles,
     );
-    expect(chooserEvents).toBe(6);
+    expect(chooserEvents).toBe(7);
     expect(errors).toEqual([]);
     await writeFile(
       info.outputPath("evidence.json"),

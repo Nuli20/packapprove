@@ -1,32 +1,10 @@
 "use client";
 import { useState } from "react";
 import { Check, ArrowLeft, ArrowRight, RefreshCw } from "lucide-react";
-import type { State, Row } from "./workspace";
+import type { State } from "./workspace";
 import type { Locale } from "@/lib/i18n";
 import { setupCopy as copy, setupSteps } from "@/lib/setup-copy";
-export async function setupCommand(
-  action: string,
-  entityId?: string,
-  payload: Row = {},
-  rowVersion?: number,
-) {
-  const r = await fetch("/api/command", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      "Idempotency-Key": crypto.randomUUID(),
-    },
-    body: JSON.stringify({ action, entityId, payload, rowVersion }),
-  });
-  const j = await r.json();
-  if (!r.ok) {
-    if (r.status === 401) {
-      location.href = "/login?reason=session-expired";
-    }
-    throw Error(j.error || "Не удалось сохранить данные");
-  }
-  return j;
-}
+import { useSetupCommand } from "./use-setup-command";
 export function PreparationPanel({
   data,
   locale,
@@ -38,7 +16,7 @@ export function PreparationPanel({
   onChanged: (s: State) => void;
   onClient?: (id: string) => void;
 }) {
-  const kz = locale === "kz";
+  const setupCommand = useSetupCommand();
   const [mode, M] = useState("");
   const [value, V] = useState("");
   const [role, R] = useState("designer");
@@ -46,7 +24,7 @@ export function PreparationPanel({
   const [error, E] = useState("");
   const [busy, B] = useState(false);
   async function refresh() {
-    const r = await fetch("/api/state", { cache: "no-store" });
+    const r = await fetch("/api/state?view=setup", { cache: "no-store" });
     const j = await r.json();
     if (!r.ok) throw Error(j.error);
     onChanged(j);
@@ -64,7 +42,7 @@ export function PreparationPanel({
         M("");
         V("");
       } else if (mode === "company") {
-        await setupCommand("company.initialize");
+        await setupCommand("company.initialize", undefined, {});
         await refresh();
         M("");
       } else {
@@ -226,7 +204,6 @@ export default function SetupWizard({
 }) {
   const [step, S] = useState(0);
   const [local, D] = useState(data);
-  const kz = locale === "kz";
   const checks = [
     local.organizations.some((o) => o.kind === "manufacturer"),
     local.organizations.some((o) => o.kind === "client"),
@@ -237,7 +214,7 @@ export default function SetupWizard({
   const [refreshError, setRefreshError] = useState("");
   async function refreshAll() {
     try {
-      const r = await fetch("/api/state", { cache: "no-store" });
+      const r = await fetch("/api/state?view=setup", { cache: "no-store" });
       const next = await r.json();
       if (!r.ok) throw Error(next.error);
       D(next);

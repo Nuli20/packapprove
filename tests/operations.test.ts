@@ -70,7 +70,7 @@ describe("Operational queue selectors", () => {
     );
     expect(item.ready).toBe(false);
     expect(item.stage).toBe("production");
-    expect(nextBlock(item)).toBe("packageExists");
+    expect(nextBlock(item)).toBe("packageRevoked");
   });
   it("internal review belongs to the assigned prepress employee, not designer", () => {
     const [item] = operationalItems(
@@ -97,7 +97,18 @@ describe("Operational queue selectors", () => {
     expect(
       operationalItems({
         ...data,
-        decisions: [{ round_id: "r2", user_id: "c", result: "approved" }],
+        decisions: [
+          {
+            id: "decision",
+            row_version: 1,
+            version_id: "v2",
+            comment: "",
+            sha256: "a".repeat(64),
+            round_id: "r2",
+            user_id: "c",
+            result: "approved",
+          },
+        ],
       })[0].mine,
     ).toBe(false);
   });
@@ -107,5 +118,35 @@ describe("Operational queue selectors", () => {
     );
     expect(nextBlock(item)).toBe("needUpload");
     expect(item.stage).toBe("design");
+  });
+  it("an ordinary open discussion does not require changes to an approved version", () => {
+    const [item] = operationalItems(
+      snapshot({ threads: [{ version_id: "v2", status: "open" }] }),
+    );
+    expect(item.correction).toBe(false);
+    expect(item.ready).toBe(true);
+  });
+  it("a completed technical check gives the assigned manager a dispatch action", () => {
+    const [item] = operationalItems(
+      snapshot({
+        user: { id: "manager", role: "manager" },
+        versions: [{ id: "v2", status: "internal_review" }],
+        rounds: [],
+      }),
+    );
+    expect(item.stage).toBe("dispatch");
+    expect(item.mine).toBe(true);
+    expect(nextBlock(item)).toBe("needSend");
+  });
+  it("waiting for a client is not a manager action or designer approval permission", () => {
+    for (const role of ["manager", "designer", "admin"]) {
+      const [item] = operationalItems(
+        snapshot({
+          user: { id: role, role },
+          rounds: [{ id: "r2", version_id: "v2", status: "open" }],
+        }),
+      );
+      expect(item.mine).toBe(false);
+    }
   });
 });

@@ -1,3 +1,4 @@
+import { localTestOrigin } from "../local-environment";
 import {
   test,
   expect,
@@ -5,7 +6,7 @@ import {
   type APIRequestContext,
 } from "@playwright/test";
 import { randomUUID, createHash } from "node:crypto";
-import { readFile } from "node:fs/promises";
+
 import demos from "../../public/can-demos/manifest.json" with { type: "json" };
 async function ready(page: Page) {
   await expect(page.locator(".can-stage")).toHaveAttribute(
@@ -59,7 +60,7 @@ test("three actual WebGL profiles use PNG/PDF/JPEG textures and real camera cont
     await page.getByRole("button", { name: "Спереди", exact: true }).click();
     if (i === 1) {
       if (info.project.name === "mobile")
-        await page.locator(".can-settings summary").click();
+        await page.locator(".can-settings > summary").click();
       await expect(page.getByLabel("Страница PDF")).toBeVisible();
       await page.getByRole("button", { name: "Спереди", exact: true }).click();
       const pageOne = await screenshotHash(page);
@@ -78,7 +79,7 @@ test("three actual WebGL profiles use PNG/PDF/JPEG textures and real camera cont
       .locator(".can-settings")
       .evaluate((el) => (el as HTMLDetailsElement).open))
   )
-    await page.locator(".can-settings summary").click();
+    await page.locator(".can-settings > summary").click();
   for (const [name, preset] of [
     ["Standard 450 мл", "standard450"],
     ["Sleek 330 мл", "sleek330"],
@@ -153,7 +154,7 @@ test("designer applies local artwork, saves a bound version through private dire
   const contexts: APIRequestContext[] = [];
   const api = async (role: string) => {
     const c = await playwright.request.newContext({
-      baseURL: "http://127.0.0.1:3000",
+      baseURL: localTestOrigin(),
     });
     contexts.push(c);
     expect(
@@ -189,7 +190,9 @@ test("designer applies local artwork, saves a bound version through private dire
       (o: any) => o.name === "ТОО «Tea House Kazakhstan»",
     );
     const d = state.profiles.find((p: any) => p.full_name === "Арман Касымов");
-    const pre = state.profiles.find((p: any) => p.role === "prepress");
+    const pre = state.profiles.find(
+      (p: any) => p.full_name === "Тимур Ахметов",
+    );
     const client = state.profiles.find(
       (p: any) => p.full_name === "Айгерим Нурлан",
     );
@@ -207,7 +210,10 @@ test("designer applies local artwork, saves a bound version through private dire
     await login(page, "designer");
     await page.goto("/?artwork=" + a.id);
     await page
-      .getByRole("button", { name: "Новая версия", exact: true })
+      .getByRole("button", {
+        name: /Новая версия|Загрузить первый макет|Добавить новую версию/,
+        exact: true,
+      })
       .click();
     const dialog = page.getByRole("dialog");
     await dialog.getByLabel("Список изменений").fill("V1 demo file");
@@ -268,6 +274,10 @@ test("designer applies local artwork, saves a bound version through private dire
     await next
       .getByLabel("Список изменений")
       .fill("V2 JPEG can + visual parameters");
+    await next
+      .getByRole("group", { name: "Производственный файл", exact: true })
+      .locator("input[type=file]")
+      .setInputFiles("public/can-demos/tun-250.jpg");
     await next.getByRole("button", { name: "Сохранить", exact: true }).click();
     await expect(next).toBeHidden({ timeout: 30000 });
     const saved = await (await manager.get("/api/state")).json();

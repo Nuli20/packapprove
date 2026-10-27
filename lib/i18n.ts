@@ -51,6 +51,8 @@ export const dictionaries = {
     back: "К проектам",
     versions: "Версии",
     comments: "Комментарии",
+    commentType: "Тип замечания",
+    visibility: "Видимость",
     files: "Файлы версии",
     brief: "Техническое задание",
     compare: "Сравнить",
@@ -68,6 +70,7 @@ export const dictionaries = {
     clientComment: "Для клиента",
     commentHint: "Нажмите на макет, чтобы поставить метку",
     save: "Сохранить",
+    decisionSavedSync: "Решение сохранено. Обновляем состояние согласования…",
     cancel: "Отмена",
     loading: "Загрузка…",
     login: "Войти в пространство",
@@ -105,6 +108,8 @@ export const dictionaries = {
     reason: "Причина",
     page: "Страница",
     zoom: "Масштаб",
+    zoomIn: "Увеличить масштаб",
+    zoomOut: "Уменьшить масштаб",
     fullscreen: "Полный экран",
     resolve: "Исправлено в новой версии",
     reply: "Ответить",
@@ -260,6 +265,8 @@ Object.assign(dictionaries.kz, {
   back: "Жобаларға",
   versions: "Нұсқалар",
   comments: "Пікірлер",
+  commentType: "Пікір түрі",
+  visibility: "Көрінуі",
   files: "Нұсқа файлдары",
   brief: "Техникалық тапсырма",
   compare: "Салыстыру",
@@ -277,6 +284,7 @@ Object.assign(dictionaries.kz, {
   clientComment: "Клиентке",
   commentHint: "Белгі қою үшін макетті басыңыз",
   save: "Сақтау",
+  decisionSavedSync: "Шешім сақталды. Келісу күйі жаңартылуда…",
   cancel: "Бас тарту",
   loading: "Жүктелуде…",
   login: "Кеңістікке кіру",
@@ -314,6 +322,8 @@ Object.assign(dictionaries.kz, {
   reason: "Себеп",
   page: "Бет",
   zoom: "Масштаб",
+  zoomIn: "Масштабты үлкейту",
+  zoomOut: "Масштабты кішірейту",
   fullscreen: "Толық экран",
   resolve: "Жаңа нұсқада түзетілді",
   reply: "Жауап беру",
@@ -420,6 +430,7 @@ export function translate(locale: Locale, key: string): string {
 }
 export const eventKeys: Record<string, string> = {
   "project.update": "settings",
+  "artwork.create": "addArtwork",
   "invitation.accept": "acceptInvite",
   "invitation.link": "invite",
   "project.create": "newProject",
@@ -427,7 +438,7 @@ export const eventKeys: Record<string, string> = {
   "version.submit": "submit",
   "review.complete": "technical",
   "round.open": "send",
-  "decision.create": "decisionSaved",
+  "decision.create": "approvalDecision",
   "comment.create": "addComment",
   "comment.reply": "reply",
   "comment.resolve": "resolve",
@@ -460,11 +471,16 @@ Object.assign(dictionaries.ru, {
   needUpload: "Следующий шаг: дизайнер загружает исходную версию.",
   packageExists:
     "Производственный комплект уже выпущен. Повторный выпуск этой версии запрещён.",
+  packageRevoked:
+    "Комплект отозван или заменён. Скачивание запрещено; для выпуска нужна новая согласованная версия.",
+  needSend:
+    "Техническая проверка завершена. Менеджеру нужно отправить версию клиенту.",
+  dispatch: "Готово к отправке клиенту",
   needCorrections: "Нужно внести исправления и загрузить новую версию.",
   needApproval:
     "Следующий этап заблокирован: требуется окончательное решение клиента.",
   needTechnical:
-    "Клиент утвердил макет. Для производства нужна успешная техническая проверка.",
+    "Для продолжения нужна успешная техническая проверка этой версии.",
   queueEmpty: "Очередь свободна",
   queueEmptyHelp:
     "Подходящих задач сейчас нет. Новые задания появятся после изменения этапа макета.",
@@ -472,7 +488,8 @@ Object.assign(dictionaries.ru, {
   internalIntro:
     "Версии на допечатной проверке. Заполните чек-лист именно этой версии.",
   approvalIntro: "Открытые раунды: решения каждого участника, сроки и история.",
-  changesIntro: "Запросы изменений, технические возвраты и открытые замечания.",
+  changesIntro:
+    "Запросы изменений и технические возвраты. Обычное обсуждение не блокирует утверждённый макет.",
   readyIntro:
     "Только активные версии с завершённым утверждением клиента и успешной технической проверкой.",
   clientComments: "Комментарии",
@@ -490,6 +507,11 @@ Object.assign(dictionaries.kz, {
   design: "Әзірлеу",
   needUpload: "Келесі қадам: дизайнер нұсқаны жүктейді.",
   packageExists: "Өндірістік жинақ шығарылған. Қайта шығару мүмкін емес.",
+  packageRevoked:
+    "Жинақ қайтарылған немесе ауыстырылған. Жүктеуге тыйым салынған; жаңа бекітілген нұсқа қажет.",
+  needSend:
+    "Техникалық тексеру аяқталды. Менеджер нұсқаны клиентке жіберуі керек.",
+  dispatch: "Клиентке жіберуге дайын",
   needCorrections: "Түзетулер енгізіп, жаңа нұсқаны жүктеу қажет.",
   needApproval: "Клиенттің соңғы шешімі қажет.",
   needTechnical: "Өндіріске сәтті техникалық тексеру қажет.",
@@ -514,4 +536,18 @@ Object.assign(dictionaries.kz, {
   needInternalSubmit: "Дизайнер нұсқаны ішкі тексеруге жіберуі керек.",
   nextActions: "Келесі әрекеттер",
   currentVersions: "Белсенді нұсқалар бойынша",
+});
+
+Object.assign(dictionaries.ru, { addArtwork: "Добавить макет" });
+Object.assign(dictionaries.kz, { addArtwork: "Макет қосу" });
+
+Object.assign(dictionaries.ru, {
+  approvalDecision: "Решение по версии",
+  clientDone:
+    "Ваше согласование завершено. Готовность к выпуску проверит менеджер.",
+});
+Object.assign(dictionaries.kz, {
+  approvalDecision: "Нұсқа бойынша шешім",
+  clientDone:
+    "Сіздің келісуіңіз аяқталды. Шығаруға дайындығын менеджер тексереді.",
 });

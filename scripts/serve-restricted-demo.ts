@@ -4,6 +4,7 @@ import postgres from "postgres";
 import { randomBytes } from "node:crypto";
 import { spawn, type ChildProcess } from "node:child_process";
 import { once } from "node:events";
+import { runtimeDiagnosis } from "../lib/runtime-database";
 import { isolatedDemoEnabled } from "../lib/demo-environment";
 if (!isolatedDemoEnabled())
   throw Error(
@@ -30,6 +31,11 @@ try {
   url.password = password;
   const probe = postgres(url.href, { max: 1 });
   let denied = false;
+  const runtimeCheck = await runtimeDiagnosis(probe);
+  if (!runtimeCheck.safe) {
+    await probe.end();
+    throw Error("Unsafe restricted fixture role");
+  }
   try {
     await probe`select email from public.invitations limit 1`;
   } catch (e) {
@@ -43,6 +49,7 @@ try {
     JSON.stringify({
       port,
       restrictedServer: true,
+      runtimeCheck,
       directInvitationSelect: false,
       credentials: "not logged",
     }),

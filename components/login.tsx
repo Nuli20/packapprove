@@ -1,5 +1,6 @@
 "use client";
 import { useState, useEffect } from "react";
+import { notifySessionChange } from "@/lib/session-events";
 import { ArrowRight, Box, Loader2 } from "lucide-react";
 import { translate, type Locale } from "@/lib/i18n";
 export default function Login({ demo }: { demo: boolean }) {
@@ -10,7 +11,11 @@ export default function Login({ demo }: { demo: boolean }) {
   const [busy, B] = useState(false);
   const [error, X] = useState("");
   const [sessionExpired, setSessionExpired] = useState(false);
+  const [sessionChanged, SC] = useState(false);
   useEffect(() => {
+    SC(
+      new URLSearchParams(location.search).get("reason") === "session-changed",
+    );
     setSessionExpired(
       new URLSearchParams(window.location.search).get("reason") ===
         "session-expired",
@@ -28,6 +33,7 @@ export default function Login({ demo }: { demo: boolean }) {
       });
       const j = await r.json();
       if (!r.ok) throw Error(j.error);
+      notifySessionChange("login");
       location.href = "/";
     } catch (e) {
       X((e as Error).message);
@@ -158,6 +164,13 @@ export default function Login({ demo }: { demo: boolean }) {
               ? "Войдите, чтобы продолжить работу с заказами."
               : "Тапсырыстармен жұмысты жалғастыру үшін кіріңіз."}
           </p>
+          {sessionChanged && (
+            <p className="alert warning" role="status">
+              {locale === "ru"
+                ? "Аккаунт изменён в другой вкладке. Войдите снова, чтобы продолжить."
+                : "Аккаунт басқа қойындыда өзгертілді. Жалғастыру үшін қайта кіріңіз."}
+            </p>
+          )}
           {sessionExpired && (
             <div className="alert warning" role="status">
               {locale === "ru"

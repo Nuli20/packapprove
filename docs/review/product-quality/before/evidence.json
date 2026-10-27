@@ -1,0 +1,62 @@
+{
+  "origin": "http://127.0.0.1:3020",
+  "fixtureArtworkId": "08d18ce5-079a-4754-91a6-3c704c365e97",
+  "businessMutations": false,
+  "note": "Auth login and normal private file reads may record access events.",
+  "records": [
+    {
+      "width": 1440,
+      "role": "manager",
+      "errors": [],
+      "layout": {
+        "viewport": 1440,
+        "documentWidth": 1440
+      }
+    },
+    {
+      "width": 1440,
+      "role": "can-approver",
+      "errors": [],
+      "layout": {
+        "viewport": 1440,
+        "documentWidth": 1440
+      }
+    },
+    {
+      "width": 768,
+      "role": "manager",
+      "errors": [],
+      "layout": {
+        "viewport": 768,
+        "documentWidth": 768
+      }
+    },
+    {
+      "width": 768,
+      "role": "can-approver",
+      "errors": [],
+      "layout": {
+        "viewport": 768,
+        "documentWidth": 768
+      }
+    },
+    {
+      "width": 390,
+      "role": "manager",
+      "errors": [],
+      "layout": {
+        "viewport": 390,
+        "documentWidth": 390
+      }
+    },
+    {
+      "width": 390,
+      "role": "can-approver",
+      "errors": [],
+      "layout": {
+        "viewport": 390,
+        "documentWidth": 390
+      }
+    }
+  ]
+}

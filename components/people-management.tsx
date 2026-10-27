@@ -3,18 +3,21 @@ import { useState } from "react";
 import type { Row, State } from "./workspace";
 import { translate, type Locale } from "@/lib/i18n";
 import { setupCopy as copy } from "@/lib/setup-copy";
-import { setupCommand } from "./setup-wizard";
+import { useSetupCommand } from "./use-setup-command";
 export default function PeopleManagement({
   data,
   locale,
   onRefresh,
   onInvite,
+  onEdit,
 }: {
   data: State;
   locale: Locale;
   onRefresh: () => Promise<void> | void;
   onInvite: () => void;
+  onEdit: (profile: Row) => void;
 }) {
+  const setupCommand = useSetupCommand();
   const t = (k: string) => translate(locale, k);
   const [link, L] = useState("");
   const [error, E] = useState("");
@@ -79,20 +82,27 @@ export default function PeopleManagement({
             </small>
           </span>
           {data.user.role === "admin" && p.id !== data.user.id && (
-            <button
-              className="btn"
-              disabled={busy}
-              onClick={() =>
-                void run(
-                  "profile.update",
-                  p.id,
-                  { role: p.role, active: !p.active },
-                  p.row_version,
-                )
-              }
-            >
-              {p.active ? copy(locale, "message27") : copy(locale, "message28")}
-            </button>
+            <div className="action-group">
+              <button className="btn" disabled={busy} onClick={() => onEdit(p)}>
+                {t("security")}
+              </button>
+              <button
+                className="btn"
+                disabled={busy}
+                onClick={() =>
+                  void run(
+                    "profile.update",
+                    p.id,
+                    { role: p.role, active: !p.active },
+                    p.row_version,
+                  )
+                }
+              >
+                {p.active
+                  ? copy(locale, "message27")
+                  : copy(locale, "message28")}
+              </button>
+            </div>
           )}
         </div>
       ))}

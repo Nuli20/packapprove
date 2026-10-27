@@ -1,5 +1,4 @@
 import "./globals.css";
-import "./studio-refinements.css";
 import "@fontsource-variable/onest";
 export const metadata = {
   title: "PackApprove — QAZALPACK",

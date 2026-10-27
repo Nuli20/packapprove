@@ -5,7 +5,11 @@ const config: NextConfig = {
   poweredByHeader: false,
   logging: {
     incomingRequests: {
-      ignore: [/^\/invite(?:[?#]|$)/, /^\/api\/invitations\/info/],
+      ignore: [
+        /^\/invite(?:[?#]|$)/,
+        /^\/api\/invitations\/info/,
+        /^\/auth\/callback(?:[?#]|$)/,
+      ],
     },
     browserToTerminal: false,
   },

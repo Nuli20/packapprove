@@ -1,4 +1,7 @@
-import { localTestEnvironment } from "./tests/local-environment";
+import {
+  localTestEnvironment,
+  localTestOrigin,
+} from "./tests/local-environment";
 localTestEnvironment();
 import { defineConfig, devices } from "@playwright/test";
 export default defineConfig({
@@ -7,7 +10,7 @@ export default defineConfig({
   workers: 1,
   timeout: 60000,
   use: {
-    baseURL: "http://127.0.0.1:3000",
+    baseURL: localTestOrigin(),
     headless: true,
     launchOptions: {
       executablePath: process.env.CHROMIUM_PATH || "/usr/bin/chromium",
@@ -17,7 +20,7 @@ export default defineConfig({
         "--enable-unsafe-swiftshader",
       ],
     },
-    trace: "retain-on-failure",
+    trace: process.env.CI ? "off" : "retain-on-failure",
   },
   projects: [
     {
@@ -32,5 +35,7 @@ export default defineConfig({
       use: { ...devices["iPhone 13"], defaultBrowserType: "chromium" },
     },
   ],
-  reporter: [["list"], ["html", { open: "never" }]],
+  reporter: process.env.CI
+    ? [["./tests/e2e/support/safe-reporter.ts"]]
+    : [["list"], ["html", { open: "never" }]],
 });

@@ -2,96 +2,231 @@ import nextEnv from "@next/env";
 nextEnv.loadEnvConfig(process.cwd());
 import postgres from "postgres";
 import { execFileSync } from "node:child_process";
-import { readFile, readdir } from "node:fs/promises";
-import { randomUUID } from "node:crypto";
+import { readFile } from "node:fs/promises";
+import { randomUUID, randomBytes } from "node:crypto";
+import assert from "node:assert/strict";
 import { isolatedDemoEnabled } from "../lib/demo-environment";
+import {
+  loadMigrationContracts,
+  applyMigrations,
+  migrationDiagnosis,
+} from "../lib/migrations";
+import { runtimeDiagnosis } from "../lib/schema-doctor";
 if (!isolatedDemoEnabled())
-  throw Error("Scratch migration test requires the separate local fixture.");
-const owner = postgres(process.env.DATABASE_URL!, { max: 1 });
-const name =
-  "packapprove_migration_check_" +
-  randomUUID().replaceAll("-", "").slice(0, 12);
-let scratch: ReturnType<typeof postgres> | undefined;
-let created = false;
-try {
+  throw Error("Scratch migration tests require the separate local fixture.");
+const owner = postgres(process.env.DATABASE_URL!, { max: 1 }),
+  bundle = await loadMigrationContracts(),
+  checks: string[] = [];
+const platform = execFileSync(
+  "docker",
+  [
+    "exec",
+    "packapprove-db-1",
+    "pg_dump",
+    "-U",
+    "postgres",
+    "-d",
+    "postgres",
+    "--schema-only",
+    "--schema=auth",
+    "--schema=storage",
+    "--schema=extensions",
+  ],
+  { maxBuffer: 16 * 1024 * 1024 },
+);
+async function scratch(test: (sql: postgres.Sql, url: URL) => Promise<void>) {
+  const name =
+    "pa_schema_test_" + randomUUID().replaceAll("-", "").slice(0, 12);
   await owner.unsafe(`create database ${name}`);
-  created = true;
-  const schema = execFileSync(
-    "docker",
-    [
-      "exec",
-      "packapprove-db-1",
-      "pg_dump",
-      "-U",
-      "postgres",
-      "-d",
-      "postgres",
-      "--schema-only",
-      "--schema=auth",
-      "--schema=storage",
-      "--schema=extensions",
-    ],
-    { maxBuffer: 16 * 1024 * 1024 },
-  );
-  execFileSync(
-    "docker",
-    [
-      "exec",
-      "-i",
-      "packapprove-db-1",
-      "psql",
-      "-U",
-      "postgres",
-      "-d",
-      name,
-      "-v",
-      "ON_ERROR_STOP=1",
-    ],
-    {
-      input: schema,
-      stdio: ["pipe", "pipe", "pipe"],
-      maxBuffer: 16 * 1024 * 1024,
-    },
-  );
-  const url = new URL(process.env.DATABASE_URL!);
-  url.pathname = "/" + name;
-  scratch = postgres(url.href, { max: 1 });
-  const migrations = (await readdir("supabase/migrations"))
-    .filter((n) => /^\d+_.*\.sql$/.test(n))
-    .sort();
-  await scratch.begin(async (tx) => {
-    for (const file of migrations)
-      await tx.unsafe(await readFile("supabase/migrations/" + file, "utf8"));
+  let sql: postgres.Sql | undefined;
+  try {
+    execFileSync(
+      "docker",
+      [
+        "exec",
+        "-i",
+        "packapprove-db-1",
+        "psql",
+        "-U",
+        "postgres",
+        "-d",
+        name,
+        "-v",
+        "ON_ERROR_STOP=1",
+      ],
+      {
+        input: platform,
+        stdio: ["pipe", "pipe", "pipe"],
+        maxBuffer: 16 * 1024 * 1024,
+      },
+    );
+    const url = new URL(process.env.DATABASE_URL!);
+    url.pathname = "/" + name;
+    sql = postgres(url.href, { max: 1 });
+    await test(sql, url);
+  } finally {
+    await sql?.end();
+    await owner.unsafe(`drop database ${name}`);
+  }
+}
+const diagnose = (sql: postgres.Sql) =>
+  sql.begin(async (tx) => {
+    await tx`set transaction read only`;
+    await tx`set local search_path=pg_catalog`;
+    return migrationDiagnosis(tx, bundle);
   });
-  const functions =
-    await scratch`select proname,prosecdef,proconfig,has_function_privilege('anon',oid,'EXECUTE') as anon,has_function_privilege('authenticated',oid,'EXECUTE') as browser,has_function_privilege('packapprove_app',oid,'EXECUTE') as server from pg_proc where pronamespace='public'::regnamespace and proname in ('invitation_lookup','invitation_finish','invitation_registration_state')`;
-  if (
-    functions.length !== 3 ||
-    functions.some(
-      (p) =>
-        !p.prosecdef ||
-        !p.proconfig.includes("search_path=pg_catalog") ||
-        p.anon ||
-        p.browser ||
-        !p.server,
-    )
-  )
-    throw Error("Capability function ACL/search_path check failed");
-  const tables =
-    await scratch`select relname,relrowsecurity from pg_class where oid in ('public.invitations'::regclass,'public.profiles'::regclass,'public.organization_memberships'::regclass,'public.version_visualizations'::regclass)`;
-  if (tables.some((t) => !t.relrowsecurity)) throw Error("RLS is disabled");
+try {
+  await scratch(async (sql, url) => {
+    const result = await applyMigrations(sql, bundle);
+    assert.equal(result.applied.length, 4);
+    assert.equal((await diagnose(sql)).prefix, 4);
+    checks.push("clean install, all contracts/RLS/ACL/functions");
+    const role = "pa_schema_runtime_" + randomBytes(6).toString("hex"),
+      password = randomBytes(24).toString("hex");
+    await owner.unsafe(
+      `create role ${role} login noinherit password '${password}'`,
+    );
+    try {
+      await owner.unsafe(`grant packapprove_app to ${role}`);
+      const runtimeUrl = new URL(url);
+      runtimeUrl.username = role;
+      runtimeUrl.password = password;
+      const runtime = postgres(runtimeUrl.href, { max: 1 });
+      try {
+        assert.equal((await runtimeDiagnosis(runtime)).safe, true);
+        await assert.rejects(
+          () => runtime`select * from public.invitations limit 1`,
+          { code: "42501" },
+        );
+        checks.push(
+          "restricted runtime: no owner/BYPASSRLS/direct invitations",
+        );
+        const elevated = "pa_schema_elevated_" + randomBytes(6).toString("hex");
+        await owner.unsafe(`create role ${elevated} nologin bypassrls`);
+        try {
+          await owner.unsafe(`grant ${elevated} to ${role}`);
+          assert.equal((await runtimeDiagnosis(runtime)).canEscalate, true);
+          assert.equal((await runtimeDiagnosis(runtime)).safe, false);
+          await owner.unsafe(`alter role ${elevated} nobypassrls`);
+          await sql.unsafe(
+            `create table public.runtime_owner_probe(id integer)`,
+          );
+          await sql.unsafe(
+            `alter table public.runtime_owner_probe owner to ${elevated}`,
+          );
+          assert.equal(
+            (await runtimeDiagnosis(runtime)).ownsPublicObjects,
+            true,
+          );
+          assert.equal((await runtimeDiagnosis(runtime)).safe, false);
+          checks.push(
+            "inherited BYPASSRLS and public object ownership rejected",
+          );
+        } finally {
+          await sql.unsafe("drop table if exists public.runtime_owner_probe");
+          await owner.unsafe(`revoke ${elevated} from ${role}`);
+          await owner.unsafe(`drop role ${elevated}`);
+        }
+      } finally {
+        await runtime.end();
+      }
+    } finally {
+      await owner.unsafe(`drop role ${role}`);
+    }
+  });
+  await scratch(async (sql) => {
+    // Reproduce an older installation made through SQL Editor, with no journal.
+    for (const step of bundle.migrations.slice(0, 2))
+      await sql.unsafe(
+        await readFile("supabase/migrations/" + step.name, "utf8"),
+      );
+    const org = randomUUID(),
+      project = randomUUID(),
+      artwork = randomUUID(),
+      user = randomUUID(),
+      version = randomUUID(),
+      file = randomUUID();
+    await sql`insert into auth.users(id,email) values(${user},'migration-fixture@packapprove.local')`;
+    await sql`insert into profiles(id,full_name,role) values(${user},'Migration fixture','designer')`;
+    await sql`insert into organizations(id,name,kind) values(${org},'SCRATCH retained client','client')`;
+    await sql`insert into projects(id,organization_id,name,deadline) values(${project},${org},'Retained project','2027-01-01')`;
+    await sql`insert into artworks(id,project_id,name,deadline) values(${artwork},${project},'Retained artwork','2027-01-01')`;
+    await sql`insert into artwork_versions(id,artwork_id,number,author_id,changes) values(${version},${artwork},1,${user},'Retained V1')`;
+    await sql`insert into version_files(id,version_id,kind,storage_path,filename,mime_type,size,sha256) values(${file},${version},'preview',${"scratch/" + file},'retained.png','image/png',1,${"a".repeat(64)})`;
+    await assert.rejects(() => applyMigrations(sql, bundle), /журнала/);
+    const result = await applyMigrations(sql, bundle, { repairRegistry: true });
+    assert.equal(result.registryRecovered.length, 2);
+    assert.equal(result.applied.length, 2);
+    assert.equal(
+      (await sql`select sha256 from version_files where id=${file}`)[0].sha256,
+      "a".repeat(64),
+    );
+    assert.equal(
+      (await sql`select changes from artwork_versions where id=${version}`)[0]
+        .changes,
+      "Retained V1",
+    );
+    assert.equal(
+      (await sql`select packaging_type from artworks where id=${artwork}`)[0]
+        .packaging_type,
+      "Коробка",
+    );
+    assert.equal((await diagnose(sql)).prefix, 4);
+    checks.push(
+      "verified journal recovery and upgrade retain project/version/hash",
+    );
+    await sql.unsafe(
+      `create or replace function public.actor_id() returns uuid language sql stable as $$ select null::uuid $$`,
+    );
+    const drift = await diagnose(sql);
+    assert.equal(drift.compatible, false);
+    assert(
+      drift.difference.different.some((k) =>
+        k.startsWith("function:actor_id("),
+      ),
+    );
+    await assert.rejects(
+      () => applyMigrations(sql, bundle, { repairRegistry: true }),
+      /неоднозначны/,
+    );
+    assert.equal(
+      (
+        await sql`select count(*)::int as n from version_files where id=${file}`
+      )[0].n,
+      1,
+    );
+    checks.push("manual actor_id drift detected and automatic replay refused");
+  });
+  await scratch(async (sql) => {
+    await sql.unsafe(
+      `create table public.organizations(id uuid primary key,name text not null,kind text not null)`,
+    );
+    await sql`insert into organizations values(${randomUUID()},'Retained partial record','client')`;
+    await assert.rejects(
+      () => applyMigrations(sql, bundle, { repairRegistry: true }),
+      /неоднозначны/,
+    );
+    assert.equal(
+      (
+        await sql`select to_regclass('public.projects') as p,to_regclass('public.schema_migrations') as journal`
+      )[0].p,
+      null,
+    );
+    assert.equal(
+      (await sql`select count(*)::int as n from organizations`)[0].n,
+      1,
+    );
+    checks.push(
+      "partial schema refused without recreating tables or changing records",
+    );
+  });
   console.log(
-    JSON.stringify({
-      migrations: migrations.length,
-      functions: 3,
-      serverOnlyExecute: true,
-      fixedSearchPath: true,
-      rls: true,
-      scratchOnly: true,
-    }),
+    JSON.stringify(
+      { migrations: 4, checks, scratchOnly: true, productionUntouched: true },
+      null,
+      2,
+    ),
   );
 } finally {
-  await scratch?.end();
-  if (created) await owner.unsafe(`drop database ${name}`);
   await owner.end();
 }

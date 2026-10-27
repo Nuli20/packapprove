@@ -6,6 +6,7 @@ import { authClient } from "@/lib/platform";
 import { demoSession } from "@/lib/demo-session";
 import { prepareUpload } from "@/lib/uploads";
 import { snapshot, download } from "@/lib/queries";
+import { workspaceSnapshot } from "@/lib/queries/workspace";
 import { execute, commandSchema } from "@/lib/service";
 import { invitationInfo, acceptInvitation } from "@/lib/invitations";
 import {
@@ -14,6 +15,7 @@ import {
   changeRecoveredPassword,
 } from "@/lib/recovery";
 import { AppError, assert } from "@/lib/security";
+import { assertDeploymentBackend } from "@/lib/deployment-guard";
 export const runtime = "nodejs";
 export const maxDuration = 60;
 export const dynamic = "force-dynamic";
@@ -64,6 +66,7 @@ async function route(
     }
     if (name === "health")
       return NextResponse.json({ status: "ok", service: "PackApprove" });
+    assertDeploymentBackend();
     if (
       ["auth/login", "auth/recover", "auth/password"].includes(name) &&
       req.method === "POST"
@@ -204,7 +207,9 @@ async function route(
     if (name === "uploads/prepare" && req.method === "POST")
       return NextResponse.json(await prepareUpload(u, await bodyJson(req)));
     if (name === "state" && req.method === "GET")
-      return NextResponse.json(await snapshot(u), {
+      return NextResponse.json(req.nextUrl.searchParams.has("view")
+        ? await workspaceSnapshot(u, Object.fromEntries(req.nextUrl.searchParams))
+        : await snapshot(u), {
         headers: { "Cache-Control": "no-store" },
       });
     if (name === "command" && req.method === "POST") {

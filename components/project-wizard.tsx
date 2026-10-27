@@ -17,7 +17,7 @@ import {
 import type { State, Row } from "./workspace";
 import type { Locale } from "@/lib/i18n";
 import { projectText } from "@/lib/project-copy";
-import { setupCommand } from "./setup-wizard";
+import { useSetupCommand } from "./use-setup-command";
 export default function ProjectWizard({
   data,
   locale,
@@ -33,6 +33,7 @@ export default function ProjectWizard({
   onClose: () => void;
   onSubmit: (v: Row) => Promise<unknown>;
 }) {
+  const setupCommand = useSetupCommand();
   const c = projectText(locale);
   const [step, S] = useState(0),
     [inline, I] = useState(""),

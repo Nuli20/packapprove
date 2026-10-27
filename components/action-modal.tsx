@@ -1,5 +1,5 @@
 "use client";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { X, Loader2, ShieldCheck, LockKeyhole } from "lucide-react";
 import { translate, eventKeys, type Locale } from "@/lib/i18n";
 import type { Row, State } from "./workspace";
@@ -8,6 +8,7 @@ import { useModalFocus } from "./use-modal-focus";
 import DesignFilePicker, { type UploadPhase } from "./design-file-picker";
 import { filePickerCopy } from "@/lib/file-picker-copy";
 import ProjectWizard from "./project-wizard";
+import { DEFAULT_CAN_SPEC, CAN_PRESETS } from "@/lib/can-spec";
 export default function ActionModal({
   modal: m,
   data: initialData,
@@ -30,6 +31,9 @@ export default function ActionModal({
   useEffect(() => D(initialData), [initialData]);
   const [p, P] = useState<Row>({
     role: m.profile?.role || "observer",
+    type: "design",
+    visibility: "client",
+    canSpec: DEFAULT_CAN_SPEC,
     active: m.profile?.active ?? true,
     content: m.brief || {},
     status: "ready",
@@ -40,7 +44,7 @@ export default function ActionModal({
     ...m.payload,
   });
   const [uploads, U] = useState<Row>(
-    m.presetFile ? { preview: m.presetFile, production: m.presetFile } : {},
+    m.presetFile ? { preview: m.presetFile } : {},
   );
   const [fileErrors, FE] = useState<Record<string, string>>({});
   const [filePhases, FP] = useState<Record<string, UploadPhase>>({});
@@ -49,7 +53,15 @@ export default function ActionModal({
   const [checks, CH] = useState<Row>({});
   const [confirm, CF] = useState(false);
   const [localError, LE] = useState("");
+  const [failureStatus, FS] = useState(0);
   const [uploading, UPLOADING] = useState(false);
+  const submitting = useRef(false);
+  const stagedFiles = useRef(
+    new Map<
+      string,
+      { file: File; result: Awaited<ReturnType<typeof directUpload>> }
+    >(),
+  );
   const dialogRef = useModalFocus(onClose, busy || uploading || selecting);
   const set = (k: string, v: unknown) => P({ ...p, [k]: v });
   const action = m.action;
@@ -64,12 +76,14 @@ export default function ActionModal({
       {t(label)}
       {type === "textarea" ? (
         <textarea
+          aria-label={t(label)}
           required={required}
           value={p[key] || ""}
           onChange={(e) => set(key, e.target.value)}
         />
       ) : (
         <input
+          aria-label={t(label)}
           type={type}
           required={required}
           value={p[key] || ""}
@@ -87,6 +101,7 @@ export default function ActionModal({
     <label>
       {t(label)}
       <select
+        aria-label={t(label)}
         required={required}
         value={p[key] || ""}
         onChange={(e) => set(key, e.target.value)}
@@ -102,7 +117,9 @@ export default function ActionModal({
   );
   async function submit(e: React.FormEvent) {
     e.preventDefault();
+    if (submitting.current) return;
     LE("");
+    FS(0);
     if (action === "version.create") {
       if (selecting) return;
       const c = filePickerCopy[locale];
@@ -125,6 +142,7 @@ export default function ActionModal({
         return;
       }
     }
+    submitting.current = true;
     UPLOADING(true);
     FP({});
     try {
@@ -134,9 +152,12 @@ export default function ActionModal({
           Object.entries(uploads)
             .filter(([, file]) => file)
             .map(async ([kind, file]) => {
+              const existing = stagedFiles.current.get(kind);
+              if (existing && existing.file === file) return existing.result;
               FP((prev) => ({ ...prev, [kind]: "uploading" }));
               try {
                 const result = await directUpload(m.entityId, kind, file);
+                stagedFiles.current.set(kind, { file, result });
                 FP((prev) => ({ ...prev, [kind]: "staged" }));
                 return result;
               } catch (e) {
@@ -149,7 +170,7 @@ export default function ActionModal({
         if (failure?.status === "rejected") throw failure.reason;
         payload = {
           changes: p.changes,
-          canSpec: p.canSpec,
+          canSpec: p.canSpec || DEFAULT_CAN_SPEC,
           files: staged.map((result) => {
             if (result.status !== "fulfilled") throw Error("Upload failed");
             return result.value;
@@ -177,8 +198,10 @@ export default function ActionModal({
       }
       await onSubmit(action, m.entityId, payload, m.rowVersion);
     } catch (e) {
+      FS((e as { status?: number }).status || 0);
       LE((e as Error).message);
     } finally {
+      submitting.current = false;
       UPLOADING(false);
       FP({});
     }
@@ -231,7 +254,24 @@ export default function ActionModal({
         )}
         {(error || localError) && (
           <div className="alert error" role="alert">
-            {localError || error}
+            <div>
+              {localError || error}
+              {action === "decision.create" &&
+                failureStatus === 409 &&
+                d.rounds.some((r) => r.id === m.entityId) && (
+                  <a
+                    className="btn"
+                    href={
+                      "/?artwork=" +
+                      d.rounds.find((r) => r.id === m.entityId)!.artwork_id
+                    }
+                  >
+                    {locale === "ru"
+                      ? "Открыть актуальную версию"
+                      : "Өзекті нұсқаны ашу"}
+                  </a>
+                )}
+            </div>
           </div>
         )}
         {action === "project.create" ? (
@@ -264,13 +304,88 @@ export default function ActionModal({
                 </button>
               </>
             )}
+            {action === "artwork.create" && (
+              <>
+                <p className="upload-instructions">
+                  {locale === "ru"
+                    ? "Независимый макет с собственными версиями и согласованием. Команда наследуется от проекта."
+                    : "Өз нұсқалары мен келісуі бар жеке макет. Команда жобадан алынады."}
+                </p>
+                {field("name", "name")}
+                {field("deadline", "deadline", "date")}
+              </>
+            )}
             {action === "version.create" && (
               <>
                 <div className="alert info">
                   <LockKeyhole size={18} />
-                  {t("fixed")}
+                  <p>
+                    {locale === "ru"
+                      ? "Новый файл сохранится отдельной версией. Ранее загруженные файлы останутся неизменными."
+                      : "Жаңа файл жеке нұсқа болып сақталады. Бұрынғы файлдар өзгермейді."}
+                  </p>
                 </div>
+                <label>
+                  {locale === "ru"
+                    ? "Формат 3D-предпросмотра"
+                    : "3D көрінісінің форматы"}
+                  <select
+                    value={p.canSpec.preset}
+                    onChange={(e) =>
+                      set("canSpec", {
+                        ...DEFAULT_CAN_SPEC,
+                        preset: e.target.value,
+                        ...(e.target.value === "experimental"
+                          ? {
+                              heightMm: p.canSpec.heightMm,
+                              diameterMm: p.canSpec.diameterMm,
+                              printHeightMm: p.canSpec.printHeightMm,
+                            }
+                          : {}),
+                        placement: p.canSpec.placement,
+                      })
+                    }
+                  >
+                    {Object.entries(CAN_PRESETS).map(([key, spec]) => (
+                      <option key={key} value={key}>
+                        {spec.name} · {spec.volumeMl} мл
+                      </option>
+                    ))}
+                    {p.canSpec.preset === "experimental" && (
+                      <option value="experimental">
+                        {locale === "ru"
+                          ? "Экспериментальный размер"
+                          : "Тәжірибелік өлшем"}
+                      </option>
+                    )}
+                  </select>
+                  <small className="muted">
+                    {locale === "ru"
+                      ? "Приблизительная визуализация. Параметры закрепятся за новой версией."
+                      : "Жуық көрнекілік. Параметрлер жаңа нұсқаға бекітіледі."}
+                  </small>
+                </label>
                 {field("changes", "changeLog", "textarea")}
+                <p className="upload-instructions">
+                  {locale === "ru"
+                    ? "Предпросмотр и производственный файл обязательны. Выберите их отдельно. Исходник — по необходимости."
+                    : "Алдын ала қарау және өндірістік файл міндетті. Оларды бөлек таңдаңыз. Бастапқы файл міндетті емес."}
+                </p>
+                {(selecting || uploading || busy) && (
+                  <p className="upload-progress" role="status">
+                    {locale === "ru"
+                      ? selecting
+                        ? "Проверяем файл…"
+                        : busy
+                          ? "Сохраняем версию…"
+                          : "Загружаем…"
+                      : selecting
+                        ? "Файл тексерілуде…"
+                        : busy
+                          ? "Нұсқа сақталуда…"
+                          : "Жүктелуде…"}
+                  </p>
+                )}
                 {["preview", "production", "source"].map((kind) => (
                   <DesignFilePicker
                     key={kind}
@@ -290,6 +405,7 @@ export default function ActionModal({
                       FC((prev) => ({ ...prev, [kind]: checking }))
                     }
                     onChange={(file) => {
+                      stagedFiles.current.delete(kind);
                       U((prev) => ({ ...prev, [kind]: file }));
                       FE((prev) => ({ ...prev, [kind]: "" }));
                       FP({});
@@ -389,7 +505,23 @@ export default function ActionModal({
               <>
                 <div className="alert info">
                   <ShieldCheck size={20} />
-                  {t("fixed")}
+                  <div className="approval-file-identity">
+                    <b>
+                      V{m.versionNumber} · {m.filename}
+                    </b>
+                    <p>{t("fixed")}</p>
+                    <small className="hash">SHA-256 · {m.checksum}</small>
+                    <details>
+                      <summary>
+                        {locale === "ru"
+                          ? "Идентификаторы"
+                          : "Идентификаторлар"}
+                      </summary>
+                      <code className="hash">
+                        {m.versionId} / {m.fileId}
+                      </code>
+                    </details>
+                  </div>
                 </div>
                 {field(
                   "comment",
@@ -414,11 +546,11 @@ export default function ActionModal({
               <>
                 {field("body", "comments", "textarea")}
                 {!["observer", "approver"].includes(d.user.role) &&
-                  select("visibility", "view", [
+                  select("visibility", "visibility", [
                     { value: "client", label: t("clientComment") },
                     { value: "internal", label: t("internalComment") },
                   ])}
-                {select("type", "comments", [
+                {select("type", "commentType", [
                   { value: "design", label: t("design") },
                   { value: "technical", label: t("technicalType") },
                   { value: "question", label: t("question") },

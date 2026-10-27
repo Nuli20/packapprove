@@ -1,6 +1,7 @@
+import { localTestOrigin } from "../local-environment";
 import { test, expect, type Page } from "@playwright/test";
 import { randomUUID } from "node:crypto";
-const origin = process.env.INVITATION_TEST_ORIGIN || "http://127.0.0.1:3000";
+const origin = process.env.INVITATION_TEST_ORIGIN || localTestOrigin();
 test.use({ baseURL: origin });
 async function login(page: Page, email: string, password = "PackApprove2026!") {
   await page.goto("/login");
@@ -187,14 +188,17 @@ test("empty employee reference lists offer an invitation action and never skip r
 }) => {
   await login(page, "admin@packapprove.local");
   // UI-only empty-reference fixture. Commands still reach the actual server.
-  await page.route("**/api/state", async (route) => {
-    const response = await route.fetch();
-    const data = await response.json();
-    data.profiles = data.profiles.filter(
-      (p: any) => !["designer", "prepress"].includes(p.role),
-    );
-    await route.fulfill({ response, json: data });
-  });
+  await page.route(
+    (url) => url.pathname === "/api/state",
+    async (route) => {
+      const response = await route.fetch();
+      const data = await response.json();
+      data.profiles = data.profiles.filter(
+        (p: any) => !["designer", "prepress"].includes(p.role),
+      );
+      await route.fulfill({ response, json: data });
+    },
+  );
   await page.reload();
   await page
     .getByRole("button", { name: "Создать проект", exact: true })

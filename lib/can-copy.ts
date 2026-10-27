@@ -1,7 +1,7 @@
 import type { Locale } from "./i18n";
 const ru = {
   title: "Can Studio",
-  subtitle: "Один файл. Новое измерение.",
+  subtitle: "Визуальный предпросмотр сохранённого дизайна.",
   format: "Формат банки",
   dimensions: "Высота × диаметр",
   print: "Развёртка зоны печати",
@@ -14,7 +14,7 @@ const ru = {
   types: "PNG, JPG или PDF · до 25 МБ",
   page: "Страница PDF",
   fit: "Размещение",
-  contain: "Вписать без растяжения",
+  contain: "Вписать без обрезки",
   cover: "Заполнить с обрезкой",
   horizontal: "По горизонтали",
   vertical: "По вертикали",
@@ -56,7 +56,7 @@ const ru = {
 };
 const kz: typeof ru = {
   title: "Can Studio",
-  subtitle: "Бір файл. Жаңа өлшем.",
+  subtitle: "Сақталған дизайнның көрнекі көрінісі.",
   format: "Құты форматы",
   dimensions: "Биіктігі × диаметрі",
   print: "Баспа аймағының жаймасы",

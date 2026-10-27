@@ -1,0 +1,17 @@
+{
+  "measurement": "RLS transaction wall time, includes PostgreSQL round trips and materialization; excludes Auth/HTTP/JSON serialization. Same running database and runtime connection. Four alternating samples per projection on a warmed connection; discard the first as query warm-up and take the median of the following three.",
+  "runs": {
+    "before": [
+      876.1142739999999,
+      875.8775229999999,
+      887.3861190000002,
+      872.4496650000001
+    ],
+    "after": [
+      100.5091359999999,
+      94.91103700000008,
+      100.66452799999979,
+      95.37123399999973
+    ]
+  }
+}

@@ -3,6 +3,8 @@ import { z } from "zod";
 import { asUser, type Tx } from "./db";
 import { assert, permit, sha256, detectMime } from "./security";
 import { canSpecSchema } from "./can-spec";
+import { authorizeCommand } from "./commands/permissions";
+import { projectCommand } from "./commands/projects";
 import { verifiedUpload, validateImageSize } from "./uploads";
 import { storageClient } from "./platform";
 export type User = { id: string; role: string; full_name?: string };
@@ -11,6 +13,7 @@ export const commandSchema = z.object({
   action: z.enum([
     "project.create",
     "project.update",
+    "artwork.create",
     "brief.save",
     "version.create",
     "version.submit",
@@ -75,6 +78,7 @@ export async function execute(
   meta: { ip?: string; ua?: string } = {},
 ) {
   const c = commandSchema.parse(input);
+  authorizeCommand(u, c);
   assert(key && key.length <= 150, "Нужен Idempotency-Key", 400);
   return asUser(u.id, async (tx) => {
     await tx`select pg_advisory_xact_lock(hashtextextended(${u.id + key},0))`;
@@ -87,6 +91,15 @@ export async function execute(
         old.request_hash === fingerprint && old.operation === c.action,
         "Ключ уже использован для другой операции",
       );
+      if (c.action === "invitation.resend" && u.role !== "admin") {
+        const [invitation] =
+          await tx`select role from invitations where id=${c.entityId!}`;
+        assert(
+          invitation && ["observer", "approver"].includes(invitation.role),
+          "Приглашение недоступно",
+          403,
+        );
+      }
       return old.response;
     }
     const [rate] =
@@ -125,94 +138,13 @@ export async function execute(
       const token = randomBytes(32).toString("hex");
       await tx`update invitations set token_hash=${sha256(token)},expires_at=now()+interval '7 days' where id=${entity}`;
       result = { id: entity, invitationUrl: "/invite#token=" + token };
-    } else if (c.action === "project.create") {
-      permit(u.role, ["admin", "manager"]);
-      const org = uuid.parse(p.organizationId);
-      assert(
-        (
-          await tx`select id from organizations where id=${org} and kind='client'`
-        ).length,
-        "Выберите клиента",
-        400,
-      );
-      const assignees = z
-        .object({ designerId: uuid, prepressId: uuid })
-        .parse(p);
-      assert(
-        (
-          await tx`select id from profiles where active and ((id=${assignees.designerId} and role='designer') or (id=${assignees.prepressId} and role='prepress'))`
-        ).length === 2,
-        "Проверьте исполнителей",
-        400,
-      );
-      const names = z
-        .array(z.string().trim().min(1).max(160))
-        .min(1)
-        .max(20)
-        .parse(p.artworks);
-      const deadline = z.iso.date().parse(p.deadline);
-      const [pr] =
-        await tx`insert into projects(id,organization_id,name,description,customer_order,contacts,manager_id,designer_id,prepress_id,deadline,priority) values(${entity},${org},${text(p.name, 160)},${z
-          .string()
-          .max(5000)
-          .parse(p.description || "")},${z
-          .string()
-          .max(120)
-          .parse(p.customerOrder || "")},${z
-          .string()
-          .max(2000)
-          .parse(
-            p.contacts || "",
-          )},${u.id},${assignees.designerId},${assignees.prepressId},${deadline},${z.enum(["low", "normal", "high"]).parse(p.priority || "normal")}) returning *`;
-      projectId = entity;
-      for (const id of [u.id, assignees.designerId, assignees.prepressId])
-        await tx`insert into project_members(project_id,user_id) values(${entity},${id}) on conflict do nothing`;
-      for (const name of names) {
-        const [a] =
-          await tx`insert into artworks(project_id,name,deadline) values(${entity},${name},${deadline}) returning id`;
-        await tx`insert into brief_versions(artwork_id,number,content,author_id) values(${a.id},1,${tx.json({ dimensions: "", material: "", printing: "", units: "мм", pages: 1, languages: ["RU", "KZ"], mandatoryText: "", brandColors: "", barcode: "", logos: "", finishing: "", references: "", comments: "" })},${u.id})`;
-      }
-      result = { id: pr.id };
-    } else if (c.action === "project.update") {
-      permit(u.role, ["admin", "manager"]);
-      const [pr] =
-        await tx`select * from projects where id=${entity} for update`;
-      assert(pr, "Проект недоступен", 404);
-      assert(pr.row_version === c.rowVersion, "Проект изменился");
-      projectId = pr.id;
-      const pp = z
-        .object({
-          name: z.string().trim().min(2).max(160),
-          deadline: z.iso.date(),
-          priority: z.enum(["low", "normal", "high"]),
-          status: z.enum(["active", "paused", "completed", "archived"]),
-          designerId: uuid,
-          prepressId: uuid,
-        })
-        .parse(p);
-      assert(
-        (
-          await tx`select id from profiles where active and ((id=${pp.designerId} and role='designer') or (id=${pp.prepressId} and role='prepress'))`
-        ).length === 2,
-        "Проверьте исполнителей",
-        400,
-      );
-      await tx`update projects set name=${pp.name},deadline=${pp.deadline},priority=${pp.priority},status=${pp.status},designer_id=${pp.designerId},prepress_id=${pp.prepressId},description=${z
-        .string()
-        .max(5000)
-        .parse(p.description || "")},contacts=${z
-        .string()
-        .max(2000)
-        .parse(p.contacts || "")},customer_order=${z
-        .string()
-        .max(120)
-        .parse(p.customerOrder || "")} where id=${entity}`;
-      await tx`delete from project_members where project_id=${entity}`;
-      for (const id of [pr.manager_id, pp.designerId, pp.prepressId].filter(
-        Boolean,
-      ))
-        await tx`insert into project_members(project_id,user_id) values(${entity},${id}) on conflict do nothing`;
-      result = { id: entity };
+    } else if (
+      ["project.create", "project.update", "artwork.create"].includes(c.action)
+    ) {
+      const outcome = await projectCommand(tx, u, c, entity);
+      entity = outcome.entity;
+      projectId = outcome.projectId;
+      result = outcome.result;
     } else if (c.action === "organization.create") {
       permit(u.role, ["admin", "manager"]);
       const [r] =
