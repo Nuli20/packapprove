@@ -157,7 +157,13 @@ export default function ProjectCatalog({
                 ),
               );
             return (
-              <button
+              <article
+                role="link"
+                tabIndex={0}
+                onKeyDown={(e) => {
+                  if (e.target === e.currentTarget && e.key === "Enter")
+                    onProject(p.id);
+                }}
                 className="project-studio-card panel"
                 key={p.id}
                 onClick={() => onProject(p.id)}
@@ -184,6 +190,22 @@ export default function ProjectCatalog({
                     <Status status={p.status} label={t(p.status)} />
                   </div>
                   <h2>{p.name}</h2>
+                  <small>
+                    {
+                      d.profiles.find((person) => person.id === p.designer_id)
+                        ?.full_name
+                    }{" "}
+                    · {a?.packaging_type}
+                  </small>
+                  {a && (
+                    <a
+                      className="text-btn"
+                      href={`/?artwork=${a.id}&mode=3d`}
+                      onClick={(e) => e.stopPropagation()}
+                    >
+                      {kz ? "Нұсқа және 3D" : "Открыть версию в 3D"} ↗
+                    </a>
+                  )}
                   <p>
                     {p.customer_order ||
                       p.description ||
@@ -203,7 +225,7 @@ export default function ProjectCatalog({
                     </span>
                   </div>
                 </div>
-              </button>
+              </article>
             );
           })}
         </div>

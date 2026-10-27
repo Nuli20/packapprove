@@ -8,7 +8,8 @@ permissions:
 jobs:
   verify:
     runs-on: ubuntu-latest
-    timeout-minutes: 35
+    # Two complete runs now include all six WebGL concepts on desktop and mobile.
+    timeout-minutes: 45
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -57,5 +58,7 @@ jobs:
         if: success()
         with:
           name: browser-screenshots
-          path: .data/quality-ui/*.png
+          path: |
+            .data/quality-ui/*.png
+            .data/showcase/*.png
           if-no-files-found: ignore

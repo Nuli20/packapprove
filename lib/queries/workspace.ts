@@ -1,3 +1,4 @@
+import { appendShowcaseSpecs } from "../showcase-spec";
 import { z } from "zod";
 import { asUser, type Tx } from "../db";
 import { assert, permit } from "../security";
@@ -416,6 +417,7 @@ export async function workspaceSnapshot(
           )[0].n,
         ),
       };
+    appendShowcaseSpecs(d.files, d.visualizations);
     return d;
   });
 }

@@ -3444,3 +3444,60 @@ td small {
     transition-duration: 0.01ms !important;
   }
 }
+
+.showcase-import {
+  max-width: 850px;
+  width: calc(100% - 24px);
+  max-height: 90dvh;
+  overflow: auto;
+  padding: 28px;
+}
+.showcase-selection {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+  margin: 20px 0;
+}
+.showcase-selection figure {
+  margin: 0;
+  overflow: hidden;
+  border-radius: 14px;
+  background: var(--paper, #f5f2eb);
+}
+.showcase-selection img {
+  width: 100%;
+  display: block;
+}
+.showcase-selection figcaption {
+  padding: 8px;
+  font-size: 12px;
+}
+.showcase-import label {
+  display: block;
+  margin: 14px 0;
+}
+.showcase-import select {
+  display: block;
+  width: 100%;
+  padding: 12px;
+}
+.showcase-import input[type="checkbox"] {
+  margin-right: 8px;
+}
+@media (max-width: 600px) {
+  .showcase-selection {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+/* Native focus/camera controls must not race a smooth programmatic viewport scroll. */
+html:has(.can-lab-page) {
+  scroll-behavior: auto;
+}
+.can-demo-tabs {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+}
+.can-demo-tabs button {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}

@@ -4,6 +4,7 @@ const staff = ["admin", "manager", "designer", "prepress"];
 const discussion = [...staff, "observer", "approver"];
 /** Evaluated before returning an idempotent response, using the fresh server profile. */
 const commandRoles: Record<Command["action"], string[]> = {
+  "showcase.import": ["admin"],
   "company.initialize": ["admin"],
   "organization.create": ["admin", "manager"],
   "profile.update": ["admin"],

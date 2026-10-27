@@ -2,7 +2,9 @@
 import { useState } from "react";
 import dynamic from "next/dynamic";
 import Link from "next/link";
-import demos from "@/public/can-demos/manifest.json";
+import originals from "@/public/can-demos/manifest.json";
+import showcase from "@/public/showcase/manifest.json";
+const demos = [...originals, ...showcase];
 import type { Locale } from "@/lib/i18n";
 import { DEFAULT_CAN_SPEC } from "@/lib/can-spec";
 import type { CanPreset } from "@/lib/can-spec";
@@ -47,7 +49,7 @@ export default function DemoCanStudio() {
       <nav className="can-demo-tabs" aria-label="Демонстрационные форматы">
         {demos.map((x, i) => (
           <button
-            key={x.preset}
+            key={x.id}
             aria-pressed={i === index}
             onClick={() => {
               I(i);
@@ -61,6 +63,31 @@ export default function DemoCanStudio() {
           </button>
         ))}
       </nav>
+      <div
+        className="action-group"
+        aria-label={locale === "ru" ? "Режим просмотра" : "Көру режимі"}
+        style={{ marginBottom: 16 }}
+      >
+        <button
+          className="btn"
+          aria-pressed={mode === "3d"}
+          onClick={() => M("3d")}
+        >
+          3D
+        </button>
+        <button
+          className="btn"
+          aria-pressed={mode === "2d"}
+          onClick={() => M("2d")}
+        >
+          {locale === "ru" ? "2D-развёртка" : "2D жайма"}
+        </button>
+        {"slug" in d && (
+          <a className="btn" href={`/showcase/${d.slug}-v1.pdf`} download>
+            PDF · DEMO
+          </a>
+        )}
+      </div>
       <div className="can-demo-content">
         <div>
           {mode === "3d" ? (
@@ -99,7 +126,12 @@ export default function DemoCanStudio() {
               ? "Это вымышленный бренд и отдельный демонстрационный материал. Клиентские файлы сюда не попадают."
               : "Бұл ойдан шығарылған бренд және бөлек демонстрациялық материал. Клиент файлдары мұнда түспейді."}
           </p>
-          <img src={`/can-demos/${d.preset}.png`} alt={d.name} />
+          <img
+            src={
+              d.mime_type === "image/png" ? d.url : `/can-demos/${d.preset}.png`
+            }
+            alt={d.name}
+          />
           <p>
             {locale === "ru"
               ? "Геометрия приблизительная. Номинальный объём — обозначение формата, не результат расчёта. Точные шаблоны завода и цветопроба потребуются перед производством."
