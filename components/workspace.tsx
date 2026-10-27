@@ -58,6 +58,11 @@ export default function Workspace() {
   const [filter, F] = useState("all");
   const [modal, M] = useState<Row | null>(null);
   const [busy, B] = useState(false);
+  const [decisionReceipt, DR] = useState<{
+    userId: string;
+    roundId: string;
+    syncing: boolean;
+  } | null>(null);
   const [previewChoice, MODE] = useState(() => initialRoute().mode);
   const [catalogPage, CP] = useState(() => initialRoute().page);
   const [requestSearch, RS] = useState(() => initialRoute().search);
@@ -133,6 +138,11 @@ export default function Workspace() {
     E("");
     try {
       const j = await transport.current!(action, entityId, payload, rowVersion);
+      // A committed decision is complete. Revalidation must not keep its dialog open.
+      if (action === "decision.create" && entityId && data) {
+        DR({ userId: data.user.id, roundId: entityId, syncing: true });
+        M(null);
+      }
       await load().catch(() =>
         E(
           locale === "ru"
@@ -164,6 +174,9 @@ export default function Workspace() {
       E((e as Error).message);
       throw e;
     } finally {
+      DR((receipt) =>
+        receipt?.syncing ? { ...receipt, syncing: false } : receipt,
+      );
       B(false);
     }
   }
@@ -384,9 +397,14 @@ export default function Workspace() {
         location.assign("/login");
       }}
     >
+      {decisionReceipt?.syncing && (
+        <div className="alert info" role="status">
+          {t("decisionSavedSync")}
+        </div>
+      )}
       <main
-        inert={loading}
-        aria-busy={loading}
+        inert={loading || busy}
+        aria-busy={loading || busy}
         id="workspace-main"
         className={`main-content ${view === "artwork" ? "artwork-main" : ""}`}
       >
@@ -609,6 +627,11 @@ export default function Workspace() {
             CI={changeComparedVersion}
             loading={loading}
             busy={busy}
+            savedDecisionRoundId={
+              decisionReceipt?.userId === d.user.id
+                ? decisionReceipt.roundId
+                : undefined
+            }
             selectVersion={selectVersion}
             openProject={openProject}
             onModal={openModal}

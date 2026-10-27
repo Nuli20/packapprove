@@ -29,14 +29,29 @@ jobs:
       - name: Browser checks with a restricted runtime login
         shell: bash
         run: |
-          npm run test:serve-restricted -- --port 3030 > /tmp/packapprove-server.log 2>&1 &
+          node --import tsx scripts/serve-restricted-demo.ts --port 3030 > /tmp/packapprove-server.log 2>&1 &
           runtime_pid=$!
           trap 'kill "$runtime_pid" || true' EXIT
           for n in $(seq 1 60); do
             if curl --silent --fail http://127.0.0.1:3030/api/health > /dev/null; then break; fi
             sleep 1
           done
-          PACKAPPROVE_TEST_ORIGIN=http://127.0.0.1:3030 npm run test:e2e
+          curl --silent --fail http://127.0.0.1:3030/api/health > /dev/null
+          failed=0
+          # Both complete suites use the same isolated stack: leaked state must fail, not be reset away.
+          # Preserve either failure; this is a repeatability check, not a retry-until-green.
+          for repeat in 1 2; do
+            PACKAPPROVE_TEST_ORIGIN=http://127.0.0.1:3030 PACKAPPROVE_E2E_RUN="$repeat" \
+              npm run test:e2e -- --output=".data/e2e-$repeat" || failed=1
+          done
+          exit "$failed"
+      - name: Safe E2E diagnostics (no request data)
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: e2e-diagnostics
+          path: .data/ci-diagnostics/*.json
+          if-no-files-found: ignore
       # Traces, HTML reports, .env files and one-use invitation links are deliberately not uploaded.
       - uses: actions/upload-artifact@v4
         if: success()

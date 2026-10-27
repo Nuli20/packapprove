@@ -45,6 +45,7 @@ type Props = {
   CI: (v: string) => void;
   loading: boolean;
   busy: boolean;
+  savedDecisionRoundId?: string;
   selectVersion: (id: string) => void;
   openProject: (id: string) => void;
   onModal: (action: string, extra?: Row) => void;
@@ -66,6 +67,7 @@ export default function ArtworkWorkspace({
   CI,
   loading,
   busy,
+  savedDecisionRoundId,
   selectVersion,
   openProject,
   onModal,
@@ -104,6 +106,8 @@ export default function ArtworkWorkspace({
     meDecision = d.decisions.find(
       (x) => x.round_id === round?.id && x.user_id === u.id,
     );
+  const decisionRecorded =
+    !!meDecision || (!!round && savedDecisionRoundId === round.id);
   const previewMode =
     previewChoice === "auto"
       ? d.visualizations.some((x) => x.version_id === selected?.id)
@@ -712,6 +716,9 @@ export default function ArtworkWorkspace({
           {tab === "clientApproval" && (
             <div className="detail-panel">
               <h3>{t("clientApproval")}</h3>
+              {savedDecisionRoundId &&
+                savedDecisionRoundId === round?.id &&
+                !meDecision && <p role="status">{t("decisionSaved")}</p>}
               <p className="muted">{t("allPolicy")}</p>
               {round ? (
                 <>
@@ -757,7 +764,7 @@ export default function ArtworkWorkspace({
                   {u.role === "approver" &&
                     active &&
                     round.status === "open" &&
-                    !meDecision &&
+                    !decisionRecorded &&
                     d.participants.some(
                       (p) =>
                         p.round_id === round.id &&
@@ -901,7 +908,7 @@ export default function ArtworkWorkspace({
       {u.role === "approver" &&
         active &&
         round?.status === "open" &&
-        !meDecision &&
+        !decisionRecorded &&
         d.participants.some(
           (p) =>
             p.round_id === round.id &&

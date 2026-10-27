@@ -1,36 +1,23 @@
 import { localTestOrigin } from "../local-environment";
 import { test, expect, APIRequestContext } from "@playwright/test";
 import { randomUUID, createHash } from "node:crypto";
-import { readFileSync } from "node:fs";
+import { localTestEnvironment } from "../local-environment";
 import { createClient } from "@supabase/supabase-js";
 import { demoPdf } from "../../scripts/demo-pdf";
-const local = Object.fromEntries(
-  readFileSync(".env.local", "utf8")
-    .split("\n")
-    .filter((s) => /^[A-Z_]+=/.test(s))
-    .map((s) => {
-      const n = s.indexOf("=");
-      return [s.slice(0, n), s.slice(n + 1)];
-    }),
-);
-if (
-  !["127.0.0.1", "localhost"].includes(new URL(local.DATABASE_URL).hostname) ||
-  !["127.0.0.1", "localhost"].includes(new URL(local.SUPABASE_URL).hostname)
-)
-  throw Error("Full-cycle tests require local isolated services.");
+import { OwnedFixture } from "./support/owned-fixture";
+const local = localTestEnvironment();
 test("invited staff complete V1 changes / V2 approval / exact production file and recovery", async ({
   playwright,
-}) => {
-  const contexts: APIRequestContext[] = [];
-  const suffix = randomUUID().slice(0, 8);
+}, info) => {
+  const fixture = new OwnedFixture(playwright, info);
+  const contexts = fixture.contexts;
+  // This is an integration journey with sequential real Auth/Storage/DB operations,
+  // including bcrypt invitation acceptance and recovery; see docs/CI-STABILITY.md.
+  // Other tests retain the 60s default; each HTTP request still has a 15s deadline.
+  test.setTimeout(120000);
+  const suffix = fixture.nonce;
   const password = "IsolatedCycle2026!";
-  const ctx = async () => {
-    const c = await playwright.request.newContext({
-      baseURL: localTestOrigin(),
-    });
-    contexts.push(c);
-    return c;
-  };
+  const ctx = () => fixture.context();
   const act = async (
     c: APIRequestContext,
     action: string,
@@ -38,31 +25,29 @@ test("invited staff complete V1 changes / V2 approval / exact production file an
     payload: object = {},
     rowVersion?: number,
   ) => {
-    const r = await c.post("/api/command", {
-      headers: { "Idempotency-Key": randomUUID() },
-      data: { action, entityId, payload, rowVersion },
-    });
-    expect(r.status(), action + " status").toBe(200);
-    return r.json();
+    return fixture.command(c, action, entityId, payload, rowVersion);
   };
-  const state = async (c: APIRequestContext) =>
-    (await c.get("/api/state")).json();
+  const state = (c: APIRequestContext, query: Record<string, string>) =>
+    fixture.state(c, query);
   try {
     const admin = await ctx();
     expect(
       (
-        await admin.post("/api/auth/login", {
-          data: {
-            email: "admin@packapprove.local",
-            password: "PackApprove2026!",
-          },
-        })
+        await fixture.measure("auth.login", () =>
+          admin.post("/api/auth/login", {
+            data: {
+              email: "admin@packapprove.local",
+              password: "PackApprove2026!",
+            },
+          }),
+        )
       ).status(),
     ).toBe(200);
     const client = await act(admin, "organization.create", undefined, {
       name: "TEST Client " + suffix,
     });
-    const initial = await state(admin);
+    const initial = await state(admin, { view: "setup" });
+    const template = initial.templates[0];
     const manufacturer = initial.organizations.find(
       (o: any) => o.kind === "manufacturer",
     );
@@ -83,12 +68,18 @@ test("invited staff complete V1 changes / V2 approval / exact production file an
       const api = await ctx();
       expect(
         (
-          await api.post("/api/invitations/accept", {
-            data: { token, password, fullName: "Cycle " + role + " " + suffix },
-          })
+          await fixture.measure("invitation.accept", () =>
+            api.post("/api/invitations/accept", {
+              data: {
+                token,
+                password,
+                fullName: "Cycle " + role + " " + suffix,
+              },
+            }),
+          )
         ).status(),
       ).toBe(200);
-      const user = (await state(api)).user;
+      const user = (await state(api, { view: "home" })).user;
       expect(user.role).toBe(role);
       people[role] = { api, id: user.id, email };
     }
@@ -96,13 +87,17 @@ test("invited staff complete V1 changes / V2 approval / exact production file an
     const cookieState = await people.approver.api.storageState();
     const refreshOnly = await playwright.request.newContext({
       baseURL: localTestOrigin(),
+      extraHTTPHeaders: fixture.clientHeaders,
+      timeout: 15000,
       storageState: {
         cookies: cookieState.cookies.filter((c) => c.name === "pa_refresh"),
         origins: [],
       },
     });
     contexts.push(refreshOnly);
-    const restored = await refreshOnly.get("/api/state");
+    const restored = await fixture.measure("auth.refresh", () =>
+      refreshOnly.get("/api/state?view=home"),
+    );
     expect(restored.status()).toBe(200);
     expect((await restored.json()).user.id).toBe(people.approver.id);
     expect(
@@ -118,14 +113,17 @@ test("invited staff complete V1 changes / V2 approval / exact production file an
       deadline: "2026-12-20",
       artworks: ["TEST package"],
     });
-    let snapshot = await state(admin);
+    let snapshot = await state(admin, { view: "project", project: project.id });
     const artwork = snapshot.artworks.find(
       (a: any) => a.project_id === project.id,
     );
     async function upload(n: number, technical = true) {
-      snapshot = await state(people.designer.api);
+      snapshot = await state(people.designer.api, {
+        view: "artwork",
+        artwork: artwork.id,
+      });
       const a = snapshot.artworks.find((x: any) => x.id === artwork.id);
-      const pdf = demoPdf("CYCLE TEA", n);
+      const pdf = demoPdf("CYCLE CAN", n);
       const v = await act(
         people.designer.api,
         "version.create",
@@ -141,7 +139,6 @@ test("invited staff complete V1 changes / V2 approval / exact production file an
         a.row_version,
       );
       await act(people.designer.api, "version.submit", v.id);
-      const template = (await state(people.prepress.api)).templates[0];
       if (technical)
         await act(people.prepress.api, "review.complete", v.id, {
           templateId: template.id,
@@ -202,11 +199,10 @@ test("invited staff complete V1 changes / V2 approval / exact production file an
         })
       ).status(),
     ).toBe(409);
-    const delayedTemplate = (await state(people.prepress.api)).templates[0];
     await act(people.prepress.api, "review.complete", v2.v.id, {
-      templateId: delayedTemplate.id,
+      templateId: template.id,
       status: "ready",
-      items: delayedTemplate.items.map((label: string) => ({
+      items: template.items.map((label: string) => ({
         label,
         passed: true,
       })),
@@ -215,24 +211,28 @@ test("invited staff complete V1 changes / V2 approval / exact production file an
     const production = await ctx();
     expect(
       (
-        await production.post("/api/auth/login", {
-          data: {
-            email: "production@packapprove.local",
-            password: "PackApprove2026!",
-          },
-        })
+        await fixture.measure("auth.login", () =>
+          production.post("/api/auth/login", {
+            data: {
+              email: "production@packapprove.local",
+              password: "PackApprove2026!",
+            },
+          }),
+        )
       ).status(),
     ).toBe(200);
-    const response = await production.get("/api/packages/" + issued.id);
+    const response = await fixture.measure("package.download", () =>
+      production.get("/api/packages/" + issued.id),
+    );
     expect(response.status()).toBe(200);
     const hash = createHash("sha256")
       .update(await response.body())
       .digest("hex");
     expect(hash).toBe(createHash("sha256").update(v2.pdf).digest("hex"));
     expect(hash).not.toBe(createHash("sha256").update(v1.pdf).digest("hex"));
-    const pkg = (await state(production)).packages.find(
-      (p: any) => p.id === issued.id,
-    );
+    const pkg = (
+      await state(production, { view: "artwork", artwork: artwork.id })
+    ).packages.find((p: any) => p.id === issued.id);
     await act(
       production,
       "package.ack",
@@ -252,24 +252,28 @@ test("invited staff complete V1 changes / V2 approval / exact production file an
     });
     expect(Boolean(generated.data.properties?.hashed_token)).toBe(true);
     const recovery = await ctx();
-    const callback = await recovery.get(
-      "/api/auth/callback?token_hash=" +
-        generated.data.properties!.hashed_token,
-      { maxRedirects: 0 },
+    const callback = await fixture.measure("auth.recovery.callback", () =>
+      recovery.get(
+        "/api/auth/callback?token_hash=" +
+          generated.data.properties!.hashed_token,
+        { maxRedirects: 0 },
+      ),
     );
     expect(callback.status()).toBe(307);
     expect(callback.headers().location).toContain("/reset-password");
     expect(
       (
-        await recovery.post("/api/auth/password", {
-          data: { password: "NewCyclePassword2026!" },
-        })
+        await fixture.measure("auth.recovery.password", () =>
+          recovery.post("/api/auth/password", {
+            data: { password: "NewCyclePassword2026!" },
+          }),
+        )
       ).status(),
     ).toBe(200);
-    const recovered = await state(recovery);
+    const recovered = await state(recovery, { view: "home" });
     expect(recovered.user.id).toBe(people.approver.id);
     expect(recovered.user.role).toBe("approver");
   } finally {
-    for (const c of contexts) await c.dispose();
+    await fixture.cleanup();
   }
 });

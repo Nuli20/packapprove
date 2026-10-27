@@ -20,7 +20,7 @@ export default defineConfig({
         "--enable-unsafe-swiftshader",
       ],
     },
-    trace: "retain-on-failure",
+    trace: process.env.CI ? "off" : "retain-on-failure",
   },
   projects: [
     {
@@ -35,5 +35,7 @@ export default defineConfig({
       use: { ...devices["iPhone 13"], defaultBrowserType: "chromium" },
     },
   ],
-  reporter: [["list"], ["html", { open: "never" }]],
+  reporter: process.env.CI
+    ? [["./tests/e2e/support/safe-reporter.ts"]]
+    : [["list"], ["html", { open: "never" }]],
 });
